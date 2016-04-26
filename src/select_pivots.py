@@ -26,7 +26,9 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-
+def mutual_info(word, label):
+	
+	pass
 
 if __name__ == "__main__":
     select_pivots_freq("books", "dvd")
