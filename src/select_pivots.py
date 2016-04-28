@@ -33,25 +33,31 @@ def select_pivots_mi(source, target):
     pass
 
 def count_reviews(fname):
-	return sum(1 for line in open(fname))
+    return sum(1 for line in open(fname))
 
+# need fix
 def reviews_contain_x(features, fname, h):
-	for line in open(fname):
-		for x in features:
-			for x in line:
-				h[x] = h.get(x, 0) + 1
-	pass
+    for line in open(fname):
+        for x in features:
+            for x in set(line.strip().split()):
+                h[x] = h.get(x, 0) + 1
+    pass
 
 def features_list(fname):
-	return list(set(line.strip() for line in open(fname)))
+    return list(set(line.strip() for line in open(fname)))
 
+def compute_mutual_info():
+    pass
 
 if __name__ == "__main__":
     # select_pivots_freq("books", "dvd")
-    # source = "kitchen"
-    # print "source =", source
-    # src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
-    # print src_pos_reviews
-    # print len(features_list("../data/%s/test.positive" % "books"))
-
+    source = "books"
+    print "source =", source
+    src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
+    print src_pos_reviews
+    features = []
+    s = {}
+    features = features_list("../data/%s/test.positive" % "books")
+    reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
+    #print s
     pass
