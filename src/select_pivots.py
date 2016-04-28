@@ -26,10 +26,18 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
+def count_reviews(fname):
+	return sum(1 for line in open(fname))
+
+
 def mutual_info(word, label):
 	
 	pass
 
 if __name__ == "__main__":
-    select_pivots_freq("books", "dvd")
+    #select_pivots_freq("books", "dvd")
+    # source = "kitchen"
+    # print "source =", source
+    # src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
+    # print src_pos_reviews
     pass
