@@ -42,23 +42,22 @@ def reviews_contain_x(features, fname, h):
                 h[x] = h.get(x, 0) + 1
     pass
 
-# need fix
 def features_list(fname):
-    return set(line.strip() for line in open(fname))
+    return list(set([word for line in open(fname) for word in line.split()]))
 
 def compute_mutual_info():
     pass
 
 if __name__ == "__main__":
     # select_pivots_freq("books", "dvd")
-    source = "books"
-    print "source =", source
-    src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
-    print src_pos_reviews
+    # source = "books"
+    # print "source =", source
+    # src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
+    # print src_pos_reviews
     features = []
     s = {}
     features = features_list("../data/%s/test.positive" % "books")
-    print len(features)
-    #reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
-    #print s
+    # print len(features)
+    reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
+    print len(s)
     pass
