@@ -83,5 +83,5 @@ if __name__ == "__main__":
     # features = features_list("../data/%s/test.positive" % "books")
     # print len(features)
     # reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
-    print len(s)
+    # print len(s)
     pass
