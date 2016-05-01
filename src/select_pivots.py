@@ -32,6 +32,14 @@ def select_pivots_mi(source, target):
 
     pass
 
+# to construct mutual info list 
+def compute_mi():
+    pass
+
+# to construct pairwise mutual info list
+def compute_pmi():
+    pass
+
 def count_reviews(fname):
     return sum(1 for line in open(fname))
 
@@ -49,8 +57,20 @@ def features_list(fname):
 def combine_dicts(a, b):
     return dict([(n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b)])
 
-def compute_mutual_info():
-    pass
+def mutual_info(joint_x, x_scale, y, N):
+    prob_y = float(y / N)
+    prob_x = float(joint_x / N)
+    prob_x_scale = float(x_scale / N)
+    val = float(prob_x_scale / (prob_x * prob_y))
+    return prob_x_scale * math.log(val)
+
+# only difference between mi is no addition multipler
+def pairwise_mutual_info(joint_x, x_scale, y, N):
+    prob_y = float(y / N)
+    prob_x = float(joint_x / N)
+    prob_x_scale = float(x_scale / N)
+    val = float(prob_x_scale / (prob_x * prob_y))
+    return math.log(val)
 
 if __name__ == "__main__":
     # select_pivots_freq("books", "dvd")
@@ -58,10 +78,10 @@ if __name__ == "__main__":
     # print "source =", source
     # src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
     # print src_pos_reviews
-    features = []
-    s = {}
-    features = features_list("../data/%s/test.positive" % "books")
+    # features = []
+    # s = {}
+    # features = features_list("../data/%s/test.positive" % "books")
     # print len(features)
-    reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
+    # reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
     print len(s)
     pass
