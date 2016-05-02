@@ -1,4 +1,6 @@
 import math
+import pickle
+
 def select_pivots_freq(source, target):
     print "source =", source
     print "target =", target
@@ -27,15 +29,36 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-# perhaps recontruct the method to here after test
-def select_pivots_mi(source, target):
-    print "source =", source
-    print "target =", target
+# recall stored objects and compute mi
+def select_pivots_mi():
+    features = load_obj("features")
+    x_src = load_obj("x_src")
+    x_tgt = load_obj("x_tgt")
+    x_pos_src = load_obj("x_pos_src")
+    x_neg_src = load_obj("x_neg_src")
+    x_pos_tgt = load_obj("x_pos_tgt")
+    x_neg_tgt = load_obj("x_neg_tgt")
+    src_reviews = load_obj("src_reviews")
+    tgt_reviews = load_obj("tgt_reviews")
+    pos_src_reviews = load_obj("pos_src_reviews")
+    neg_src_reviews = load_obj("neg_src_reviews")
+    pos_tgt_reviews = load_obj("pos_tgt_reviews")
+    neg_tgt_reviews = load_obj("neg_tgt_reviews")
 
+    mi_dict = {}
+    for x in features:
+        if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
+            pos_mi = mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+            neg_mi = mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+            mi_dict[x] = math.abs(pos_mi-neg_mi)
+    L = mi_dict.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (x, mi) in L[:10]:
+        print x, mi_dict.get(x,0)
     pass
 
-# to construct mutual info list 
-def compute_mi(source, target):
+# to construct presets for mi and pmi
+def mi_presets(source, target):
     #initial
     x_pos_src = {}
     x_neg_src = {}
@@ -60,28 +83,30 @@ def compute_mi(source, target):
     tgt_features = set(pos_tgt_features).union(set(neg_tgt_features))
     # all the features in both domains, or say all the x
     features = set(src_features).union(set(tgt_features))
-    # print len(features)
 
     # reviews
     reviews_contain_x(features, "../data/%s/train.positive" % source, x_pos_src)
-    # print x_pos_src
     reviews_contain_x(features, "../data/%s/train.negative" % source, x_neg_src)
     reviews_contain_x(features, "../data/%s/train.positive" % target, x_pos_tgt)
     reviews_contain_x(features, "../data/%s/train.negative" % target, x_neg_tgt)
     x_src = combine_dicts(x_pos_src, x_neg_src) 
     x_tgt = combine_dicts(x_pos_tgt, x_neg_tgt)
 
-    print x_src
+    # save to temp obj
+    save_obj(features,"features")
+    save_obj(x_pos_src,"x_pos_src")
+    save_obj(x_neg_src,"x_neg_src")
+    save_obj(x_pos_tgt,"x_pos_tgt")
+    save_obj(x_neg_tgt,"x_neg_tgt")
+    save_obj(x_src,"x_src")
+    save_obj(x_tgt,"x_tgt")
+    save_obj(src_reviews,"src_reviews")
+    save_obj(tgt_reviews,"tgt_reviews")
+    save_obj(pos_src_reviews,"pos_src_reviews")
+    save_obj(pos_tgt_reviews,"pos_tgt_reviews")
+    save_obj(neg_src_reviews,"neg_src_reviews")
+    save_obj(neg_tgt_reviews,"neg_tgt_reviews")
 
-    mi_dict = {}
-    for x in features:
-        pos_mi = mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
-        neg_mi = mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
-        mi_dict[x] = min(pos_mi, neg_mi)
-    L = s.items()
-    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (x, mi) in L[:10]:
-        print x, mi_dict.get(x,0)
     pass
 
 # to construct pairwise mutual info list
@@ -123,8 +148,18 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
     val = float(prob_x_scale / (prob_x * prob_y))
     return math.log(val)
 
+# to reduce duplicated computation
+def save_obj(obj, name):
+    with open('obj/'+ name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(name):
+    with open('obj/' + name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
+
 if __name__ == "__main__":
-    # compute_mi("books", "dvd")
+    mi_presets("books", "dvd")
     # select_pivots_freq("books", "dvd")
     # source = "books"
     # print "source =", source
