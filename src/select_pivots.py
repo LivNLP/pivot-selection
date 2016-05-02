@@ -22,7 +22,7 @@ def select_pivots_freq(source, target):
         print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
     pass
 
-
+# count frequency and return a dict h
 def count_freq(fname, h):
     for line in open(fname):
         for feat in line.strip().split():
@@ -30,7 +30,7 @@ def count_freq(fname, h):
     pass
 
 # recall stored objects and compute mi
-def select_pivots_mi():
+def select_pivots_mi(k):
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -50,11 +50,39 @@ def select_pivots_mi():
         if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
             pos_mi = mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
             neg_mi = mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
-            mi_dict[x] = math.abs(pos_mi-neg_mi)
+            mi_dict[x] = abs(pos_mi-neg_mi)
     L = mi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (x, mi) in L[:10]:
+    for (x, mi) in L[:k]:
         print x, mi_dict.get(x,0)
+    pass
+
+# a little change to get pmi
+def select_pivots_pmi(k):
+    features = load_obj("features")
+    x_src = load_obj("x_src")
+    x_tgt = load_obj("x_tgt")
+    x_pos_src = load_obj("x_pos_src")
+    x_neg_src = load_obj("x_neg_src")
+    x_pos_tgt = load_obj("x_pos_tgt")
+    x_neg_tgt = load_obj("x_neg_tgt")
+    src_reviews = load_obj("src_reviews")
+    tgt_reviews = load_obj("tgt_reviews")
+    pos_src_reviews = load_obj("pos_src_reviews")
+    neg_src_reviews = load_obj("neg_src_reviews")
+    pos_tgt_reviews = load_obj("pos_tgt_reviews")
+    neg_tgt_reviews = load_obj("neg_tgt_reviews")
+
+    pmi_dict = {}
+    for x in features:
+        if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
+            pos_pmi = pairwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+            neg_pmi = pairwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+            pmi_dict[x] = abs(pos_pmi-neg_pmi)
+    L = pmi_dict.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (x, pmi) in L[:k]:
+        print x, pmi_dict.get(x,0)
     pass
 
 # to construct presets for mi and pmi
@@ -106,11 +134,6 @@ def mi_presets(source, target):
     save_obj(pos_tgt_reviews,"pos_tgt_reviews")
     save_obj(neg_src_reviews,"neg_src_reviews")
     save_obj(neg_tgt_reviews,"neg_tgt_reviews")
-
-    pass
-
-# to construct pairwise mutual info list
-def compute_pmi():
     pass
 
 # count the number of reviews in specified file
@@ -133,6 +156,7 @@ def features_list(fname):
 def combine_dicts(a, b):
     return dict([(n, a.get(n, 0)+b.get(n, 0)) for n in set(a)|set(b)])
 
+# mutual info
 def mutual_info(joint_x, x_scale, y, N):
     prob_y = float(y / N)
     prob_x = float(joint_x / N)
@@ -148,34 +172,20 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
     val = float(prob_x_scale / (prob_x * prob_y))
     return math.log(val)
 
-# to reduce duplicated computation
+# to reduce duplicated computation, save object
 def save_obj(obj, name):
     with open('obj/'+ name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+# load object
 def load_obj(name):
     with open('obj/' + name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
-
+# main
 if __name__ == "__main__":
-    mi_presets("books", "dvd")
+    # mi_presets("books", "dvd")
+    # select_pivots_mi(10)
+    select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
-    # source = "books"
-    # print "source =", source
-    # src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
-    # print src_pos_reviews
-    # features = []
-    # s1 = {}
-    # s2 = {}
-    # s = {}
-    # features = features_list("../data/%s/test.positive" % "books")
-    # print len(features)
-    # reviews_contain_x(features, "../data/%s/test.positive" % "books",s1)
-    # reviews_contain_x(features, "../data/%s/test.negative" % "books",s2)
-    # s = combine_dicts(s1, s2)
-    # for x in features[:10]:
-    #     if s1[x]*s[x]>0:
-    #         pos_mi = mutual_info(s1[x], s[x], 200.0, 400.0) 
-    #         print x, pos_mi
     pass
