@@ -1,3 +1,4 @@
+import math
 def select_pivots_freq(source, target):
     print "source =", source
     print "target =", target
@@ -26,6 +27,7 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
+# perhaps recontruct the method to here after test
 def select_pivots_mi(source, target):
     print "source =", source
     print "target =", target
@@ -70,10 +72,11 @@ def compute_mi(source, target):
     x_tgt = combine_dicts(x_pos_tgt, x_neg_tgt)
 
     print x_src
+
     mi_dict = {}
     for x in features:
-        pos_mi = mutual_info(x_src.get(x,0), x_pos_src.get(x,0),pos_src_reviews, src_reviews) 
-        neg_mi = mutual_info(x_src.get(x,0), x_neg_src.get(x,0),neg_src_reviews, src_reviews)
+        pos_mi = mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+        neg_mi = mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
         mi_dict[x] = min(pos_mi, neg_mi)
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
@@ -87,7 +90,7 @@ def compute_pmi():
 
 # count the number of reviews in specified file
 def count_reviews(fname):
-    return sum(1 for line in open(fname))
+    return float(sum(1 for line in open(fname)))
 
 # count features appearence of reviews in specified file and assign to dict h
 def reviews_contain_x(features, fname, h):
@@ -121,16 +124,23 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
     return math.log(val)
 
 if __name__ == "__main__":
-    compute_mi("books", "dvd")
+    # compute_mi("books", "dvd")
     # select_pivots_freq("books", "dvd")
     # source = "books"
     # print "source =", source
     # src_pos_reviews = count_reviews("../data/%s/test.positive" % source)
     # print src_pos_reviews
     # features = []
+    # s1 = {}
+    # s2 = {}
     # s = {}
     # features = features_list("../data/%s/test.positive" % "books")
     # print len(features)
-    # reviews_contain_x(features, "../data/%s/test.positive" % "books",s)
-    # print len(s)
+    # reviews_contain_x(features, "../data/%s/test.positive" % "books",s1)
+    # reviews_contain_x(features, "../data/%s/test.negative" % "books",s2)
+    # s = combine_dicts(s1, s2)
+    # for x in features[:10]:
+    #     if s1[x]*s[x]>0:
+    #         pos_mi = mutual_info(s1[x], s[x], 200.0, 400.0) 
+    #         print x, pos_mi
     pass
