@@ -30,8 +30,8 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-# recall stored objects and compute mi
-def select_pivots_mi(k):
+# recall stored objects and compute mi absoult value
+def select_pivots_mi(k, checksum):
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -58,8 +58,8 @@ def select_pivots_mi(k):
         print x, mi_dict.get(x,0)
     pass
 
-# a little change to get pmi
-def select_pivots_pmi(k):
+# a little change to get pmi absoult value
+def select_pivots_pmi(k, checksum):
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -86,7 +86,7 @@ def select_pivots_pmi(k):
         print x, pmi_dict.get(x,0)
     pass
 
-# to construct presets for mi and pmi
+# to construct presets for mi and pmi 
 def mi_presets(source, target):
     #initial
     x_pos_src = {}
@@ -180,6 +180,12 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
     val = float(prob_x_scale / (prob_x * prob_y))
     return math.log(val)
 
+# jaccard coefficient between a and b
+def jaccard_coefficient(a, b):
+    A = set(a)
+    B = set(b)
+    return len(A & B)/len(A | B)
+
 # to reduce duplicated computation, save object
 def save_obj(obj, name):
     with open('obj/'+ name + '.pkl', 'wb') as f:
@@ -192,7 +198,7 @@ def load_obj(name):
 
 # main
 if __name__ == "__main__":
-    mi_presets("books", "dvd")
+    # mi_presets("books", "dvd")
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
