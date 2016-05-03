@@ -1,5 +1,6 @@
 import math
 import pickle
+import numpy
 
 def select_pivots_freq(source, target):
     print "source =", source
@@ -140,12 +141,19 @@ def mi_presets(source, target):
 def count_reviews(fname):
     return float(sum(1 for line in open(fname)))
 
-# count features appearence of reviews in specified file and assign to dict h
+# rather than do this for each feature one by one, use a vector for each review
 def reviews_contain_x(features, fname, h):
+    # for x in features:
+    #     for line in open(fname):
+    #         if x in line.strip().split():
+    #             h[x] = h.get(x, 0) + 1
+    features = list(features)
+    feautres_vector = numpy.zeros(len(features), dtype=float)
     for line in open(fname):
-        for x in features:
-            if x in line.strip().split():
-                h[x] = h.get(x, 0) + 1
+        for x in set(line.strip().split()):
+            i = features.index(x)
+            feautres_vector[i] += 1
+    h = dict(zip(features,feautres_vector))
     pass
 
 # return a list of all features in specified file
@@ -184,8 +192,11 @@ def load_obj(name):
 
 # main
 if __name__ == "__main__":
-    # mi_presets("books", "dvd")
+    mi_presets("books", "dvd")
     # select_pivots_mi(10)
-    select_pivots_pmi(10)
+    # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
+    # b = {}
+    # features = features_list("../data/%s/train.positive" % "books")
+    # reviews_contain_x(features, "../data/%s/train.positive" % "books", b)
     pass
