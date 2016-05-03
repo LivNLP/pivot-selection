@@ -86,8 +86,8 @@ def select_pivots_pmi(k, checksum):
         print x, pmi_dict.get(x,0)
     pass
 
-# to construct presets for mi and pmi 
-def mi_presets(source, target):
+# to construct presets of labeled data in source and target domain
+def label_presets(source, target):
     #initial
     x_pos_src = {}
     x_neg_src = {}
@@ -135,6 +135,10 @@ def mi_presets(source, target):
     save_obj(pos_tgt_reviews,"pos_tgt_reviews")
     save_obj(neg_src_reviews,"neg_src_reviews")
     save_obj(neg_tgt_reviews,"neg_tgt_reviews")
+    pass
+# to construct presets for unlabeled data in  source and target domain
+def unlabel_presets(source, target):
+    
     pass
 
 # count the number of reviews in specified file
@@ -198,7 +202,7 @@ def load_obj(name):
 
 # main
 if __name__ == "__main__":
-    # mi_presets("books", "dvd")
+    # label_presets("books", "dvd")
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
