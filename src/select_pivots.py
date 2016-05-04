@@ -30,7 +30,7 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-# recall stored objects and compute mi absoulte value
+# recall stored objects and compute mi absolute value
 def select_pivots_mi(k):
     features = load_obj("features")
     x_src = load_obj("x_src")
@@ -58,7 +58,7 @@ def select_pivots_mi(k):
         print x, mi_dict.get(x,0)
     pass
 
-# a little change to get pmi absoulte value
+# a little change to get pmi absolute value
 def select_pivots_pmi(k):
     features = load_obj("features")
     x_src = load_obj("x_src")
@@ -146,6 +146,17 @@ def select_un_pivots_mi(k):
     x_un_src = load_obj("x_un_src")
     x_un_tgt = load_obj("x_un_tgt")
     x_un = load_obj("x_un")
+
+    mi_dict = {}
+    for x in un_features:
+        if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
+            src_mi = mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
+            tgt_mi = mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
+            mi_dict[x] = abs(src_mi-tgt_mi)
+    L = mi_dict.items()
+    L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
+    for (x, mi) in L[:k]:
+        print x, mi_dict.get(x,0)
     pass
 
 #unlabel pmi
@@ -249,6 +260,8 @@ if __name__ == "__main__":
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
+    unlabel_presets("books","dvd")
+    select_un_pivots_mi("books","dvd")
     # b = {}
     # features = features_list("../data/%s/train.positive" % "books")
     # reviews_contain_x(features, "../data/%s/train.positive" % "books", b)
