@@ -113,7 +113,7 @@ def label_presets(source, target):
     # all the features in both domains, or say all the x
     features = set(src_features).union(set(tgt_features))
 
-    # reviews
+    # reviews contain x
     reviews_contain_x(features, "../data/%s/train.positive" % source, x_pos_src)
     reviews_contain_x(features, "../data/%s/train.negative" % source, x_neg_src)
     reviews_contain_x(features, "../data/%s/train.positive" % target, x_pos_tgt)
@@ -136,9 +136,35 @@ def label_presets(source, target):
     save_obj(neg_src_reviews,"neg_src_reviews")
     save_obj(neg_tgt_reviews,"neg_tgt_reviews")
     pass
-# to construct presets for unlabeled data in  source and target domain
+
+# to construct presets for unlabeled data in source and target domain
 def unlabel_presets(source, target):
-    
+    #initial
+    x_un_src = {}
+    x_un_tgt = {}
+
+    # no of reviews
+    un_src_reviews = count_reviews("../data/%s/train.unlabeled" % source)
+    un_tgt_reviews = count_reviews("../data/%s/train.unlabeled" % target)
+    un_reviews = un_src_reviews + un_tgt_reviews
+
+    # featrues
+    un_src_features = features_list("../data/%s/train.unlabeled" % source)
+    un_tgt_features = features_list("../data/%s/train.unlabeled" % target)
+    un_features = set(un_src_features).union(set(un_tgt_features))
+
+    # reviews contain x
+    reviews_contain_x(un_features, "../data/%s/train.unlabeled" % source, x_un_src)
+    reviews_contain_x(un_features, "../data/%s/train.unlabeled" % target, x_un_tgt)
+    x_un = combine_dicts(x_un_src, x_un_tgt)
+
+    # save to temp obj
+    save_obj(un_src_reviews,"un_src_reviews")
+    save_obj(un_tgt_reviews,"un_tgt_reviews")
+    save_obj(un_reviews,"un_reviews")
+    save_obj(x_un_src,"x_un_src")
+    save_obj(x_un_tgt,"x_un_tgt")
+    save_obj(x_un,"x_un")
     pass
 
 # count the number of reviews in specified file
