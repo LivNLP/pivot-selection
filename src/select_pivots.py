@@ -30,8 +30,8 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-# recall stored objects and compute mi absoult value
-def select_pivots_mi(k, checksum):
+# recall stored objects and compute mi absoulte value
+def select_pivots_mi(k):
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -58,8 +58,8 @@ def select_pivots_mi(k, checksum):
         print x, mi_dict.get(x,0)
     pass
 
-# a little change to get pmi absoult value
-def select_pivots_pmi(k, checksum):
+# a little change to get pmi absoulte value
+def select_pivots_pmi(k):
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -137,6 +137,22 @@ def label_presets(source, target):
     save_obj(neg_tgt_reviews,"neg_tgt_reviews")
     pass
 
+# unlabel mi
+def select_un_pivots_mi(k):
+    un_src_reviews = load_obj("un_src_reviews")
+    un_tgt_reviews = load_obj("un_tgt_reviews")
+    un_reviews = load_obj("un_reviews")
+    un_features = load_obj("un_features")
+    x_un_src = load_obj("x_un_src")
+    x_un_tgt = load_obj("x_un_tgt")
+    x_un = load_obj("x_un")
+    pass
+
+#unlabel pmi
+def select_un_pivots_pmi(k):
+    
+    pass
+
 # to construct presets for unlabeled data in source and target domain
 def unlabel_presets(source, target):
     #initial
@@ -162,6 +178,7 @@ def unlabel_presets(source, target):
     save_obj(un_src_reviews,"un_src_reviews")
     save_obj(un_tgt_reviews,"un_tgt_reviews")
     save_obj(un_reviews,"un_reviews")
+    save_obj(un_features,"un_features")
     save_obj(x_un_src,"x_un_src")
     save_obj(x_un_tgt,"x_un_tgt")
     save_obj(x_un,"x_un")
