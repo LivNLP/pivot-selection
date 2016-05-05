@@ -9,10 +9,10 @@ def select_pivots_freq(source, target):
     tgt_freq = {}
     count_freq("../data/%s/train.positive" % source, src_freq)
     count_freq("../data/%s/train.negative" % source, src_freq)
-    count_freq("../data/%s/train.unlabeled" % source, src_freq)
+    # count_freq("../data/%s/train.unlabeled" % source, src_freq)
     count_freq("../data/%s/train.positive" %  target, tgt_freq)
     count_freq("../data/%s/train.negative" %  target, tgt_freq)
-    count_freq("../data/%s/train.unlabeled" % target, tgt_freq) 
+    # count_freq("../data/%s/train.unlabeled" % target, tgt_freq) 
     s = {}
     features = set(src_freq.keys()).union(set(tgt_freq.keys()))
     for feat in features:
@@ -28,6 +28,23 @@ def count_freq(fname, h):
     for line in open(fname):
         for feat in line.strip().split():
             h[feat] = h.get(feat, 0) + 1
+    pass
+
+def select_un_pivots_freq(source, target):
+    print "source =", source
+    print "target =", target
+    src_freq = {}
+    tgt_freq = {}
+    count_freq("../data/%s/train.unlabeled" % source, src_freq)
+    count_freq("../data/%s/train.unlabeled" % target, tgt_freq) 
+    s = {}
+    features = set(src_freq.keys()).union(set(tgt_freq.keys()))
+    for feat in features:
+        s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
+    L = s.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (feat, freq) in L[:10]:
+        print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
     pass
 
 # recall stored objects and compute mi absolute value
@@ -88,12 +105,6 @@ def select_pivots_pmi(k):
 
 # to construct presets of labeled data in source and target domain
 def label_presets(source, target):
-    #initial
-    x_pos_src = {}
-    x_neg_src = {}
-    x_pos_tgt = {}
-    x_neg_tgt = {}
-
     # source
     pos_src_reviews = count_reviews("../data/%s/train.positive" % source)
     neg_src_reviews = count_reviews("../data/%s/train.negative" % source)
@@ -114,10 +125,10 @@ def label_presets(source, target):
     features = set(src_features).union(set(tgt_features))
 
     # reviews contain x
-    reviews_contain_x(features, "../data/%s/train.positive" % source, x_pos_src)
-    reviews_contain_x(features, "../data/%s/train.negative" % source, x_neg_src)
-    reviews_contain_x(features, "../data/%s/train.positive" % target, x_pos_tgt)
-    reviews_contain_x(features, "../data/%s/train.negative" % target, x_neg_tgt)
+    x_pos_src = reviews_contain_x(features, "../data/%s/train.positive" % source)
+    x_neg_src = reviews_contain_x(features, "../data/%s/train.negative" % source)
+    x_pos_tgt = reviews_contain_x(features, "../data/%s/train.positive" % target)
+    x_neg_tgt = reviews_contain_x(features, "../data/%s/train.negative" % target)
     x_src = combine_dicts(x_pos_src, x_neg_src) 
     x_tgt = combine_dicts(x_pos_tgt, x_neg_tgt)
 
@@ -166,10 +177,6 @@ def select_un_pivots_pmi(k):
 
 # to construct presets for unlabeled data in source and target domain
 def unlabel_presets(source, target):
-    #initial
-    x_un_src = {}
-    x_un_tgt = {}
-
     # no of reviews
     un_src_reviews = count_reviews("../data/%s/train.unlabeled" % source)
     un_tgt_reviews = count_reviews("../data/%s/train.unlabeled" % target)
@@ -181,8 +188,9 @@ def unlabel_presets(source, target):
     un_features = set(un_src_features).union(set(un_tgt_features))
 
     # reviews contain x
-    reviews_contain_x(un_features, "../data/%s/train.unlabeled" % source, x_un_src)
-    reviews_contain_x(un_features, "../data/%s/train.unlabeled" % target, x_un_tgt)
+    x_un_src = reviews_contain_x(un_features, "../data/%s/train.unlabeled" % source)
+    # print x_un_src
+    x_un_tgt = reviews_contain_x(un_features, "../data/%s/train.unlabeled" % target)
     x_un = combine_dicts(x_un_src, x_un_tgt)
 
     # save to temp obj
@@ -200,7 +208,7 @@ def count_reviews(fname):
     return float(sum(1 for line in open(fname)))
 
 # rather than do this for each feature one by one, use a vector for each review
-def reviews_contain_x(features, fname, h):
+def reviews_contain_x(features, fname):
     # for x in features:
     #     for line in open(fname):
     #         if x in line.strip().split():
@@ -211,8 +219,7 @@ def reviews_contain_x(features, fname, h):
         for x in set(line.strip().split()):
             i = features.index(x)
             feautres_vector[i] += 1
-    h = dict(zip(features,feautres_vector))
-    pass
+    return dict(zip(features,feautres_vector))
 
 # return a list of all features in specified file
 def features_list(fname):
@@ -261,8 +268,9 @@ if __name__ == "__main__":
     # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
     unlabel_presets("books","dvd")
-    select_un_pivots_mi("books","dvd")
-    # b = {}
+    # select_un_pivots_mi("books","dvd")
+    # select_un_pivots_freq("books","dvd")
     # features = features_list("../data/%s/train.positive" % "books")
-    # reviews_contain_x(features, "../data/%s/train.positive" % "books", b)
+    # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
+    # print len(b)
     pass
