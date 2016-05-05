@@ -1,6 +1,8 @@
+import time
 import math
 import pickle
 import numpy
+from multiprocessing import Pool,Process,Queue
 
 def select_pivots_freq(source, target):
     print "source =", source
@@ -267,7 +269,9 @@ if __name__ == "__main__":
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
+    print time.time()
     unlabel_presets("books","dvd")
+    print time.time()
     # select_un_pivots_mi("books","dvd")
     # select_un_pivots_freq("books","dvd")
     # features = features_list("../data/%s/train.positive" % "books")
