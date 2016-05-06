@@ -2,7 +2,7 @@ import time
 import math
 import pickle
 import numpy
-from multiprocessing import Pool,Process,Queue
+# from multiprocessing import Pool,Process,Queue
 
 def select_pivots_freq(source, target):
     print "source =", source
@@ -251,7 +251,7 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
 def jaccard_coefficient(a, b):
     A = set(a)
     B = set(b)
-    return len(A & B)/len(A | B)
+    return float(len(A & B))/float(len(A | B))
 
 # to reduce duplicated computation, save object
 def save_obj(obj, name):
@@ -269,12 +269,14 @@ if __name__ == "__main__":
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
     # select_pivots_freq("books", "dvd")
-    print time.time()
-    unlabel_presets("books","dvd")
-    print time.time()
+
+    # unlabel_presets("books","dvd")
+    
     # select_un_pivots_mi("books","dvd")
     # select_un_pivots_freq("books","dvd")
-    # features = features_list("../data/%s/train.positive" % "books")
-    # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
-    # print len(b)
+    start_time = time.time()
+    features = features_list("../data/%s/train.positive" % "books")
+    b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
+    print len(b)
+    print time.time() - start_time
     pass
