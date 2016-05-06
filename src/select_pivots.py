@@ -4,7 +4,7 @@ import pickle
 import numpy
 # from multiprocessing import Pool,Process,Queue
 
-def select_pivots_freq(source, target):
+def select_pivots_freq(source, target, k):
     print "source =", source
     print "target =", target
     src_freq = {}
@@ -21,9 +21,10 @@ def select_pivots_freq(source, target):
         s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (feat, freq) in L[:10]:
-        print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
-    pass
+    h = L[:k]
+    return h
+    # for (feat, freq) in L[:10]:
+    #     print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
 
 # count frequency and return a dict h
 def count_freq(fname, h):
@@ -32,7 +33,7 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-def select_un_pivots_freq(source, target):
+def select_un_pivots_freq(source, target, k):
     print "source =", source
     print "target =", target
     src_freq = {}
@@ -45,9 +46,10 @@ def select_un_pivots_freq(source, target):
         s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (feat, freq) in L[:10]:
-        print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
-    pass
+    h = L[:k]
+    return h
+    # for (feat, freq) in L[:10]:
+    #     print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
 
 # recall stored objects and compute mi absolute value
 def select_pivots_mi(k):
@@ -249,9 +251,9 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
 
 # jaccard coefficient between a and b
 def jaccard_coefficient(a, b):
-    A = set(a)
-    B = set(b)
-    return float(len(A & B))/float(len(A | B))
+    A = set([i[0] for i in a])
+    B = set([i[0] for i in b])
+    return float(len(A & B))/float(len(A | B)) if float(len(A | B)) != 0 else 0
 
 # to reduce duplicated computation, save object
 def save_obj(obj, name):
@@ -265,18 +267,17 @@ def load_obj(name):
 
 # main
 if __name__ == "__main__":
+    start_time = time.time()
     # label_presets("books", "dvd")
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
-    # select_pivots_freq("books", "dvd")
-
+    h = select_pivots_freq("books", "dvd", 100)
+    h2 = select_un_pivots_freq("books","dvd", 100)
+    print "jaccard_coefficient = ", jaccard_coefficient(h,h2)
     # unlabel_presets("books","dvd")
-    
     # select_un_pivots_mi("books","dvd")
-    # select_un_pivots_freq("books","dvd")
-    start_time = time.time()
-    features = features_list("../data/%s/train.positive" % "books")
-    b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
-    print len(b)
+    # features = features_list("../data/%s/train.positive" % "books")
+    # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
+    # print len(b)
     print time.time() - start_time
     pass
