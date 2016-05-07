@@ -267,17 +267,17 @@ def load_obj(name):
 
 # main
 if __name__ == "__main__":
-    start_time = time.time()
-    # label_presets("books", "dvd")
+    # start_time = time.time()
+    label_presets("electronics", "kitchen")
+    unlabel_presets("electronics", "kitchen")
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
-    h = select_pivots_freq("books", "dvd", 100)
-    h2 = select_un_pivots_freq("books","dvd", 100)
-    print "jaccard_coefficient = ", jaccard_coefficient(h,h2)
-    # unlabel_presets("books","dvd")
+    # h = select_pivots_freq("books", "dvd", 100)
+    # h2 = select_un_pivots_freq("books","dvd", 100)
+    # print "jaccard_coefficient = ", jaccard_coefficient(h,h2)
     # select_un_pivots_mi("books","dvd")
     # features = features_list("../data/%s/train.positive" % "books")
     # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
     # print len(b)
-    print time.time() - start_time
+    # print time.time() - start_time
     pass
