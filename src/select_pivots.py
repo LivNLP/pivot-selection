@@ -75,9 +75,11 @@ def select_pivots_mi(k):
             mi_dict[x] = abs(pos_mi-neg_mi)
     L = mi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (x, mi) in L[:k]:
-        print x, mi_dict.get(x,0)
-    pass
+    h = L[:k]
+    return h
+    # for (x, mi) in L[:k]:
+    #     print x, mi_dict.get(x,0)
+    # pass
 
 # a little change to get pmi absolute value
 def select_pivots_pmi(k):
@@ -103,9 +105,59 @@ def select_pivots_pmi(k):
             pmi_dict[x] = abs(pos_pmi-neg_pmi)
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (x, pmi) in L[:k]:
-        print x, pmi_dict.get(x,0)
-    pass
+    h = L[:k]
+    return h
+    # for (x, pmi) in L[:k]:
+    #     print x, pmi_dict.get(x,0)
+    # pass
+
+# unlabel mi
+def select_un_pivots_mi(k):
+    un_src_reviews = load_obj("un_src_reviews")
+    un_tgt_reviews = load_obj("un_tgt_reviews")
+    un_reviews = load_obj("un_reviews")
+    un_features = load_obj("un_features")
+    x_un_src = load_obj("x_un_src")
+    x_un_tgt = load_obj("x_un_tgt")
+    x_un = load_obj("x_un")
+
+    mi_dict = {}
+    for x in un_features:
+        if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
+            src_mi = mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
+            tgt_mi = mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
+            mi_dict[x] = abs(src_mi-tgt_mi)
+    L = mi_dict.items()
+    L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
+    h = L[:k]
+    return h
+    # for (x, mi) in L[:k]:
+    #     print x, mi_dict.get(x,0)
+    # pass
+
+# unlabel pmi
+def select_un_pivots_pmi(k):
+    un_src_reviews = load_obj("un_src_reviews")
+    un_tgt_reviews = load_obj("un_tgt_reviews")
+    un_reviews = load_obj("un_reviews")
+    un_features = load_obj("un_features")
+    x_un_src = load_obj("x_un_src")
+    x_un_tgt = load_obj("x_un_tgt")
+    x_un = load_obj("x_un")
+
+    mi_dict = {}
+    for x in un_features:
+        if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
+            src_mi = mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
+            tgt_mi = mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
+            mi_dict[x] = abs(src_mi-tgt_mi)
+    L = mi_dict.items()
+    L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
+    h = L[:k]
+    return h
+    # for (x, mi) in L[:k]:
+    #     print x, mi_dict.get(x,0)
+    # pass
 
 # to construct presets of labeled data in source and target domain
 def label_presets(source, target):
@@ -150,33 +202,6 @@ def label_presets(source, target):
     save_obj(pos_tgt_reviews,"pos_tgt_reviews")
     save_obj(neg_src_reviews,"neg_src_reviews")
     save_obj(neg_tgt_reviews,"neg_tgt_reviews")
-    pass
-
-# unlabel mi
-def select_un_pivots_mi(k):
-    un_src_reviews = load_obj("un_src_reviews")
-    un_tgt_reviews = load_obj("un_tgt_reviews")
-    un_reviews = load_obj("un_reviews")
-    un_features = load_obj("un_features")
-    x_un_src = load_obj("x_un_src")
-    x_un_tgt = load_obj("x_un_tgt")
-    x_un = load_obj("x_un")
-
-    mi_dict = {}
-    for x in un_features:
-        if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
-            src_mi = mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
-            tgt_mi = mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
-            mi_dict[x] = abs(src_mi-tgt_mi)
-    L = mi_dict.items()
-    L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
-    for (x, mi) in L[:k]:
-        print x, mi_dict.get(x,0)
-    pass
-
-#unlabel pmi
-def select_un_pivots_pmi(k):
-    
     pass
 
 # to construct presets for unlabeled data in source and target domain
@@ -268,8 +293,8 @@ def load_obj(name):
 # main
 if __name__ == "__main__":
     # start_time = time.time()
-    label_presets("electronics", "kitchen")
-    unlabel_presets("electronics", "kitchen")
+    # label_presets("electronics", "books")
+    # unlabel_presets("electronics", "books")
     # select_pivots_mi(10)
     # select_pivots_pmi(10)
     # h = select_pivots_freq("books", "dvd", 100)
