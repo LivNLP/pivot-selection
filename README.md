@@ -1,2 +1,2 @@
 # pivot-selection
-pivot selection methods
+pivot selection methods for sentiment analysis
