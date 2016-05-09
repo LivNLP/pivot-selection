@@ -34,8 +34,8 @@ def count_freq(fname, h):
     pass
 
 def select_un_pivots_freq(source, target, k):
-    print "source =", source
-    print "target =", target
+    # print "source =", source
+    # print "target =", target
     src_freq = {}
     tgt_freq = {}
     count_freq("../data/%s/train.unlabeled" % source, src_freq)
@@ -145,13 +145,13 @@ def select_un_pivots_pmi(k):
     x_un_tgt = load_obj("x_un_tgt")
     x_un = load_obj("x_un")
 
-    mi_dict = {}
+    pmi_dict = {}
     for x in un_features:
         if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
-            src_mi = mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
-            tgt_mi = mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
-            mi_dict[x] = abs(src_mi-tgt_mi)
-    L = mi_dict.items()
+            src_pmi = pairwise_mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
+            tgt_pmi = pairwise_mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
+            pmi_dict[x] = abs(src_pmi-tgt_pmi)
+    L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
     h = L[:k]
     return h
@@ -278,6 +278,7 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
 def jaccard_coefficient(a, b):
     A = set([i[0] for i in a])
     B = set([i[0] for i in b])
+    # print A&B
     return float(len(A & B))/float(len(A | B)) if float(len(A | B)) != 0 else 0
 
 # to reduce duplicated computation, save object
@@ -295,11 +296,15 @@ if __name__ == "__main__":
     # start_time = time.time()
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
-    # select_pivots_mi(10)
-    # select_pivots_pmi(10)
-    # h = select_pivots_freq("books", "dvd", 100)
-    # h2 = select_un_pivots_freq("books","dvd", 100)
-    # print "jaccard_coefficient = ", jaccard_coefficient(h,h2)
+    h1 = select_pivots_freq("books", "electronics",100)
+    h2 = select_un_pivots_freq("books", "electronics", 100)
+    print "jaccard_coefficient freq = ", jaccard_coefficient(h1,h2)
+    h3 = select_pivots_mi(100)
+    h4 = select_un_pivots_mi(100)
+    print "jaccard_coefficient mi   = ", jaccard_coefficient(h3,h4)
+    h5 = select_pivots_pmi(100)
+    h6 = select_un_pivots_pmi(100)
+    print "jaccard_coefficient pmi  = ", jaccard_coefficient(h5,h6)
     # select_un_pivots_mi("books","dvd")
     # features = features_list("../data/%s/train.positive" % "books")
     # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
