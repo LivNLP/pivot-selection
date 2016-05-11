@@ -2,6 +2,7 @@ import time
 import math
 import pickle
 import numpy
+import compare_ranking as cr # submethod 
 # from multiprocessing import Pool,Process,Queue
 
 def select_pivots_freq(source, target, k):
@@ -274,12 +275,6 @@ def pairwise_mutual_info(joint_x, x_scale, y, N):
     val = float(prob_x_scale / (prob_x * prob_y))
     return math.log(val)
 
-# jaccard coefficient between a and b
-def jaccard_coefficient(a, b):
-    A = set([i[0] for i in a])
-    B = set([i[0] for i in b])
-    # print A&B
-    return float(len(A & B))/float(len(A | B)) if float(len(A | B)) != 0 else 0
 
 # to reduce duplicated computation, save object
 def save_obj(obj, name):
@@ -299,15 +294,15 @@ if __name__ == "__main__":
     test_k = [100,1000,2000,5000,7000,10000]
     for k in test_k:
         print "pivots number = %d" % k
-        h1 = select_pivots_freq("electronics","books", k)
-        h2 = select_un_pivots_freq("electronics","books", k)
-        print "jaccard_coefficient freq = ", jaccard_coefficient(h1,h2)
+        h1 = select_pivots_freq("dvd","electronics", k)
+        h2 = select_un_pivots_freq("dvd","electronics", k)
+        print "jaccard_coefficient freq = ", cr.jaccard_coefficient(h1,h2)
         h3 = select_pivots_mi(k)
         h4 = select_un_pivots_mi(k)
-        print "jaccard_coefficient mi   = ", jaccard_coefficient(h3,h4)
+        print "jaccard_coefficient mi   = ", cr.jaccard_coefficient(h3,h4)
         h5 = select_pivots_pmi(k)
         h6 = select_un_pivots_pmi(k)
-        print "jaccard_coefficient pmi  = ", jaccard_coefficient(h5,h6)
+        print "jaccard_coefficient pmi  = ", cr.jaccard_coefficient(h5,h6)
     # select_un_pivots_mi("books","dvd")
     # features = features_list("../data/%s/train.positive" % "books")
     # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
