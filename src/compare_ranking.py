@@ -50,8 +50,7 @@ def kendall_rank_coefficient(a, b):
             # print i,j +' group 4'
             kendall_distance += 0.5
 
-    print kendall_distance/float(len(all_objects)*(len(all_objects)-1)/2.0)
-    pass
+    return kendall_distance/float(len(all_objects)*(len(all_objects)-1)/2.0)
 
 
 #test method
