@@ -294,8 +294,8 @@ if __name__ == "__main__":
     test_k = [100,1000,2000,5000,7000,10000]
     for k in test_k:
         print "pivots number = %d" % k
-        h1 = select_pivots_freq("dvd","electronics", k)
-        h2 = select_un_pivots_freq("dvd","electronics", k)
+        h1 = select_pivots_freq("electronics","dvd", k)
+        h2 = select_un_pivots_freq("electronics","dvd", k)
         print "jaccard_coefficient freq = ", cr.jaccard_coefficient(h1,h2)
         h3 = select_pivots_mi(k)
         h4 = select_un_pivots_mi(k)
