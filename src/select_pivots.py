@@ -5,9 +5,7 @@ import numpy
 import compare_ranking as cr # submethod 
 # from multiprocessing import Pool,Process,Queue
 
-def select_pivots_freq(source, target, k):
-    print "source =", source
-    print "target =", target
+def select_pivots_freq(source, target):
     src_freq = {}
     tgt_freq = {}
     count_freq("../data/%s/train.positive" % source, src_freq)
@@ -22,8 +20,8 @@ def select_pivots_freq(source, target, k):
         s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    h = L[:k]
-    return h
+    #h = L[:k]
+    return L
     # for (feat, freq) in L[:10]:
     #     print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
 
@@ -34,7 +32,7 @@ def count_freq(fname, h):
             h[feat] = h.get(feat, 0) + 1
     pass
 
-def select_un_pivots_freq(source, target, k):
+def select_un_pivots_freq(source, target):
     # print "source =", source
     # print "target =", target
     src_freq = {}
@@ -47,13 +45,13 @@ def select_un_pivots_freq(source, target, k):
         s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    h = L[:k]
-    return h
+    #h = L[:k]
+    return L
     # for (feat, freq) in L[:10]:
     #     print feat, src_freq.get(feat, 0), tgt_freq.get(feat, 0)    
 
 # recall stored objects and compute mi absolute value
-def select_pivots_mi(k):
+def select_pivots_mi():
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -76,14 +74,14 @@ def select_pivots_mi(k):
             mi_dict[x] = abs(pos_mi-neg_mi)
     L = mi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    h = L[:k]
-    return h
+    #h = L[:k]
+    return L
     # for (x, mi) in L[:k]:
     #     print x, mi_dict.get(x,0)
     # pass
 
 # a little change to get pmi absolute value
-def select_pivots_pmi(k):
+def select_pivots_pmi():
     features = load_obj("features")
     x_src = load_obj("x_src")
     x_tgt = load_obj("x_tgt")
@@ -106,14 +104,14 @@ def select_pivots_pmi(k):
             pmi_dict[x] = abs(pos_pmi-neg_pmi)
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    h = L[:k]
-    return h
+    #h = L[:k]
+    return L
     # for (x, pmi) in L[:k]:
     #     print x, pmi_dict.get(x,0)
     # pass
 
 # unlabel mi
-def select_un_pivots_mi(k):
+def select_un_pivots_mi():
     un_src_reviews = load_obj("un_src_reviews")
     un_tgt_reviews = load_obj("un_tgt_reviews")
     un_reviews = load_obj("un_reviews")
@@ -130,14 +128,14 @@ def select_un_pivots_mi(k):
             mi_dict[x] = abs(src_mi-tgt_mi)
     L = mi_dict.items()
     L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
-    h = L[:k]
-    return h
+    #h = L[:k]
+    return L
     # for (x, mi) in L[:k]:
     #     print x, mi_dict.get(x,0)
     # pass
 
 # unlabel pmi
-def select_un_pivots_pmi(k):
+def select_un_pivots_pmi():
     un_src_reviews = load_obj("un_src_reviews")
     un_tgt_reviews = load_obj("un_tgt_reviews")
     un_reviews = load_obj("un_reviews")
@@ -154,8 +152,8 @@ def select_un_pivots_pmi(k):
             pmi_dict[x] = abs(src_pmi-tgt_pmi)
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
-    h = L[:k]
-    return h
+    #h = L[:k]
+    return L
     # for (x, mi) in L[:k]:
     #     print x, mi_dict.get(x,0)
     # pass
@@ -291,24 +289,38 @@ if __name__ == "__main__":
     # start_time = time.time()
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
+    source = "electronics"
+    target = "dvd"
+    print "source =", source
+    print "target =", target
+    save_obj(select_pivots_freq(source,target),"freq")
+    save_obj(select_un_pivots_freq(source,target),"un_freq")
+    save_obj(select_pivots_mi(),"mi")
+    save_obj(select_un_pivots_mi(),"un_mi")
+    save_obj(select_pivots_pmi(),"pmi")
+    save_obj(select_un_pivots_pmi(),"un_pmi")
+    freq = load_obj("freq")
+    un_freq = load_obj("un_freq")
+    mi = load_obj("un_mi")
+    un_mi = load_obj("un_mi")
+    pmi = load_obj("pmi")
+    un_pmi = load_obj("un_pmi")
+
+    mi = select_pivots_mi()
     test_k = [100,1000,2000,5000,7000,10000]
     for k in test_k:
         print "pivots number = %d" % k
-        h1 = select_pivots_freq("electronics","dvd", k)
-        h2 = select_un_pivots_freq("electronics","dvd", k)
+        h1 = freq[:k]
+        h2 = un_freq[:k]
         print "jaccard_coefficient freq = ", cr.jaccard_coefficient(h1,h2)
         print "kendall_coefficient freq = ", cr.kendall_rank_coefficient(h1,h2)
-        h3 = select_pivots_mi(k)
-        h4 = select_un_pivots_mi(k)
+        h3 = mi[:k]
+        h4 = un_mi[:k]
         print "jaccard_coefficient mi   = ", cr.jaccard_coefficient(h3,h4)
         print "kendall_coefficient mi   = ", cr.kendall_rank_coefficient(h3,h4)
-        h5 = select_pivots_pmi(k)
-        h6 = select_un_pivots_pmi(k)
+        h5 = pmi[:k]
+        h6 = un_pmi[:k]
         print "jaccard_coefficient pmi  = ", cr.jaccard_coefficient(h5,h6)
         print "kendall_coefficient pmi  = ", cr.kendall_rank_coefficient(h5,h6)
-    # select_un_pivots_mi("books","dvd")
-    # features = features_list("../data/%s/train.positive" % "books")
-    # b = reviews_contain_x(features, "../data/%s/train.positive" % "books")
-    # print len(b)
     # print time.time() - start_time
     pass
