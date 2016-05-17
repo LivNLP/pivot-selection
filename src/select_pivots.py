@@ -284,43 +284,48 @@ def load_obj(name):
     with open('obj/' + name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
+# load stored object
+def load_stored_obj(name):
+    with open( name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
 # main
 if __name__ == "__main__":
     # start_time = time.time()
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
-    source = "electronics"
-    target = "dvd"
-    print "source =", source
-    print "target =", target
-    save_obj(select_pivots_freq(source,target),"freq")
-    save_obj(select_un_pivots_freq(source,target),"un_freq")
-    save_obj(select_pivots_mi(),"mi")
-    save_obj(select_un_pivots_mi(),"un_mi")
-    save_obj(select_pivots_pmi(),"pmi")
-    save_obj(select_un_pivots_pmi(),"un_pmi")
-    freq = load_obj("freq")
-    un_freq = load_obj("un_freq")
-    mi = load_obj("un_mi")
-    un_mi = load_obj("un_mi")
-    pmi = load_obj("pmi")
-    un_pmi = load_obj("un_pmi")
+    # source = "electronics"
+    # target = "dvd"
+    # print "source =", source
+    # print "target =", target
+    # save_obj(select_pivots_freq(source,target),"freq")
+    # save_obj(select_un_pivots_freq(source,target),"un_freq")
+    # save_obj(select_pivots_mi(),"mi")
+    # save_obj(select_un_pivots_mi(),"un_mi")
+    # save_obj(select_pivots_pmi(),"pmi")
+    # save_obj(select_un_pivots_pmi(),"un_pmi")
+    # freq = load_obj("freq")
+    # un_freq = load_obj("un_freq")
+    # mi = load_obj("un_mi")
+    # un_mi = load_obj("un_mi")
+    # pmi = load_obj("pmi")
+    # un_pmi = load_obj("un_pmi")
 
-    mi = select_pivots_mi()
-    test_k = [100,1000,2000,5000,7000,10000]
-    for k in test_k:
-        print "pivots number = %d" % k
-        h1 = freq[:k]
-        h2 = un_freq[:k]
-        print "jaccard_coefficient freq = ", cr.jaccard_coefficient(h1,h2)
-        print "kendall_coefficient freq = ", cr.kendall_rank_coefficient(h1,h2)
-        h3 = mi[:k]
-        h4 = un_mi[:k]
-        print "jaccard_coefficient mi   = ", cr.jaccard_coefficient(h3,h4)
-        print "kendall_coefficient mi   = ", cr.kendall_rank_coefficient(h3,h4)
-        h5 = pmi[:k]
-        h6 = un_pmi[:k]
-        print "jaccard_coefficient pmi  = ", cr.jaccard_coefficient(h5,h6)
-        print "kendall_coefficient pmi  = ", cr.kendall_rank_coefficient(h5,h6)
+    # mi = select_pivots_mi()
+    # test_k = [100,1000,2000,5000,7000,10000]
+    # for k in test_k:
+    #     print "pivots number = %d" % k
+    #     h1 = freq[:k]
+    #     h2 = un_freq[:k]
+    #     print "jaccard_coefficient freq = ", cr.jaccard_coefficient(h1,h2)
+    #     print "kendall_coefficient freq = ", cr.kendall_rank_coefficient(h1,h2)
+    #     h3 = mi[:k]
+    #     h4 = un_mi[:k]
+    #     print "jaccard_coefficient mi   = ", cr.jaccard_coefficient(h3,h4)
+    #     print "kendall_coefficient mi   = ", cr.kendall_rank_coefficient(h3,h4)
+    #     h5 = pmi[:k]
+    #     h6 = un_pmi[:k]
+    #     print "jaccard_coefficient pmi  = ", cr.jaccard_coefficient(h5,h6)
+    #     print "kendall_coefficient pmi  = ", cr.kendall_rank_coefficient(h5,h6)
     # print time.time() - start_time
     pass

@@ -7,43 +7,91 @@ Used for evaluation of pivot selection methods
 import numpy as np
 import scipy.io as sio 
 import scipy.sparse as sp
-
 from sparsesvd import sparsesvd
 
 import sys, math, subprocess, time
-def learnProjection(sourceDomain, targetDomain):
+
+import select_pivots as pi
+
+def trainLBFGS(train_file, model_file):
+    """
+    Train lbfgs on train file. and evaluate on test file.
+    Read the output file and return the classification accuracy.
+    """
+    retcode = subprocess.call(
+        "classias-train -tb -a lbfgs.logistic -pc1=0 -pc2=1 -m %s %s > /dev/null"  %\
+        (model_file, train_file), shell=True)
+    return retcode
+
+
+def testLBFGS(test_file, model_file):
+    """
+    Evaluate on the test file.
+    Read the output file and return the classification accuracy.
+    """
+    output = "../work/output"
+    retcode = subprocess.call("cat %s | classias-tag -m %s -t > %s" %\
+                              (test_file, model_file, output), shell=True)
+    F = open(output)
+    accuracy = 0
+    correct = 0
+    total = 0
+    for line in F:
+        if line.startswith("Accuracy"):
+            p = line.strip().split()
+            accuracy = float(p[1])
+    F.close()
+    return accuracy
+
+
+def loadClassificationModel(modelFileName):
+    """
+    Read the model file and return a list of (feature, weight) tuples.
+    """
+    modelFile = open(modelFileName, "r") 
+    weights = []
+    for line in modelFile:
+        if line.startswith('@'):
+            # this is @classias or @bias. skip those.
+            continue
+        p = line.strip().split()
+        featName = p[1].strip()
+        featVal = float(p[0])
+        if featName == "__BIAS__":
+            # This is the bias term
+            bias = featVal
+        else:
+            # This is an original feature.
+            if featVal > 0:
+                weights.append((featName, featVal))
+    modelFile.close()
+    return weights
+
+def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     """
     Learn the projection matrix and store it to a file. 
     """
     h = 50 # no. of SVD dimensions.
-    n = 500 # no. of pivots.
+    #n = 500 # no. of pivots.
     # Load pivots.
-    pivotsFileName = "../work/%s-%s/DI_list" % (sourceDomain, targetDomain)
-    pivots = []
-    pivotsFile = open(pivotsFileName)
-    for line in pivotsFile:
-        pivots.append(line.split()[1])
-    pivotsFile.close()
+    pivotsFile = "../work/%s-%s/obj/%s" % (sourceDomain, targetDomain, pivotsMethod)
+    pivots = pi.load_stored_obj(pivotsFile)[:n]
 
-    # Load domain specific features
-    DSwords = []
-    DSFileName = "../work/%s-%s/DS_list" % (sourceDomain, targetDomain)
-    DSFile = open(DSFileName)
-    for line in DSFile:
-        DSwords.append(line.split()[1])
-    DSFile.close()
+    # Load features and get domain specific features
+    featsFile = "../work/%s-%s/obj/features" % (sourceDomain, targetDomain)
+    feats = list(pi.load_stored_obj(featsFile))
+    #print feats
 
-    feats = DSwords[:]
-    feats.extend(pivots)
+    DSwords = [item for item in feats if item not in set(pivots)]
 
     # Load train vectors.
     print "Loading Training vectors...",
     startTime = time.time()
     vects = []
-    vects.extend(loadFeatureVecors("../work/%s/train.positive" % sourceDomain, feats))
-    vects.extend(loadFeatureVecors("../work/%s/train.negative" % sourceDomain, feats))
-    vects.extend(loadFeatureVecors("../work/%s/train.unlabeled" % sourceDomain, feats))
-    vects.extend(loadFeatureVecors("../work/%s/train.unlabeled" % targetDomain, feats))
+    vects.extend(loadFeatureVecors("../data/%s/train.positive" % sourceDomain, feats))
+    vects.extend(loadFeatureVecors("../data/%s/train.negative" % sourceDomain, feats))
+    vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % sourceDomain, feats))
+    vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % targetDomain, feats))
     endTime = time.time()
     print "%ss" % str(round(endTime-startTime, 2))     
 
@@ -54,7 +102,7 @@ def learnProjection(sourceDomain, targetDomain):
     print "Learning Pivot Predictors.."
     startTime = time.time()
     M = sp.lil_matrix((len(feats), len(pivots)), dtype=np.float)
-    for (j, w) in enumerate(pivots[:n]):
+    for (j, w) in enumerate(pivots):
         print "%d of %d %s" % (j, len(pivots), w)
         for (feat, val) in getWeightVector(w, vects):
             i = feats.index(feat)
@@ -100,12 +148,12 @@ def loadFeatureVecors(fname, feats):
     F = open(fname)
     L = []
     for line in F:
-        L.append(set(line.strip().split()).intersection(set(feats)))
+        L.append(set(line.strip().split())&(set(feats)))
     F.close()
     return L
 
 
-def evaluate_SA(source, target, project):
+def evaluate_SA(source, target, project, method, n):
     """
     Report the cross-domain sentiment classification accuracy. 
     """
@@ -120,24 +168,15 @@ def evaluate_SA(source, target, project):
     M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj.mat" % (source, target))['proj'])
     (nDS, h) = M.shape
 
-    # Load domain independent features.
-    pivots = []
-    pivotsFileName = "../work/%s-%s/DI_list" % (source, target)
-    pivotsFile = open(pivotsFileName)
-    for line in pivotsFile:
-        pivots.append(line.split()[1])
-    pivotsFile.close()
+    # Load pivots.
+    pivotsFile = "../work/%s-%s/obj/%s" % (sourceDomain, targetDomain, pivotsMethod)
+    pivots = pi.load_stored_obj(pivotsFile)[:n]
 
-    # Load domain specific features.
-    DSwords = []
-    DSFileName = "../work/%s-%s/DS_list" % (source, target)
-    DSFile = open(DSFileName)
-    for line in DSFile:
-        DSwords.append(line.split()[1])
-    DSFile.close()
+    # Load features and get domain specific features
+    featsFile = "../work/%s-%s/obj/features" % (sourceDomain, targetDomain)
+    feats = list(pi.load_stored_obj(featsFile))
 
-    feats = DSwords[:]
-    feats.extend(pivots)
+    DSwords = [item for item in feats if item not in set(pivots)]
     
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.SCL" % (source, target)
@@ -217,9 +256,10 @@ def batchEval():
     pass
 
 if __name__ == "__main__":
-    #source = "books"
-    #target = "dvd"
-    #learnProjection(source, target)
+    source = "electronics"
+    target = "dvd"
+    method = "freq"
+    learnProjection(source, target, method, 500)
     #evaluate_SA(source, target, True)
-    #evaluate_SA(source, target, True)
+    # evaluate_SA(source, target, True, method, 500)
     #batchEval()
