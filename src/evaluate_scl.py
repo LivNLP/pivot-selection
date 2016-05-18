@@ -73,16 +73,25 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     """
     h = 50 # no. of SVD dimensions.
     #n = 500 # no. of pivots.
+
+    # Parameters to reduce the number of features in the tail
+    # domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
+
+
     # Load pivots.
     pivotsFile = "../work/%s-%s/obj/%s" % (sourceDomain, targetDomain, pivotsMethod)
-    pivots = pi.load_stored_obj(pivotsFile)[:n]
+    features = pi.load_stored_obj(pivotsFile)
+    pivots = dict(features[:n]).keys()
+    print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
 
     # Load features and get domain specific features
-    featsFile = "../work/%s-%s/obj/features" % (sourceDomain, targetDomain)
-    feats = list(pi.load_stored_obj(featsFile))
+    #feats = selectTh(dict(features),domainTh[source])
+    feats = dict(features)
+    print "total features = ", len(feats)
+    print feats.keys()
     #print feats
 
-    DSwords = [item for item in feats if item not in set(pivots)]
+    DSwords = [item for item in feats if item not in pivots]
 
     # Load train vectors.
     print "Loading Training vectors...",
@@ -170,13 +179,18 @@ def evaluate_SA(source, target, project, method, n):
 
     # Load pivots.
     pivotsFile = "../work/%s-%s/obj/%s" % (sourceDomain, targetDomain, pivotsMethod)
-    pivots = pi.load_stored_obj(pivotsFile)[:n]
+    features = pi.load_stored_obj(pivotsFile)
+    pivots = dict(features[:n]).keys()
+    print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
 
     # Load features and get domain specific features
-    featsFile = "../work/%s-%s/obj/features" % (sourceDomain, targetDomain)
-    feats = list(pi.load_stored_obj(featsFile))
+    #feats = selectTh(dict(features),domainTh[source])
+    feats = dict(features)
+    print "total features = ", len(feats)
+    print feats.keys()
+    #print feats
 
-    DSwords = [item for item in feats if item not in set(pivots)]
+    DSwords = [item for item in feats if item not in pivots]
     
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.SCL" % (source, target)
@@ -184,7 +198,7 @@ def evaluate_SA(source, target, project, method, n):
     featFile = open(trainFileName, 'w')
     count = 0
     for (label, fname) in [(1, 'train.positive'), (-1, 'train.negative')]:
-        F = open("../work/%s/%s" % (source, fname))
+        F = open("../data/%s/%s" % (source, fname))
         for line in F:
             count += 1
             #print "Train ", count
@@ -208,7 +222,7 @@ def evaluate_SA(source, target, project, method, n):
     featFile = open(testFileName, 'w')
     count = 0
     for (label, fname) in [(1, 'test.positive'), (-1, 'test.negative')]:
-        F = open("../work/%s/%s" % (target, fname))
+        F = open("../data/%s/%s" % (target, fname))
         for line in F:
             count += 1
             #print "Test ", count

@@ -109,6 +109,7 @@ def createMatrix(source, target, method, n):
     """
 
     # Parameters
+    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
     coocTh = 5
     #n = 500
 
@@ -116,14 +117,18 @@ def createMatrix(source, target, method, n):
     
     # Load domain independent feature list 
     pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
-    DI = pi.load_stored_obj(pivotsFile)[:n]
+    features = pi.load_stored_obj(pivotsFile)
+    DI = dict(features[:n]).keys()
+    print "selecting top-%d features in %s as pivots" % (n, method)
+    # print DI
 
     # Load features and get domain specific features
-    featsFile = "../work/%s-%s/obj/features" % (source, target)
-    feats = list(pi.load_stored_obj(featsFile))
-    #print feats
+    feats = selectTh(dict(features),domainTh[source])
+    print "total features = ", len(feats)
+    # print feats.keys()
 
-    DSList = [item for item in feats if item not in set(DI)]
+    DSList = [item for item in feats if item not in DI]
+    print DSList
     
     nDS = len(DSList)
     nDI = len(DI)
@@ -147,6 +152,7 @@ def createMatrix(source, target, method, n):
     print "%s unlabeled %d" % (target, len(M))  
     # Remove co-occurrence less than the coocTh
     M = selectTh(M, coocTh)
+    print M
 
     # Compute matrix DSxSI and save it. 
     R = np.zeros((nDS, nDI), dtype=np.float)
@@ -186,7 +192,7 @@ def learnProjection(sourceDomain, targetDomain):
     pass
 
 
-def evaluate_SA(source, target, project):
+def evaluate_SA(source, target, project,n):
     """
     Report the cross-domain sentiment classification accuracy. 
     """
@@ -201,19 +207,17 @@ def evaluate_SA(source, target, project):
     M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj.mat" % (source, target))['proj'])
     (nDS, h) = M.shape
     # Load the domain specific features.
-    DSfeat = {}
-    DSFile = open("../work/%s-%s/DS_list" % (source, target))
-    for line in DSFile:
-        p = line.strip().split()
-        DSfeat[p[1].strip()] = int(p[0])
-    DSFile.close()
+    pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+    features = pi.load_stored_obj(pivotsFile)
+    DSfeat = dict(features[:n])
+    
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.SFA" % (source, target)
     testFileName = "../work/%s-%s/testVects.SFA" % (source, target)
     featFile = open(trainFileName, 'w')
     count = 0
     for (label, fname) in [(1, 'train.positive'), (-1, 'train.negative')]:
-        F = open("../work/%s/%s" % (source, fname))
+        F = open("../data/%s/%s" % (source, fname))
         for line in F:
             count += 1
             #print "Train ", count
@@ -237,7 +241,7 @@ def evaluate_SA(source, target, project):
     featFile = open(testFileName, 'w')
     count = 0
     for (label, fname) in [(1, 'test.positive'), (-1, 'test.negative')]:
-        F = open("../work/%s/%s" % (target, fname))
+        F = open("../data/%s/%s" % (target, fname))
         for line in F:
             count += 1
             #print "Test ", count
@@ -295,8 +299,8 @@ if __name__ == "__main__":
     #generateFeatureVectors("electronics")
     #generateFeatureVectors("kitchen")
     #generateAll()
-    createMatrix(source, target, method, 500)
-    #learnProjection(source, target)
+    # createMatrix(source, target, method, 500)
+    # learnProjection(source, target)
     #evaluate_SA(source, target, False)
-    #evaluate_SA(source, target, True)
+    evaluate_SA(source, target, True,500)
     # batchEval()
