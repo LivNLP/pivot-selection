@@ -123,8 +123,12 @@ def createMatrix(source, target, method, n):
     # print DI
 
     # Load features and get domain specific features
+    fname = "../work/%s-%s/obj/freq" % (source, target)
+    if "un_" in method:
+        fname = "../work/%s-%s/obj/un_freq" % (source, target)
+    features = pi.load_stored_obj(fname)
     feats = selectTh(dict(features),domainTh[source])
-    print "total features = ", len(feats)
+    print "experimental features = ", len(feats)
     # print feats.keys()
 
     DSList = [item for item in feats if item not in DI]
@@ -270,36 +274,39 @@ def evaluate_SA(source, target, project,n):
     return acc
 
 
-def batchEval():
+def batchEval(method, n):
     """
     Evaluate on all 12 domain pairs. 
     """
-    resFile = open("../work/batchSFA.csv", "w")
+    resFile = open("../work/batchSFA.%s.csv"% method, "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    resFile.write("Source, Target, NoProj, Proj\n")
+    resFile.write("Source, Target, Method, NoProj, Proj\n")
     for source in domains:
         for target in domains:
             if source == target:
                 continue
-            createMatrix(source, target)
+            createMatrix(source, target, method, n)
             learnProjection(source, target)
-            resFile.write("%s, %s, %f, %f\n" % (source, target, 
-                evaluate_SA(source, target, False), evaluate_SA(source, target, True)))
+            resFile.write("%s, %s, %s, %f, %f\n" % (source, target, method, 
+                evaluate_SA(source, target, False, n), evaluate_SA(source, target, True, n)))
             resFile.flush()
     resFile.close()
     pass
 
 if __name__ == "__main__":
-    source = "electronics"
-    target = "dvd"
-    method = "freq"
+    # source = "electronics"
+    # target = "dvd"
+    # method = "pmi"
     #generateFeatureVectors("books")
     #generateFeatureVectors("dvd")
     #generateFeatureVectors("electronics")
     #generateFeatureVectors("kitchen")
     #generateAll()
-    createMatrix(source, target, method, 500)
-    learnProjection(source, target)
+    # createMatrix(source, target, method, 500)
+    # learnProjection(source, target)
     #evaluate_SA(source, target, False)
-    evaluate_SA(source, target, True,500)
-    # batchEval()
+    # evaluate_SA(source, target, True, 500)
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    n = 500
+    for method in methods:
+        batchEval(method,n)

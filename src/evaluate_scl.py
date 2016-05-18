@@ -95,9 +95,12 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
 
     # Load features and get domain specific features
-    feats = selectTh(dict(features),domainTh[source])
-    # feats = dict(features)
-    print "total features = ", len(feats)
+    fname = "../work/%s-%s/obj/freq" % (sourceDomain, targetDomain)
+    if "un_" in pivotsMethod:
+        fname = "../work/%s-%s/obj/un_freq" % (sourceDomain, targetDomain)
+    features = pi.load_stored_obj(fname)
+    feats = selectTh(dict(features),domainTh[sourceDomain])
+    print "experimental features = ", len(feats)
     # print feats.keys()
 
     DSwords = [item for item in feats if item not in pivots]
@@ -197,8 +200,12 @@ def evaluate_SA(source, target, project, method, n):
     print "selecting top-%d features in %s as pivots" % (n, method)
 
     # Load features and get domain specific features
+    fname = "../work/%s-%s/obj/freq" % (source, target)
+    if "un_" in method:
+        fname = "../work/%s-%s/obj/un_freq" % (source, target)
+    features = pi.load_stored_obj(fname)
     feats = selectTh(dict(features),domainTh[source])
-    print "total features = ", len(feats)
+    print "experimental features = ", len(feats)
     #print feats
 
     DSwords = [item for item in feats if item not in pivots]
@@ -264,28 +271,30 @@ def evaluate_SA(source, target, project, method, n):
     return acc
 
 
-def batchEval():
+def batchEval(method, n):
     """
     Evaluate on all 12 domain pairs. 
     """
-    resFile = open("../work/batchSCL.csv", "w")
+    resFile = open("../work/batchSCL.%s.csv"% method, "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    resFile.write("Source, Target, Proj\n")
+    resFile.write("Source, Target, Method, Proj\n")
     for source in domains:
         for target in domains:
             if source == target:
                 continue
-            learnProjection(source, target)
-            resFile.write("%s, %s, %f\n" % (source, target, evaluate_SA(source, target, True)))
+            learnProjection(source, target, method, n)
+            resFile.write("%s, %s, %s, %f\n" % (source, target, method, evaluate_SA(source, target, True, method, n)))
             resFile.flush()
     resFile.close()
     pass
 
 if __name__ == "__main__":
-    source = "electronics"
-    target = "dvd"
-    method = "freq"
-    learnProjection(source, target, method, 500)
-    #evaluate_SA(source, target, True)
+    # source = "electronics"
+    # target = "dvd"
+    # method = "un_mi"
+    # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
-    #batchEval()
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    n = 500
+    for method in methods:
+        batchEval(method,n)

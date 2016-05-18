@@ -289,9 +289,29 @@ def load_stored_obj(name):
     with open( name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
+# compare the similaries
+def sim_eval(method, test_k):
+    resFile = open("../work/sim/Sim.%s.csv"% method, "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile.write("Source, Target, Method, JC, KC, #pivots\n")
+    for k in test_k:
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                label = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,method))
+                un_label = load_stored_obj("../work/%s-%s/obj/un_%s"%(source,target,method))
+                h1 = label[:k]
+                h2 = un_label[:k]
+                JC = cr.jaccard_coefficient(h1,h2)
+                KC = cr.kendall_rank_coefficient(h1,h2)
+                resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, JC, KC, k))
+                resFile.flush()
+    resFile.close()
+    pass
+
 # main
 if __name__ == "__main__":
-    # start_time = time.time()
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
     # source = "electronics"
@@ -310,22 +330,8 @@ if __name__ == "__main__":
     # un_mi = load_obj("un_mi")
     # pmi = load_obj("pmi")
     # un_pmi = load_obj("un_pmi")
-
-    # mi = select_pivots_mi()
-    # test_k = [100,1000,2000,5000,7000,10000]
-    # for k in test_k:
-    #     print "pivots number = %d" % k
-    #     h1 = freq[:k]
-    #     h2 = un_freq[:k]
-    #     print "jaccard_coefficient freq = ", cr.jaccard_coefficient(h1,h2)
-    #     print "kendall_coefficient freq = ", cr.kendall_rank_coefficient(h1,h2)
-    #     h3 = mi[:k]
-    #     h4 = un_mi[:k]
-    #     print "jaccard_coefficient mi   = ", cr.jaccard_coefficient(h3,h4)
-    #     print "kendall_coefficient mi   = ", cr.kendall_rank_coefficient(h3,h4)
-    #     h5 = pmi[:k]
-    #     h6 = un_pmi[:k]
-    #     print "jaccard_coefficient pmi  = ", cr.jaccard_coefficient(h5,h6)
-    #     print "kendall_coefficient pmi  = ", cr.kendall_rank_coefficient(h5,h6)
-    # print time.time() - start_time
+    test_k = [100,500,1000,1500,2000,3000]
+    methods = ["freq","mi","pmi"]
+    for method in methods:
+        sim_eval(method, test_k)
     pass
