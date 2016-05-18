@@ -67,6 +67,17 @@ def loadClassificationModel(modelFileName):
     modelFile.close()
     return weights
 
+def selectTh(h, t):
+    """
+    Select all elements of the dictionary h with frequency greater than t. 
+    """
+    p = {}
+    for (key, val) in h.iteritems():
+        if val > t:
+            p[key] = val
+    del(h)
+    return p
+
 def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     """
     Learn the projection matrix and store it to a file. 
@@ -75,8 +86,7 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     #n = 500 # no. of pivots.
 
     # Parameters to reduce the number of features in the tail
-    # domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
-
+    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
 
     # Load pivots.
     pivotsFile = "../work/%s-%s/obj/%s" % (sourceDomain, targetDomain, pivotsMethod)
@@ -85,14 +95,14 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
 
     # Load features and get domain specific features
-    #feats = selectTh(dict(features),domainTh[source])
-    feats = dict(features)
+    feats = selectTh(dict(features),domainTh[source])
+    # feats = dict(features)
     print "total features = ", len(feats)
-    print feats.keys()
-    #print feats
+    # print feats.keys()
 
     DSwords = [item for item in feats if item not in pivots]
 
+    feats = feats.keys()
     # Load train vectors.
     print "Loading Training vectors...",
     startTime = time.time()
@@ -166,6 +176,9 @@ def evaluate_SA(source, target, project, method, n):
     """
     Report the cross-domain sentiment classification accuracy. 
     """
+    # Parameters to reduce the number of features in the tail
+    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
+
     gamma = 1.0
     print "Source Domain", source
     print "Target Domain", target
@@ -178,20 +191,19 @@ def evaluate_SA(source, target, project, method, n):
     (nDS, h) = M.shape
 
     # Load pivots.
-    pivotsFile = "../work/%s-%s/obj/%s" % (sourceDomain, targetDomain, pivotsMethod)
+    pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
     features = pi.load_stored_obj(pivotsFile)
     pivots = dict(features[:n]).keys()
-    print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
+    print "selecting top-%d features in %s as pivots" % (n, method)
 
     # Load features and get domain specific features
-    #feats = selectTh(dict(features),domainTh[source])
-    feats = dict(features)
+    feats = selectTh(dict(features),domainTh[source])
     print "total features = ", len(feats)
-    print feats.keys()
     #print feats
 
     DSwords = [item for item in feats if item not in pivots]
-    
+
+    feats = feats.keys()
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.SCL" % (source, target)
     testFileName = "../work/%s-%s/testVects.SCL" % (source, target)
@@ -273,7 +285,7 @@ if __name__ == "__main__":
     source = "electronics"
     target = "dvd"
     method = "freq"
-    learnProjection(source, target, method, 500)
+    # learnProjection(source, target, method, 500)
     #evaluate_SA(source, target, True)
-    # evaluate_SA(source, target, True, method, 500)
+    evaluate_SA(source, target, True, method, 500)
     #batchEval()

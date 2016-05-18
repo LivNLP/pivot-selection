@@ -128,7 +128,7 @@ def createMatrix(source, target, method, n):
     # print feats.keys()
 
     DSList = [item for item in feats if item not in DI]
-    print DSList
+    # print len(DSList), len(feats)
     
     nDS = len(DSList)
     nDI = len(DI)
@@ -152,7 +152,6 @@ def createMatrix(source, target, method, n):
     print "%s unlabeled %d" % (target, len(M))  
     # Remove co-occurrence less than the coocTh
     M = selectTh(M, coocTh)
-    print M
 
     # Compute matrix DSxSI and save it. 
     R = np.zeros((nDS, nDI), dtype=np.float)
@@ -299,8 +298,8 @@ if __name__ == "__main__":
     #generateFeatureVectors("electronics")
     #generateFeatureVectors("kitchen")
     #generateAll()
-    # createMatrix(source, target, method, 500)
-    # learnProjection(source, target)
+    createMatrix(source, target, method, 500)
+    learnProjection(source, target)
     #evaluate_SA(source, target, False)
     evaluate_SA(source, target, True,500)
     # batchEval()
