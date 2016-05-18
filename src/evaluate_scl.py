@@ -285,7 +285,7 @@ if __name__ == "__main__":
     source = "electronics"
     target = "dvd"
     method = "freq"
-    # learnProjection(source, target, method, 500)
+    learnProjection(source, target, method, 500)
     #evaluate_SA(source, target, True)
-    evaluate_SA(source, target, True, method, 500)
+    # evaluate_SA(source, target, True, method, 500)
     #batchEval()
