@@ -1,4 +1,6 @@
 *$py.class
 data/
+work/obj/
+src/obj/
 .ipynb_checkpoints
 
