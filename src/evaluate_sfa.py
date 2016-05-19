@@ -195,11 +195,11 @@ def learnProjection(sourceDomain, targetDomain):
     pass
 
 
-def evaluate_SA(source, target, project,n):
+def evaluate_SA(source, target, project,gamma, n):
     """
     Report the cross-domain sentiment classification accuracy. 
     """
-    gamma = 1.0
+    # gamma = 1.0
     print "Source Domain", source
     print "Target Domain", target
     if project:
@@ -274,7 +274,7 @@ def evaluate_SA(source, target, project,n):
     return acc
 
 
-def batchEval(method, n):
+def batchEval(method, gamma, n):
     """
     Evaluate on all 12 domain pairs. 
     """
@@ -288,14 +288,26 @@ def batchEval(method, n):
             createMatrix(source, target, method, n)
             learnProjection(source, target)
             resFile.write("%s, %s, %s, %f, %f\n" % (source, target, method, 
-                evaluate_SA(source, target, False, n), evaluate_SA(source, target, True, n)))
+                evaluate_SA(source, target, False, gamma, n), evaluate_SA(source, target, True, gamma, n)))
             resFile.flush()
     resFile.close()
     pass
 
+def choose_gamma(source, target, method, gammas, n):
+    resFile = open("../work/gamma/SFAgamma.%s.csv"% method, "w")
+    resFile.write("Source, Target, Method, NoProj, Proj, Gamma\n")
+    createMatrix(source, target, method, n)
+    learnProjection(source, target)
+    for gamma in gammas:    
+        resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, 
+        evaluate_SA(source, target, False, gamma, n), evaluate_SA(source, target, True, gamma, n), gamma))
+        resFile.flush()
+    resFile.close()
+    pass
+
 if __name__ == "__main__":
-    # source = "electronics"
-    # target = "dvd"
+    source = "books"
+    target = "dvd"
     # method = "pmi"
     #generateFeatureVectors("books")
     #generateFeatureVectors("dvd")
@@ -308,5 +320,8 @@ if __name__ == "__main__":
     # evaluate_SA(source, target, True, 500)
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     n = 500
+    # for method in methods:
+    #     batchEval(method,n)
+    gammas = [1,5,10,20,50,100]
     for method in methods:
-        batchEval(method,n)
+        choose_gamma(source, target, method,gammas,n)
