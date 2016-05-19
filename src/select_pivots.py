@@ -2,6 +2,7 @@ import time
 import math
 import pickle
 import numpy
+import itertools
 import compare_ranking as cr # submethod 
 # from multiprocessing import Pool,Process,Queue
 
@@ -289,7 +290,7 @@ def load_stored_obj(name):
     with open( name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
-# compare the similaries
+# compare similaries between L and U
 def sim_eval(method, test_k):
     resFile = open("../work/sim/Sim.%s.csv"% method, "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
@@ -307,6 +308,35 @@ def sim_eval(method, test_k):
                 KC = cr.kendall_rank_coefficient(h1,h2)
                 resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, JC, KC, k))
                 resFile.flush()
+    resFile.close()
+    pass
+
+# compare similaries between methods in L and U
+def methods_eval(dataset,test_k):
+    resFile = open("../work/sim/MethodSim.%s.csv"% dataset, "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    methods = ["freq","mi","pmi"]
+    if dataset == "U":
+        methods = ["un_freq","un_mi","un_pmi"]
+    method_pairs = list(itertools.combinations(methods, 2))
+    print "We are going to compare ", method_pairs, " in ", dataset
+    resFile.write("Source, Target, Method, Method, JC, KC, #pivots\n")
+    for k in test_k:
+        print "#pivots = ", k
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                for (i, j) in method_pairs:
+                    method_i = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,i))
+                    method_j = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,j))
+                    h1 = method_i[:k]
+                    h2 = method_j[:k]
+                    JC = cr.jaccard_coefficient(h1,h2)
+                    KC = cr.kendall_rank_coefficient(h1,h2)
+                    print "%s -> %s (%s, %s): JC = %f KC = %f" % (source, target, i, j, JC, KC)
+                    resFile.write("%s, %s, %s, %s, %f, %f, %f\n" % (source, target, i, j, JC, KC, k))
+                    resFile.flush()
     resFile.close()
     pass
 
@@ -330,8 +360,12 @@ if __name__ == "__main__":
     # un_mi = load_obj("un_mi")
     # pmi = load_obj("pmi")
     # un_pmi = load_obj("un_pmi")
-    test_k = [100,500,1000,1500,2000,3000]
-    methods = ["freq","mi","pmi"]
-    for method in methods:
-        sim_eval(method, test_k)
-    pass
+    # test_k = [100,500,1000,1500,2000,3000]
+    # methods = ["freq","mi","pmi"]
+    # for method in methods:
+    #     sim_eval(method, test_k)
+    test_k = [100,200,300,400,500,1000,1500,2000]
+    datasets = ["L","U"]
+    for dataset in datasets:
+        methods_eval(dataset, test_k)
+
