@@ -3,4 +3,4 @@ data/
 work/obj/
 src/obj/
 .ipynb_checkpoints
-
+*.pyc
