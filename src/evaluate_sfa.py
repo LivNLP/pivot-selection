@@ -294,7 +294,7 @@ def batchEval(method, gamma, n):
     pass
 
 def choose_gamma(source, target, method, gammas, n):
-    resFile = open("../work/gamma/SFAgamma.%s.csv"% method, "w")
+    resFile = open("../work/gamma/%s-%s/SFAgamma.%s.csv"% (source, target, method), "w")
     resFile.write("Source, Target, Method, NoProj, Proj, Gamma\n")
     createMatrix(source, target, method, n)
     learnProjection(source, target)
@@ -306,8 +306,8 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    source = "books"
-    target = "dvd"
+    source = "dvd"
+    target = "books"
     # method = "pmi"
     #generateFeatureVectors("books")
     #generateFeatureVectors("dvd")

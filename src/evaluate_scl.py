@@ -289,7 +289,7 @@ def batchEval(method, gamma, n):
     pass
 
 def choose_gamma(source, target, method, gammas, n):
-    resFile = open("../work/gamma/SCLgamma.%s.csv"% method, "w")
+    resFile = open("../work/gamma/%s-%s/SCLgamma.%s.csv"% (source, target, method), "w")
     resFile.write("Source, Target, Method, Proj, Gamma\n")
     learnProjection(source, target, method, n)
     for gamma in gammas:    
@@ -299,15 +299,16 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    source = "books"
-    target = "dvd"
+    # source = "books"
+    # target = "dvd"
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods = ["un_pmi"]
     n = 500
-    # for method in methods:
-    #     batchEval(method,n)
-    gammas = [1,5,10,20,50,100]
     for method in methods:
-        choose_gamma(source, target, method,gammas,n)
+        batchEval(method,n)
+    # gammas = [1,5,10,20,50,100]
+    # for method in methods:
+        # choose_gamma(source, target, method,gammas,n)
