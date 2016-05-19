@@ -308,7 +308,7 @@ if __name__ == "__main__":
     methods = ["un_pmi"]
     n = 500
     for method in methods:
-        batchEval(method,n)
+        batchEval(method,1.0, n)
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
