@@ -299,16 +299,16 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    # source = "books"
-    # target = "dvd"
+    source = "electronics"
+    target = "dvd"
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods = ["un_pmi"]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # methods = ["un_pmi"]
     n = 500
-    for method in methods:
-        batchEval(method,1.0, n)
-    # gammas = [1,5,10,20,50,100]
     # for method in methods:
-        # choose_gamma(source, target, method,gammas,n)
+    #     batchEval(method,1.0, n)
+    gammas = [1,5,10,20,50,100]
+    for method in methods:
+        choose_gamma(source, target, method,gammas,n)

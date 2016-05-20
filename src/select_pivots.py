@@ -340,14 +340,24 @@ def methods_eval(dataset,test_k):
     resFile.close()
     pass
 
+# get top-k pivots with its value and print on the screen
+def top_k_pivots(source,target,method, k):
+    pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+    print "[%s -> %s]\n[method: %s]\n<top-%d>"% (source, target, method,k)
+    L = load_stored_obj(pivotsFile)[:k]
+    for (x, v) in L:
+        print x, v
+    print "###########################################\n\n"
+pass
+
 # main
 if __name__ == "__main__":
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
-    # source = "electronics"
-    # target = "dvd"
-    # print "source =", source
-    # print "target =", target
+    source = "electronics"
+    target = "dvd"
+    print "source =", source
+    print "target =", target
     # save_obj(select_pivots_freq(source,target),"freq")
     # save_obj(select_un_pivots_freq(source,target),"un_freq")
     # save_obj(select_pivots_mi(),"mi")
@@ -364,8 +374,11 @@ if __name__ == "__main__":
     # methods = ["freq","mi","pmi"]
     # for method in methods:
     #     sim_eval(method, test_k)
-    test_k = [100,200,300,400,500,1000,1500,2000]
-    datasets = ["L","U"]
-    for dataset in datasets:
-        methods_eval(dataset, test_k)
-
+    # test_k = [100,200,300,400,500,1000,1500,2000]
+    # datasets = ["L","U"]
+    # for dataset in datasets:
+    #     methods_eval(dataset, test_k)
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    k = 5
+    for method in methods:
+        top_k_pivots(source,target,method,k)

@@ -306,8 +306,8 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    source = "dvd"
-    target = "books"
+    source = "kitchen"
+    target = "dvd"
     # method = "pmi"
     #generateFeatureVectors("books")
     #generateFeatureVectors("dvd")
@@ -322,6 +322,6 @@ if __name__ == "__main__":
     n = 500
     # for method in methods:
     #     batchEval(method,n)
-    gammas = [1,5,10,20,50,100]
+    gammas = [1,5,10,20,50,100,1000]
     for method in methods:
         choose_gamma(source, target, method,gammas,n)
