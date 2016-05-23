@@ -48,7 +48,7 @@ def kendall_rank_coefficient(a, b):
         # 4. i and j in A or B but neither in B or A, add a neutral value 0.5 to distance      
         if i in A and j in A and i not in B and j not in B or i in B and j in B and i not in A and j not in A:
             # print i,j +' group 4'
-            kendall_distance += 0.5
+            kendall_distance += 0.5 #optimistic approach 0, neutral approach 0.5
 
     return kendall_distance/float(len(all_objects)*(len(all_objects)-1)/2.0)
 

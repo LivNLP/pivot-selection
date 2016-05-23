@@ -299,8 +299,8 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    source = "electronics"
-    target = "dvd"
+    source = "dvd"
+    target = "kitchen"
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
