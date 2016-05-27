@@ -81,6 +81,35 @@ def select_pivots_mi():
     #     print x, mi_dict.get(x,0)
     # pass
 
+# John Blitzer's mi method for labelled data
+def select_pivots_mi_jb():
+    features = load_obj("features")
+    x_src = load_obj("x_src")
+    x_tgt = load_obj("x_tgt")
+    x_pos_src = load_obj("x_pos_src")
+    x_neg_src = load_obj("x_neg_src")
+    x_pos_tgt = load_obj("x_pos_tgt")
+    x_neg_tgt = load_obj("x_neg_tgt")
+    src_reviews = load_obj("src_reviews")
+    tgt_reviews = load_obj("tgt_reviews")
+    pos_src_reviews = load_obj("pos_src_reviews")
+    neg_src_reviews = load_obj("neg_src_reviews")
+    pos_tgt_reviews = load_obj("pos_tgt_reviews")
+    neg_tgt_reviews = load_obj("neg_tgt_reviews")
+
+    mi_dict = {}
+    for x in features:
+        if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
+            pos_pmi = pairwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+            neg_pmi = pairwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+            mi_dict[x] = -(pos_pmi+neg_pmi)
+    L = mi_dict.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    # for (x, mi) in L:
+    #     print x, mi_dict.get(x,0)
+    #h = L[:k]
+    return L
+
 # a little change to get pmi absolute value
 def select_pivots_pmi():
     features = load_obj("features")
@@ -340,6 +369,62 @@ def methods_eval(dataset,test_k):
     resFile.close()
     pass
 
+def mi_eval(test_k):
+    resFile = open("../work/sim/MISim.L.csv", "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    methods = ["mi","mi_jb"]
+    method_pairs = list(itertools.combinations(methods, 2))
+    print "We are going to compare ", method_pairs, " in L"
+    resFile.write("Source, Target, Method, Method, JC, KC, #pivots\n")
+    for k in test_k:
+        print "#pivots = ", k
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                for (i, j) in method_pairs:
+                    method_i = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,i))
+                    method_j = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,j))
+                    h1 = method_i[:k]
+                    h2 = method_j[:k]
+                    JC = cr.jaccard_coefficient(h1,h2)
+                    # KC = 0
+                    # if JC != 0:
+                    KC = cr.kendall_rank_coefficient(h1,h2)
+                    print "%s -> %s (%s, %s): JC = %f KC = %f" % (source, target, i, j, JC, KC)
+                    resFile.write("%s, %s, %s, %s, %f, %f, %f\n" % (source, target, i, j, JC, KC, k))
+                    resFile.flush()
+    resFile.close()
+    pass
+
+def pmi_eval(test_k):
+    resFile = open("../work/sim/PMISim.L.csv", "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    methods = ["pmi","mi_jb"]
+    method_pairs = list(itertools.combinations(methods, 2))
+    print "We are going to compare ", method_pairs, " in L"
+    resFile.write("Source, Target, Method, Method, JC, KC, #pivots\n")
+    for k in test_k:
+        print "#pivots = ", k
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                for (i, j) in method_pairs:
+                    method_i = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,i))
+                    method_j = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,j))
+                    h1 = method_i[:k]
+                    h2 = method_j[:k]
+                    JC = cr.jaccard_coefficient(h1,h2)
+                    # KC = 0
+                    # if JC != 0:
+                    KC = cr.kendall_rank_coefficient(h1,h2)
+                    print "%s -> %s (%s, %s): JC = %f KC = %f" % (source, target, i, j, JC, KC)
+                    resFile.write("%s, %s, %s, %s, %f, %f, %f\n" % (source, target, i, j, JC, KC, k))
+                    resFile.flush()
+    resFile.close()
+    pass
+
 # get top-k pivots with its value and print on the screen
 def top_k_pivots(source,target,method, k):
     pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
@@ -354,13 +439,14 @@ pass
 if __name__ == "__main__":
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
-    source = "books"
-    target = "dvd"
+    # source = "books"
+    # target = "dvd"
     # print "source =", source
     # print "target =", target
     # save_obj(select_pivots_freq(source,target),"freq")
     # save_obj(select_un_pivots_freq(source,target),"un_freq")
     # save_obj(select_pivots_mi(),"mi")
+    # save_obj(select_pivots_mi_jb(),"mi_jb")
     # save_obj(select_un_pivots_mi(),"un_mi")
     # save_obj(select_pivots_pmi(),"pmi")
     # save_obj(select_un_pivots_pmi(),"un_pmi")
@@ -378,7 +464,10 @@ if __name__ == "__main__":
     # datasets = ["L","U"]
     # for dataset in datasets:
     #     methods_eval(dataset, test_k)
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    k = 5
-    for method in methods:
-        top_k_pivots(source,target,method,k)
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # k = 5
+    # for method in methods:
+    #     top_k_pivots(source,target,method,k)
+    test_k = [100,200,300,400,500,1000,1500,2000]
+    # mi_eval(test_k)
+    pmi_eval(test_k)
