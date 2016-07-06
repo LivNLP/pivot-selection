@@ -471,10 +471,10 @@ pass
 if __name__ == "__main__":
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
-    # source = "books"
-    # target = "dvd"
-    # print "source =", source
-    # print "target =", target
+    source = "kitchen"
+    target = "electronics"
+    print "source =", source
+    print "target =", target
     # save_obj(select_pivots_freq(source,target),"freq")
     # save_obj(select_un_pivots_freq(source,target),"un_freq")
     # save_obj(select_pivots_mi(),"mi")
@@ -492,14 +492,14 @@ if __name__ == "__main__":
     # methods = ["freq","mi","pmi"]
     # for method in methods:
     #     sim_eval(method, test_k)
-    test_k = [100,200,300,400,500,1000,1500,2000]
-    datasets = ["L","U"]
-    for dataset in datasets:
-        methods_eval_range(dataset, test_k)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # k = 5
-    # for method in methods:
-    #     top_k_pivots(source,target,method,k)
+    # test_k = [100,200,300,400,500,1000,1500,2000]
+    # datasets = ["L","U"]
+    # for dataset in datasets:
+    #     methods_eval_range(dataset, test_k)
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    k = 5
+    for method in methods:
+        top_k_pivots(source,target,method,k)
     # test_k = [100,200,300,400,500,1000,1500,2000]
     # mi_eval(test_k)
     # pmi_eval(test_k)

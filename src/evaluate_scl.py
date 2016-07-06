@@ -12,6 +12,18 @@ from sparsesvd import sparsesvd
 import sys, math, subprocess, time
 
 import select_pivots as pi
+import re
+import scipy.stats
+
+def clopper_pearson(k,n,alpha=0.05):
+    """
+    http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
+    alpha confidence intervals for a binomial distribution of k expected successes on n trials
+    Clopper Pearson intervals are a conservative estimate.
+    """
+    lo = scipy.stats.beta.ppf(alpha/2, k, n-k+1)
+    hi = scipy.stats.beta.ppf(1 - alpha/2, k+1, n-k)
+    return lo, hi
 
 def trainLBFGS(train_file, model_file):
     """
@@ -40,8 +52,9 @@ def testLBFGS(test_file, model_file):
         if line.startswith("Accuracy"):
             p = line.strip().split()
             accuracy = float(p[1])
+            [correct, total]=[int(s) for s in re.findall(r'\b\d+\b',p[2])]
     F.close()
-    return accuracy
+    return accuracy,correct,total
 
 
 def loadClassificationModel(modelFileName):
@@ -265,10 +278,12 @@ def evaluate_SA(source, target, project, gamma, method, n):
     modelFileName = "../work/%s-%s/model.SCL" % (source, target)
     trainLBFGS(trainFileName, modelFileName)
     # Test using classias.
-    acc = testLBFGS(testFileName, modelFileName)
+    [acc,correct,total] = testLBFGS(testFileName, modelFileName)
+    intervals = clopper_pearson(correct,total)
     print "Accuracy =", acc
+    print "Intervals=", intervals
     print "###########################################\n\n"
-    return acc
+    return acc,intervals
 
 
 def batchEval(method, gamma, n):
@@ -277,13 +292,14 @@ def batchEval(method, gamma, n):
     """
     resFile = open("../work/batchSCL.%s.csv"% method, "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    resFile.write("Source, Target, Method, Proj\n")
+    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh\n")
     for source in domains:
         for target in domains:
             if source == target:
                 continue
             learnProjection(source, target, method, n)
-            resFile.write("%s, %s, %s, %f\n" % (source, target, method, evaluate_SA(source, target, True, gamma, method, n)))
+            evaluation = evaluate_SA(source, target, True, gamma, method, n)
+            resFile.write("%s, %s, %s, %f,%f,%f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1]))
             resFile.flush()
     resFile.close()
     pass
@@ -299,16 +315,16 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    source = "dvd"
-    target = "kitchen"
+    # source = "dvd"
+    # target = "kitchen"
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # methods = ["un_pmi"]
     n = 500
-    # for method in methods:
-    #     batchEval(method,1.0, n)
-    gammas = [1,5,10,20,50,100]
     for method in methods:
-        choose_gamma(source, target, method,gammas,n)
+        batchEval(method, 1, n)
+    # gammas = [1,5,10,20,50,100]
+    # for method in methods:
+        # choose_gamma(source, target, method,gammas,n)
