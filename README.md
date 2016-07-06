@@ -13,4 +13,5 @@ __*compare_ranking*__: similarity of selected pivots **between datasets** and **
 performance evaluation
 -----------------
 __*evaluate_scl/sfa*__: performance on DA methods by applied pivot selection methods
+- Testing Measure: Classification Accuracy, Clopper Pearson
 - DA methods: SCL, SFA
