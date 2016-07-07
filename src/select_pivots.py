@@ -100,8 +100,8 @@ def select_pivots_mi_jb():
     mi_dict = {}
     for x in features:
         if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
-            pos_pmi = pairwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
-            neg_pmi = pairwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+            pos_pmi = pointwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+            neg_pmi = pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
             mi_dict[x] = -(pos_pmi+neg_pmi)
     L = mi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
@@ -129,8 +129,8 @@ def select_pivots_pmi():
     pmi_dict = {}
     for x in features:
         if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
-            pos_pmi = pairwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
-            neg_pmi = pairwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+            pos_pmi = pointwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+            neg_pmi = pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
             pmi_dict[x] = abs(pos_pmi-neg_pmi)
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
@@ -177,8 +177,8 @@ def select_un_pivots_pmi():
     pmi_dict = {}
     for x in un_features:
         if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
-            src_pmi = pairwise_mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
-            tgt_pmi = pairwise_mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
+            src_pmi = pointwise_mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
+            tgt_pmi = pointwise_mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
             pmi_dict[x] = abs(src_pmi-tgt_pmi)
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
@@ -296,7 +296,7 @@ def mutual_info(joint_x, x_scale, y, N):
     return prob_x_scale * math.log(val)
 
 # only difference between mi is no addition multipler
-def pairwise_mutual_info(joint_x, x_scale, y, N):
+def pointwise_mutual_info(joint_x, x_scale, y, N):
     prob_y = float(y / N)
     prob_x = float(joint_x / N)
     prob_x_scale = float(x_scale / N)
