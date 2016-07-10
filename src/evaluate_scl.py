@@ -299,7 +299,7 @@ def batchEval(method, gamma, n):
                 continue
             learnProjection(source, target, method, n)
             evaluation = evaluate_SA(source, target, True, gamma, method, n)
-            resFile.write("%s, %s, %s, %f,%f,%f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1]))
+            resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1]))
             resFile.flush()
     resFile.close()
     pass
