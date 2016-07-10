@@ -14,12 +14,12 @@ def collector(csv_file):
         pair = "%s-%s"%(src,tgt)
         method = p[2].replace(" ", "")
         acc = float(p[3])*100
-        interval = (float(p[5]) - float(p[4]))*100
+        interval = (float(p[5]) - float(p[4]))*100/2.0
         # print p
         new_dict[i]= pair,method,acc,interval
         i += 1
 
-    print new_dict.values()
+    # print new_dict.values()
     return new_dict.values()
     pass
 
