@@ -9,10 +9,6 @@ def collector(method,lookfor_pair):
         src = p[0][0].capitalize()
         tgt = p[1][0].capitalize()
         pair = "%s-%s"%(src,tgt)
-        if lookfor_pair == pair:    
-            jaccard = float(p[3])
-            n_pivots = int(float(p[5]))
-            new_list.append((jaccard,n_pivots))   
     # print new_list
     return new_list
     pass
@@ -48,6 +44,7 @@ def constructer(methods,lookfor_pair):
 
 def convert(method):
     return method.upper()
+
 
 
 if __name__ == "__main__":
