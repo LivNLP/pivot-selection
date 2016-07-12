@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def collector(csv_file):
-    new_dict = {}
+    new_list = []
 
     input_file = open (csv_file,'r')
     next(input_file)
-    i = 0
+
     for line in input_file:
         p = line.strip('\n').split(',')
         src = p[0][0].capitalize()
@@ -16,11 +16,10 @@ def collector(csv_file):
         acc = float(p[3])*100
         interval = (float(p[5]) - float(p[4]))*100/2.0
         # print p
-        new_dict[i]= pair,method,acc,interval
-        i += 1
+        new_list.append((pair,method,acc,interval))
 
     # print new_dict.values()
-    return new_dict.values()
+    return new_list
     pass
 
 def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
@@ -80,8 +79,8 @@ def constructer(methods,DAmethod):
     return pairs,accuracy_all.values(),interval_all.values()
 
 if __name__ == "__main__":
-    # DAmethod = "SCL"
-    DAmethod = "SFA"
+    DAmethod = "SCL"
+    # DAmethod = "SFA"
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # constructer(methods,DAmethod)
     pairs,accuracy_all,interval_all = constructer(methods,DAmethod)
