@@ -40,19 +40,17 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
     for method in methods:
         acc_m = accuracy_all[i]
         interval_m = interval_all[i]
-        rect = plt.bar(index + bar_width * i, acc_m, bar_width ,alpha=opacity,color=colors[i],
+        rect = plt.bar(index + bar_width * i, acc_m, bar_width, alpha=opacity, color=colors[i],
             yerr=interval_m, error_kw=err_config, label=convert(method))
         i += 1
     
     plt.xlabel('Domain Pairs')
     plt.ylabel('Accuracy')
-    plt.title('%s'%DAmethod)
+    plt.title('%s'% DAmethod)
     plt.xticks(index + bar_width*i/2, pairs)
-    # Shrink current axis's height by 10% on the bottom
+    # bottom box
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
-
-    # Put a legend below current axis
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
           fancybox=True, shadow=True, ncol=6)
     plt.show()

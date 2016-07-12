@@ -26,9 +26,9 @@ def drawer(draw_lists,lookfor_pair,methods):
         ys.append([tmp[0] for tmp in draw_list])
     opacity = 0.4
     i = 0
-    for y in ys:
-        plt.plot(x,y, marker="o",alpha=opacity, label=convert(methods[i]))
-        i +=1
+    for y in ys:    
+        plt.plot(x,y, marker="o",alpha=opacity, label=convert(methods[i]))#color='r'
+        i += 1
 
     plt.title(lookfor_pair)
     plt.xlabel('#pivots')
@@ -52,5 +52,6 @@ def convert(method):
 
 if __name__ == "__main__":
     methods = ["mi","pmi"]
-    lookfor_pair = "K-E"
+    # methods = ["freq"]
+    lookfor_pair = "E-K"
     drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
