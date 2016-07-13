@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 
 def collector(pv_method, lookfor_pair):
@@ -22,19 +23,42 @@ def collector(pv_method, lookfor_pair):
     return new_list
     pass
 
+def collector_margnal(pv_method,lookfor_pair,max_end):
+    new_list = []
+    input_file = open("../work/sim/MethodSim_range.%s.csv"%pv_method,'r')
+    next(input_file)
+    for line in input_file:
+        p = line.strip('\n').split(', ')
+        if float(p[6]) <= max_end:
+            m1 = p[2].upper()
+            m2 = p[3].upper()
+            method_pair = "%svs%s"%(m1,m2)
+            method_pair_re = "%svs%s"%(m2,m1)
+            if lookfor_pair == method_pair or lookfor_pair == method_pair_re:
+                src = p[0][0].capitalize()
+                tgt = p[1][0].capitalize()
+                domain_pair = "%s-%s"%(src,tgt)
+                jaccard = float(p[4])
+                pv_start = int(float(p[5]))
+                pv_end = int(float(p[6]))
+                pv_range = "%s-%s"%(pv_start,pv_end)          
+                new_list.append([jaccard,pv_range,domain_pair])
+    return new_list
+    pass
 
 def drawer(argmts):
     x,ys,domain_pairs = argmts
     fig, ax = plt.subplots(figsize=(9,6))
-
+    index = np.arange(len(x))
     opacity = 0.4
     i = 0
     for y in ys:
-        plt.plot(x,y, marker="o", alpha=opacity, label=domain_pairs[i])
+        plt.plot(index,y, marker="o", alpha=opacity, label=domain_pairs[i])
         i += 1
 
-    plt.title(lookfor_pair)
+    plt.title(lookfor_pair)        
     plt.xlabel('#pivots')
+    plt.xticks(index,x)
     plt.ylabel('Jaccard$_{M_1,M_2}$')
     #right box
     box = ax.get_position()
@@ -45,9 +69,31 @@ def drawer(argmts):
     plt.show()
     pass
 
+def drawer_margnal(argmts):
+    x,ys,domain_pairs = argmts
+    fig, ax = plt.subplots(figsize=(9,6))
+    index = np.arange(len(x))
+    opacity = 0.4
+    i = 0
+    for y in ys:
+        plt.plot(index,y, marker="o", alpha=opacity, label=domain_pairs[i])
+        i += 1
+
+    plt.title(lookfor_pair)        
+    plt.xlabel('top a-b')
+    plt.xticks(index,x)
+    plt.ylabel('Jaccard$_{M_1,M_2}$')
+    #right box
+    box = ax.get_position()
+    ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
+
+    ax.legend(loc='upper center', bbox_to_anchor=(1.1,0.9),
+          fancybox=True, shadow=True, ncol=1)
+    plt.show()
+    pass      
 
 def constructer(sim_list):
-    sim_list.sort(lambda x,y:-1 if x[2]<y[2] else 1)
+    # sim_list.sort(lambda x,y:-1 if x[2]<y[2] else 1)
     ys = []
     domain_pairs = list(set([p[2] for p in sim_list]))
     domain_pairs.sort()
@@ -64,13 +110,13 @@ def constructer(sim_list):
     return x,ys,domain_pairs
     pass
 
-def convert(method):
-    return method.upper()
 
 if __name__ == "__main__":
     m1 = "freq"
     m2 = "mi"
     pv_method = "L"
+
     lookfor_pair = "%svs%s"%(m1.upper(),m2.upper())
     drawer(constructer(collector(pv_method, lookfor_pair)))
-    # drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
+    # drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
+    
