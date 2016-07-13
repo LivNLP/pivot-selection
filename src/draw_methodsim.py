@@ -9,8 +9,8 @@ def collector(pv_method, lookfor_pair):
         p = line.strip('\n').split(', ')
         m1 = p[2].upper()
         m2 = p[3].upper()
-        method_pair = "%svs%s"%(m1,m2)
-        method_pair_re = "%svs%s"%(m2,m1)
+        method_pair = (m1,m2)
+        method_pair_re = (m2,m1)
         if lookfor_pair == method_pair or lookfor_pair == method_pair_re:
             src = p[0][0].capitalize()
             tgt = p[1][0].capitalize()
@@ -32,8 +32,8 @@ def collector_margnal(pv_method,lookfor_pair,max_end):
         if float(p[6]) <= max_end:
             m1 = p[2].upper()
             m2 = p[3].upper()
-            method_pair = "%svs%s"%(m1,m2)
-            method_pair_re = "%svs%s"%(m2,m1)
+            method_pair = (m1,m2)
+            method_pair_re = (m2,m1)
             if lookfor_pair == method_pair or lookfor_pair == method_pair_re:
                 src = p[0][0].capitalize()
                 tgt = p[1][0].capitalize()
@@ -56,7 +56,7 @@ def drawer(argmts):
         plt.plot(index,y, marker="o", alpha=opacity, label=domain_pairs[i])
         i += 1
 
-    plt.title(lookfor_pair)        
+    plt.title(convert_title(lookfor_pair,pv_method))        
     plt.xlabel('#pivots')
     plt.xticks(index,x)
     plt.ylabel('Jaccard$_{M_1,M_2}$')
@@ -79,8 +79,8 @@ def drawer_margnal(argmts):
         plt.plot(index,y, marker="o", alpha=opacity, label=domain_pairs[i])
         i += 1
 
-    plt.title(lookfor_pair)        
-    plt.xlabel('top a-b')
+    plt.title(convert_title(lookfor_pair,pv_method))
+    plt.xlabel('pivot range')
     plt.xticks(index,x)
     plt.ylabel('Jaccard$_{M_1,M_2}$')
     #right box
@@ -110,13 +110,16 @@ def constructer(sim_list):
     return x,ys,domain_pairs
     pass
 
+def convert_title(lookfor_pair,pv_method):
+    return "%s$_%s$ vs %s$_%s$" % (lookfor_pair[0],pv_method,lookfor_pair[1],pv_method)
+    pass
 
 if __name__ == "__main__":
     m1 = "freq"
     m2 = "mi"
     pv_method = "L"
 
-    lookfor_pair = "%svs%s"%(m1.upper(),m2.upper())
-    drawer(constructer(collector(pv_method, lookfor_pair)))
-    # drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
+    lookfor_pair = (m1.upper(),m2.upper())
+    # drawer(constructer(collector(pv_method, lookfor_pair)))
+    drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
     

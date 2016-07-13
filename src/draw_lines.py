@@ -29,7 +29,7 @@ def drawer(draw_lists,lookfor_pair,methods):
     index = np.arange(len(x))
     i = 0
     for y in ys:    
-        plt.plot(index,y, marker="o",alpha=opacity, label=convert(methods[i]))
+        plt.plot(index,y, marker="o", alpha=opacity, label=convert(methods[i]))
         # plt.plot(index,y, marker="o",alpha=opacity, label=convert(methods[i]),color='r')
         i += 1
 
@@ -42,6 +42,34 @@ def drawer(draw_lists,lookfor_pair,methods):
     plt.show()
     pass
 
+def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
+    plt.figure(figsize=(8,6))
+    x = [tmp[1] for tmp in collection_1[0]]
+    ys_1 = []
+    ys_2 = []
+    for draw_list in collection_1:
+        ys_1.append([tmp[0] for tmp in draw_list])
+    for draw_list in collection_2:
+        ys_2.append([tmp[0] for tmp in draw_list])
+    index = np.arange(len(x))
+    opacity = 0.4
+    i = 0
+    for y_1 in ys_1:
+        plt.plot(index,y_1, marker="o", alpha=opacity, label=convert_label(methods[i],pair_1))
+        i+=1
+    i = 0
+    for y_2 in ys_2:
+        plt.plot(index,y_2, marker="^", alpha=opacity, label=convert_label(methods[i],pair_2))
+        i+=1
+
+    plt.title("%s and %s"%(pair_1, pair_2))
+    plt.xlabel('#pivots')
+    plt.xticks(index,x)
+    plt.ylabel('Jaccard$_{L,U}$')
+    plt.legend()
+
+    plt.show()
+    pass
 
 def constructer(methods,lookfor_pair):
     new_list = []
@@ -53,10 +81,16 @@ def constructer(methods,lookfor_pair):
 def convert(method):
     return method.upper()
 
+def convert_label(method,domain_pair):
+    return "%s$_{%s}$"% (method.upper(),domain_pair)
 
 if __name__ == "__main__":
-    methods = ["mi","pmi"]
-    # methods = ["freq"]
+    # methods = ["mi","pmi"]
+    methods = ["freq"]
     # lookfor_pair = "E-K"
-    lookfor_pair = "K-E"
-    drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
+    # lookfor_pair = "K-E"
+    pair_1 = "E-K"
+    pair_2 = "K-E"
+    drawer_two_pairs(constructer(methods,pair_1),constructer(methods,pair_2),
+        pair_1, pair_2, methods)
+    # drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
