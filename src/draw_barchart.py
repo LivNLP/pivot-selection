@@ -1,10 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-font = {'family' : 'normal',
-        'weight' : 'regular',
-        'size'   : 15}
-matplotlib.rc('font', **font)
+
 
 def collector(csv_file):
     new_list = []
@@ -34,7 +31,7 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
 
     index = np.arange(n_pairs)
     bar_width = 0.145
-    opacity = 0.6
+    opacity = 0.4
     err_config = {'ecolor':'0.3'}
 
     i = 0
