@@ -1,5 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+font = {'family' : 'normal',
+        'weight' : 'regular',
+        'size'   : 15}
+matplotlib.rc('font', **font)
 
 def collector(csv_file):
     new_list = []
@@ -24,16 +29,12 @@ def collector(csv_file):
 
 def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
     n_pairs = len(pairs)
-    # accuracy_all = 
-    # interval_all =
     colors = ['b','g','r','c','m','y','k','w']
     fig, ax = plt.subplots(figsize=(15,5))
 
     index = np.arange(n_pairs)
-    # print index
     bar_width = 0.145
-
-    opacity = 0.4
+    opacity = 0.6
     err_config = {'ecolor':'0.3'}
 
     i = 0
@@ -45,8 +46,8 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
         i += 1
     
     plt.xlabel('Domain Pairs')
-    plt.ylabel('Accuracy')
-    plt.title('%s'% DAmethod)
+    plt.ylabel('Accuracy',size=18)
+    plt.title('%s'% DAmethod,size=22)
     plt.xticks(index + bar_width*i/2, pairs)
     # bottom box
     box = ax.get_position()

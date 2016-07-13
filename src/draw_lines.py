@@ -1,5 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+opacity = 0.6
+font = {'family' : 'normal',
+        'weight' : 'regular',
+        'size'   : 15}
+matplotlib.rc('font', **font)
 
 def collector(method,lookfor_pair):
     new_list = []
@@ -20,12 +26,11 @@ def collector(method,lookfor_pair):
 
 
 def drawer(draw_lists,lookfor_pair,methods):
-    plt.figure(figsize=(8,6))
+    plt.figure(figsize=(7,5.5))
     x = [tmp[1] for tmp in draw_lists[0]]
     ys = []
     for draw_list in draw_lists:
         ys.append([tmp[0] for tmp in draw_list])
-    opacity = 0.4
     index = np.arange(len(x))
     i = 0
     for y in ys:    
@@ -43,7 +48,7 @@ def drawer(draw_lists,lookfor_pair,methods):
     pass
 
 def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
-    plt.figure(figsize=(8,6))
+    plt.figure(figsize=(7,5.5))
     x = [tmp[1] for tmp in collection_1[0]]
     ys_1 = []
     ys_2 = []
@@ -52,7 +57,6 @@ def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
     for draw_list in collection_2:
         ys_2.append([tmp[0] for tmp in draw_list])
     index = np.arange(len(x))
-    opacity = 0.4
     i = 0
     for y_1 in ys_1:
         plt.plot(index,y_1, marker="o", alpha=opacity, label=convert_label(methods[i],pair_1))
