@@ -57,7 +57,7 @@ def drawer(argmts):
         i += 1
 
     plt.title(convert_title(lookfor_pair,pv_method),size=22)        
-    plt.xlabel('#pivots',size=18)
+    plt.xlabel('k(#pivots)',size=18)
     plt.xticks(index,x)
     plt.ylabel('Jaccard$_{M_1,M_2}$',size=18)
     #right box

@@ -2,9 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 opacity = 0.6
-font = {'family' : 'normal',
-        'weight' : 'regular',
-        'size'   : 15}
+font = {  'size'   : 15}
 matplotlib.rc('font', **font)
 
 def collector(method,lookfor_pair):
@@ -39,7 +37,7 @@ def drawer(draw_lists,lookfor_pair,methods):
         i += 1
 
     plt.title(lookfor_pair)
-    plt.xlabel('#pivots')
+    plt.xlabel('k(#pivots)')
     plt.xticks(index,x)
     plt.ylabel('Jaccard$_{L,U}$')
     plt.legend()
@@ -67,7 +65,7 @@ def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
         i+=1
 
     plt.title("%s and %s"%(pair_1, pair_2))
-    plt.xlabel('#pivots')
+    plt.xlabel('k(#pivots)')
     plt.xticks(index,x)
     plt.ylabel('Jaccard$_{L,U}$')
     plt.legend()
@@ -89,8 +87,8 @@ def convert_label(method,domain_pair):
     return "%s$_{%s}$"% (method.upper(),domain_pair)
 
 if __name__ == "__main__":
-    # methods = ["mi","pmi"]
-    methods = ["freq"]
+    methods = ["mi","pmi"]
+    # methods = ["freq"]
     # lookfor_pair = "E-K"
     # lookfor_pair = "K-E"
     pair_1 = "E-K"
