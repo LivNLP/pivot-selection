@@ -37,9 +37,9 @@ def drawer(draw_lists,lookfor_pair,methods):
         i += 1
 
     plt.title(lookfor_pair)
-    plt.xlabel('k(#pivots)')
+    plt.xlabel('$k$(#pivots)')
     plt.xticks(index,x)
-    plt.ylabel('Jaccard$_{L,U}$')
+    plt.ylabel('$J(L,U)$')
     plt.legend()
 
     plt.show()
@@ -65,9 +65,9 @@ def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
         i+=1
 
     plt.title("%s and %s"%(pair_1, pair_2))
-    plt.xlabel('k(#pivots)')
+    plt.xlabel('$k$(#pivots)')
     plt.xticks(index,x)
-    plt.ylabel('Jaccard$_{L,U}$')
+    plt.ylabel('$J(L,U)$')
     plt.legend()
 
     plt.show()

@@ -57,9 +57,9 @@ def drawer(argmts):
         i += 1
 
     plt.title(convert_title(lookfor_pair,pv_method),size=22)        
-    plt.xlabel('k(#pivots)',size=18)
+    plt.xlabel('$k$(#pivots)',size=18)
     plt.xticks(index,x)
-    plt.ylabel('Jaccard$_{M_1,M_2}$',size=18)
+    plt.ylabel('$J(M_1,M_2)$',size=18)
     #right box
     # box = ax.get_position()
     # ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -81,7 +81,7 @@ def drawer_margnal(argmts):
     plt.title(convert_title(lookfor_pair,pv_method),size=22)
     plt.xlabel('pivot range',size=18)
     plt.xticks(index,x)
-    plt.ylabel('Jaccard$_{M_1,M_2}$',size=18)
+    plt.ylabel('$J(M_1,M_2)$',size=18)
     #right box
     box = ax.get_position()
     ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -119,6 +119,6 @@ if __name__ == "__main__":
     pv_method = "L"
 
     lookfor_pair = (m1.upper(),m2.upper())
-    drawer(constructer(collector(pv_method, lookfor_pair)))
-    # drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
+    # drawer(constructer(collector(pv_method, lookfor_pair)))
+    drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
     
