@@ -24,11 +24,11 @@ def review_list(fname):
 # Word2Vec
 def word2vec(domain_name):
     model = gensim.models.Word2Vec(labeled_reviews(domain_name), min_count=1,workers=4)
-    print model
+    model.save('../work/%s/word2vec.model' % domain_name) 
     return model
 
 # GloVe
-def glo2Ve(domain_name):
+def glo2ve(domain_name):
     corpus_model = Corpus()
     corpus_model.fit(labeled_reviews(domain_name), window=10)
     corpus_model.save('../work/%s/corpus.model'% domain_name)
@@ -48,8 +48,8 @@ def ppmi(pmi_score):
 
 # f(Wk) = document frequency of Wk in SL / # documents in SL -
 # document frequency of Wk in TU / # documents in TU
-def df_diff():
-    return
+def df_diff(df_source,src_reviews,df_target,tgt_reviews):
+    return df_source/src_reviews - df_target/tgt_reviews
 
 # main
 if __name__ == "__main__":
