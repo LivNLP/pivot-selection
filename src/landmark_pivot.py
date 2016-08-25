@@ -38,7 +38,7 @@ def word2vec(source,target):
     return model
 
 def word_to_vec(feature,model):
-    return model.get(feature,0)
+    return model[feature]
 
 # GloVe
 # trained by a single domain: S_L
@@ -73,18 +73,18 @@ def u_function(source,target):
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
     features = load_grouped_obj(source,target,'sl_tu_features')
-    word2vec_model = Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
+    word2vec_model = gensim.models.Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
 
     print 'calculating...'
     u_dict = {}
     for x in features:
-        df_fucntion = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
+        df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
         x_vector = word_to_vec(x,word2vec_model)
         u_dict[x] = df_function * x_vector
 
-    dirname = '../work/%s-%s/'% (source,target)
+    dirname = '../work/%s-%s/obj/'% (source,target)
     print 'saving u_dict in ' + dirname
-    sp.save_loop_obj(u_dict,dirname,'u_dict')
+    save_loop_obj(u_dict,dirname,'u_dict')
     print 'u_dict saved'
     pass
 
@@ -141,7 +141,19 @@ def create_word2vec_models():
     print 'Complete!!'
     pass
 
+def calculate_all_u():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'calcualting u for %s-%s ...' % (source,target)   
+            u_function(source,target) 
+    print 'Complete!!'
+    pass
+
 # main
 if __name__ == "__main__":
     # collect_features()
-    create_word2vec_models()
+    # create_word2vec_models()
+    calculate_all_u()
