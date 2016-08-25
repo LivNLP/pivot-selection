@@ -24,15 +24,24 @@ def review_list(fname):
 
 # word embedding: from word to word vector
 # Word2Vec
-def word2vec_model(domain_name):
+# trained by a single domain: S_L
+def word2vec_single(domain_name):
     model = gensim.models.Word2Vec(labeled_reviews(domain_name), min_count=1,workers=4)
     model.save('../work/%s/word2vec.model' % domain_name) 
     return model
 
-def word2vec(feature):
-    return 
+# trained by two domains: S_L and T_U
+def word2vec(source,target):
+    reviews = labeled_reviews(source) + unlabeled_reviews(target)
+    model = gensim.models.Word2Vec(reviews, min_count=1,workers=4)
+    model.save('../work/%s-%s/word2vec.model' % (source,target))
+    return model
+
+def word_to_vec(feature,model):
+    return model.get(feature,0)
 
 # GloVe
+# trained by a single domain: S_L
 def glo2ve(domain_name):
     corpus_model = Corpus()
     corpus_model.fit(labeled_reviews(domain_name), window=10)
@@ -49,24 +58,34 @@ def glo2ve(domain_name):
 
 # PPMI: replace all negative values in PMI with zero
 def ppmi(pmi_score):
-    return 0 if pmi_score<0 else pmi_score
+    return 0 if pmi_score < 0 else pmi_score
 
-# f(Wk) = document frequency of Wk in SL / # documents in SL -
-# document frequency of Wk in TU / # documents in TU
+# f(Wk) = document frequency of Wk in S_L / # documents in S_L -
+# document frequency of Wk in T_U / # documents in T_U
 def df_diff(df_source,src_reviews,df_target,tgt_reviews):
     return df_source/src_reviews - df_target/tgt_reviews
 
-def df_function(source,target):
+# uk = f(Wk) * vector(Wk)
+def u_function(source,target):
     print 'loading objects...'
     df_source = load_grouped_obj(source,target,'x_src')
     df_target = load_grouped_obj(source,target,'x_un_tgt')
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
     features = load_grouped_obj(source,target,'sl_tu_features')
+    word2vec_model = Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
 
     print 'calculating...'
+    u_dict = {}
+    for x in features:
+        df_fucntion = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
+        x_vector = word_to_vec(x,word2vec_model)
+        u_dict[x] = df_function * x_vector
 
-    print ''
+    dirname = '../work/%s-%s/'% (source,target)
+    print 'saving u_dict in ' + dirname
+    sp.save_loop_obj(u_dict,dirname,'u_dict')
+    print 'u_dict saved'
     pass
 
 def load_grouped_obj(source,target,name):
@@ -111,8 +130,18 @@ def collect_features():
             save_grouped_obj(sl_tu_features,source,target,'sl_tu_features')
     pass
 
+def create_word2vec_models():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'creating word2vec model for %s-%s ...' % (source,target) 
+            word2vec(source,target)
+    print 'Complete!!'
+    pass
 
 # main
 if __name__ == "__main__":
     # collect_features()
-    
+    create_word2vec_models()
