@@ -60,10 +60,32 @@ def glo2ve(domain_name):
 def ppmi(pmi_score):
     return 0 if pmi_score < 0 else pmi_score
 
-# gamma function: PPMI
-def gamma_function():
+# gamma function: PPMI, other pivot selection methods can be also used
+def gamma_function(source,target):
+    print 'loading objects...'
+    features = load_grouped_obj(source,target,'sl_tu_features')
+    x_src = load_grouped_obj(source,target,'x_src')
+    x_pos_src = load_grouped_obj(source,target,'x_pos_src')
+    x_neg_src = load_grouped_obj(source,target,'x_neg_src')
+    src_reviews = load_grouped_obj(source,target,'src_reviews')
+    pos_src_reviews = load_grouped_obj(source,target,'pos_src_reviews')
+    neg_src_reviews = load_grouped_obj(source,target,'neg_src_reviews')
+
+    ppmi_dict = {}
+    for x in features:
+        if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
+            pos_pmi = sp.pointwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+            neg_pmi = sp.pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+            ppmi_dict[x] = (ppmi(pos_pmi)-ppmi(neg_pmi))**2
+    L = ppmi_dict.items()
     
-    pass
+    print 'sorting...'
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    print 'saving ppmi_dict in ' + dirname
+    save_loop_obj(ppmi_dict,dirname,'ppmi_dict')
+    return L
 
 # f(Wk) = document frequency of Wk in S_L / # documents in S_L -
 # document frequency of Wk in T_U / # documents in T_U
@@ -92,6 +114,10 @@ def u_function(source,target):
     save_loop_obj(u_dict,dirname,'u_dict')
     print 'u_dict saved'
     pass
+
+def load_loop_obj(dirname,name):
+    with open(dirname+"%s.pkl" % name,'rb') as f:
+        return pickle.load(f)
 
 def load_grouped_obj(source,target,name):
     with open("../../group-generation/%s-%s/obj/%s.pkl" % (source,target,name), 'rb') as f:
@@ -143,7 +169,7 @@ def create_word2vec_models():
                 continue
             print 'creating word2vec model for %s-%s ...' % (source,target) 
             word2vec(source,target)
-    print 'Complete!!'
+    print '-----Complete!!-----'
     pass
 
 def calculate_all_u():
@@ -152,13 +178,33 @@ def calculate_all_u():
         for target in domains:
             if source ==target:
                 continue
-            print 'calcualting u for %s-%s ...' % (source,target)   
+            print 'calcualting u for %s-%s ...' % (source,target)
             u_function(source,target) 
-    print 'Complete!!'
+    print '-----Complete!!-----'
+    pass
+
+def compute_all_gamma():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'computing gamma for %s-%s ...' % (source,target)
+            gamma_function(source,target)
+            
+            # dirname = '../work/%s-%s/obj/'% (source,target)
+            # print 'top %s results:'%k
+            # ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
+            # for (x, pmi) in L[:k]:
+            #     print x, ppmi_dict.get(x,0)
+            # print '*****end of results*****'
+
+    print '-----Complete!!-----'
     pass
 
 # main
 if __name__ == "__main__":
     # collect_features()
     # create_word2vec_models()
-    calculate_all_u()
+    # calculate_all_u()
+    # compute_all_gamma(10)

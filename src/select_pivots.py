@@ -117,14 +117,14 @@ def select_pivots_pmi():
     x_tgt = load_obj("x_tgt")
     x_pos_src = load_obj("x_pos_src")
     x_neg_src = load_obj("x_neg_src")
-    x_pos_tgt = load_obj("x_pos_tgt")
-    x_neg_tgt = load_obj("x_neg_tgt")
+    # x_pos_tgt = load_obj("x_pos_tgt")
+    # x_neg_tgt = load_obj("x_neg_tgt")
     src_reviews = load_obj("src_reviews")
-    tgt_reviews = load_obj("tgt_reviews")
+    # tgt_reviews = load_obj("tgt_reviews")
     pos_src_reviews = load_obj("pos_src_reviews")
     neg_src_reviews = load_obj("neg_src_reviews")
-    pos_tgt_reviews = load_obj("pos_tgt_reviews")
-    neg_tgt_reviews = load_obj("neg_tgt_reviews")
+    # pos_tgt_reviews = load_obj("pos_tgt_reviews")
+    # neg_tgt_reviews = load_obj("neg_tgt_reviews")
 
     pmi_dict = {}
     for x in features:
