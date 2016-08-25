@@ -60,6 +60,11 @@ def glo2ve(domain_name):
 def ppmi(pmi_score):
     return 0 if pmi_score < 0 else pmi_score
 
+# gamma function: PPMI
+def gamma_function():
+    
+    pass
+
 # f(Wk) = document frequency of Wk in S_L / # documents in S_L -
 # document frequency of Wk in T_U / # documents in T_U
 def df_diff(df_source,src_reviews,df_target,tgt_reviews):
