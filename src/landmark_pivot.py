@@ -6,6 +6,8 @@ import glob
 import gensim,logging
 from glove import Corpus
 import glove
+from cvxopt import matrix
+from cvxopt.solvers import qp
 
 # construct training data for such domian: labeled and unlabeled
 # format: [[review 1],[review 2]...]
@@ -115,6 +117,44 @@ def u_function(source,target):
     print 'u_dict saved'
     pass
 
+# optimization: QP
+def qp_solver(Uk,Rk,param):
+    U = sort_by_keys(Uk).values()
+    T = numpy.transpose(U)
+    R = sort_by_keys(Rk).values()
+
+    P = 2 * numpy.dot(U,T)
+    P = P.astype(float) 
+    q = param * R
+    n = len(q)
+    G = matrix(0.0, (n,n))
+    G[::n+1] = -1.0 
+    A = matrix(1.0,(1,n))
+    h = matrix(0.0,(n,1),tc='d')
+    b = matrix(1.0,tc='d')
+
+    solver = qp(matrix(P),matrix(q),G,h,A,b)
+    print solver['x']
+    pass
+
+def opt_function(dirname,param):
+    print 'loading objects...'
+    ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
+    u_dict = load_loop_obj(dirname,'u_dict')
+
+    print 'solving QP...'
+    qp_solver(u_dict,ppmi_dict,param)
+    pass
+
+# helper method
+def sort_by_keys(dic):
+    dic.keys().sort()
+    return dic
+
+def remove_low_freq_feats(dic):
+    return
+
+# save and load objects
 def load_loop_obj(dirname,name):
     with open(dirname+"%s.pkl" % name,'rb') as f:
         return pickle.load(f)
@@ -198,13 +238,20 @@ def compute_all_gamma():
             # for (x, pmi) in L[:k]:
             #     print x, ppmi_dict.get(x,0)
             # print '*****end of results*****'
-
     print '-----Complete!!-----'
+    pass
+
+def solve_qp():
+    source = 'books'
+    target = 'dvd'
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    opt_function(dirname,1)
     pass
 
 # main
 if __name__ == "__main__":
     # collect_features()
-    # create_word2vec_models()
+    create_word2vec_models()
     # calculate_all_u()
     # compute_all_gamma(10)
+    # solve_qp() #test

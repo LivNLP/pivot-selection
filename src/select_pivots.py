@@ -10,10 +10,10 @@ def select_pivots_freq(source, target):
     src_freq = {}
     tgt_freq = {}
     count_freq("../data/%s/train.positive" % source, src_freq)
-    count_freq("../data/%s/train.negative" % source, src_freq)
+    count_freq("../data/%s/train.negative" % source, tgt_freq)
     # count_freq("../data/%s/train.unlabeled" % source, src_freq)
-    count_freq("../data/%s/train.positive" %  target, tgt_freq)
-    count_freq("../data/%s/train.negative" %  target, tgt_freq)
+    # count_freq("../data/%s/train.positive" %  target, tgt_freq)
+    # count_freq("../data/%s/train.negative" %  target, tgt_freq)
     # count_freq("../data/%s/train.unlabeled" % target, tgt_freq) 
     s = {}
     features = set(src_freq.keys()).union(set(tgt_freq.keys()))
