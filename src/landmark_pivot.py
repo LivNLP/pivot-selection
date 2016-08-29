@@ -65,7 +65,7 @@ def ppmi(pmi_score):
 # gamma function: PPMI, other pivot selection methods can be also used
 def gamma_function(source,target):
     print 'loading objects...'
-    features = load_grouped_obj(source,target,'sl_tu_features')
+    features = load_grouped_obj(source,target,'filtered_features')
     x_src = load_grouped_obj(source,target,'x_src')
     x_pos_src = load_grouped_obj(source,target,'x_pos_src')
     x_neg_src = load_grouped_obj(source,target,'x_neg_src')
@@ -79,6 +79,8 @@ def gamma_function(source,target):
             pos_pmi = sp.pointwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
             neg_pmi = sp.pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
             ppmi_dict[x] = (ppmi(pos_pmi)-ppmi(neg_pmi))**2
+        else:
+            ppmi_dict[x] = 0
     L = ppmi_dict.items()
     
     print 'sorting...'
@@ -101,7 +103,7 @@ def u_function(source,target):
     df_target = load_grouped_obj(source,target,'x_un_tgt')
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
-    features = load_grouped_obj(source,target,'sl_tu_features')
+    features = load_grouped_obj(source,target,'filtered_features')
     word2vec_model = gensim.models.Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
 
     print 'calculating...'
@@ -119,6 +121,7 @@ def u_function(source,target):
 
 # optimization: QP
 def qp_solver(Uk,Rk,param):
+    print "u and gamma length: %d, %d" %(len(Uk),len(Rk))
     U = sort_by_keys(Uk).values()
     T = numpy.transpose(U)
     R = sort_by_keys(Rk).values()
@@ -134,8 +137,8 @@ def qp_solver(Uk,Rk,param):
     b = matrix(1.0,tc='d')
 
     solver = qp(matrix(P),matrix(q),G,h,A,b)
-    print solver['x']
-    pass
+    alpha = matrix_to_array(solver['x'])
+    return alpha
 
 def opt_function(dirname,param):
     print 'loading objects...'
@@ -143,16 +146,36 @@ def opt_function(dirname,param):
     u_dict = load_loop_obj(dirname,'u_dict')
 
     print 'solving QP...'
-    qp_solver(u_dict,ppmi_dict,param)
-    pass
+    alpha = qp_solver(u_dict,ppmi_dict,param)
+    return alpha
 
 # helper method
 def sort_by_keys(dic):
     dic.keys().sort()
     return dic
 
-def remove_low_freq_feats(dic):
-    return
+def remove_low_freq_feats(old_dict,new_keys):
+    new_dict = {new_key:old_dict[new_key] for new_key in new_keys}
+    return new_dict
+
+def freq_keys(source,target,limit):
+    src_freq = {}
+    tgt_freq = {}
+    sp.count_freq("../data/%s/train.positive" % source, src_freq)
+    sp.count_freq("../data/%s/train.negative" % source, src_freq)
+    sp.count_freq("../data/%s/train.unlabeled" % target, tgt_freq) 
+    s = {}
+    features = set(src_freq.keys()).union(set(tgt_freq.keys()))
+    for feat in features:
+        temp = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
+        if temp > limit:
+            s[feat] = temp
+    L = s.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)   
+    return s.keys()
+
+def matrix_to_array(M):
+    return numpy.squeeze(numpy.asarray(M))
 
 # save and load objects
 def load_loop_obj(dirname,name):
@@ -201,6 +224,18 @@ def collect_features():
             save_grouped_obj(sl_tu_features,source,target,'sl_tu_features')
     pass
 
+def collect_filtered_features(limit):
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            filtered_features = freq_keys(source,target,limit)
+            print 'length: %d'% len(filtered_features)
+            print 'saving filtered_features for %s-%s ... ' % (source,target)
+            save_grouped_obj(filtered_features,source,target,'filtered_features')
+    pass
+
 def create_word2vec_models():
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
@@ -241,6 +276,22 @@ def compute_all_gamma():
     print '-----Complete!!-----'
     pass
 
+def solve_all_qp(param):
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'solving QP for %s-%s ...' % (source,target)
+            dirname = '../work/%s-%s/obj/'% (source,target)
+            alpha = opt_function(dirname,param)
+            print 'alpha length: %d' % len(alpha)
+            save_loop_obj(alpha,dirname,'alpha_%f'%param)
+
+    print '-----Complete!!-----'
+    pass
+
+# test methods
 def solve_qp():
     source = 'books'
     target = 'dvd'
@@ -248,10 +299,22 @@ def solve_qp():
     opt_function(dirname,1)
     pass
 
+def construct_freq_dict():
+    source = 'books'
+    target = 'electronics'
+    limit = 5
+    print len(freq_keys(source,target,limit))
+    pass
+
+
 # main
 if __name__ == "__main__":
+    # collect_filtered_features(5)
     # collect_features()
-    create_word2vec_models()
+    # create_word2vec_models()
     # calculate_all_u()
-    # compute_all_gamma(10)
-    # solve_qp() #test
+    # compute_all_gamma()
+    # solve_qp() 
+    solve_all_qp(1)
+    # construct_freq_dict()
+
