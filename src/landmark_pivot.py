@@ -178,6 +178,11 @@ def matrix_to_array(M):
     return numpy.squeeze(numpy.asarray(M))
 
 # save and load objects
+def load_alpha(source,target,param):
+    with open("../work/%s-%s/obj/alpha_%f.pkl" % (source,target,param),'rb') as f:
+        return pickle.load(f)
+    pass
+
 def load_loop_obj(dirname,name):
     with open(dirname+"%s.pkl" % name,'rb') as f:
         return pickle.load(f)
@@ -306,6 +311,15 @@ def construct_freq_dict():
     print len(freq_keys(source,target,limit))
     pass
 
+def print_alpha():
+    source = 'books'
+    target = 'dvd'
+    param = 1
+    alpha = load_alpha(source,target,param)
+    print '%s-%s alpha length: %d'%(source,target,len(alpha))
+    pass
+
+
 
 # main
 if __name__ == "__main__":
@@ -315,6 +329,6 @@ if __name__ == "__main__":
     # calculate_all_u()
     # compute_all_gamma()
     # solve_qp() 
-    solve_all_qp(1)
+    # solve_all_qp(1)
     # construct_freq_dict()
-
+    # print_alpha()
