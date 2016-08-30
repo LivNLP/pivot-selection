@@ -126,9 +126,9 @@ def qp_solver(Uk,Rk,param):
     T = numpy.transpose(U)
     R = sort_by_keys(Rk).values()
 
-    P = 2 * numpy.dot(U,T)
+    P = numpy.dot(2,numpy.dot(U,T))
     P = P.astype(float) 
-    q = param * R
+    q = numpy.dot(param,R)
     n = len(q)
     G = matrix(0.0, (n,n))
     G[::n+1] = -1.0 
@@ -329,6 +329,8 @@ if __name__ == "__main__":
     # calculate_all_u()
     # compute_all_gamma()
     # solve_qp() 
-    # solve_all_qp(1)
+    # param = 10e-3
+    param = 1
+    solve_all_qp(param)
     # construct_freq_dict()
     # print_alpha()
