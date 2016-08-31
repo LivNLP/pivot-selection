@@ -197,10 +197,13 @@ def qp_solver(Uk,Rk,param):
     alpha = matrix_to_array(solver['x'])
     return alpha
 
-def opt_function(dirname,param):
+def opt_function(dirname,param,model_name):
     print 'loading objects...'
     ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
-    u_dict = load_loop_obj(dirname,'u_dict')
+    if model_name == 'word2vec':
+        u_dict = load_loop_obj(dirname,'u_dict')
+    else:
+        u_dict = load_loop_obj(dirname,'u_dict')
 
     print 'solving QP...'
     alpha = qp_solver(u_dict,ppmi_dict,param)
@@ -235,9 +238,13 @@ def matrix_to_array(M):
     return numpy.squeeze(numpy.asarray(M))
 
 # save and load objects
-def load_alpha(source,target,param):
-    with open("../work/%s-%s/obj/alpha_%f.pkl" % (source,target,param),'rb') as f:
-        return pickle.load(f)
+def load_alpha(source,target,param,model_name):
+    if model_name == 'word2vec':
+        with open("../work/%s-%s/obj/alpha_%f.pkl" % (source,target,param),'rb') as f:
+            return pickle.load(f)
+    else:
+        with open("../work/%s-%s/obj/alpha_%f_glove.pkl" % (source,target,param),'rb') as f:
+            return pickle.load(f)
     pass
 
 def load_loop_obj(dirname,name):
@@ -351,7 +358,7 @@ def compute_all_gamma():
     print '-----Complete!!-----'
     pass
 
-def solve_all_qp(param):
+def solve_all_qp(param,model_name):
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
         for target in domains:
@@ -359,9 +366,13 @@ def solve_all_qp(param):
                 continue
             print 'solving QP for %s-%s ...' % (source,target)
             dirname = '../work/%s-%s/obj/'% (source,target)
-            alpha = opt_function(dirname,param)
+            alpha = opt_function(dirname,param,model_name)
             print 'alpha length: %d' % len(alpha)
-            save_loop_obj(alpha,dirname,'alpha_%f'%param)
+            if model_name == 'word2vec':
+                save_loop_obj(alpha,dirname,'alpha_%f'%param)
+            else:
+                print 'alpha_%f_glove is going to be saved'%param
+                save_loop_obj(alpha,dirname,'alpha_%f_glove'%param)
 
     print '-----Complete!!-----'
     pass
@@ -370,8 +381,9 @@ def solve_all_qp(param):
 def solve_qp():
     source = 'books'
     target = 'dvd'
+    model_name = 'word2vec'
     dirname = '../work/%s-%s/obj/'% (source,target)
-    opt_function(dirname,1)
+    opt_function(dirname,1,model_name)
     pass
 
 def construct_freq_dict():
@@ -401,12 +413,13 @@ if __name__ == "__main__":
     # collect_filtered_features(5)
     # collect_features()
     # create_word2vec_models()
-    create_glove_models()
+    # create_glove_models()
     # calculate_all_u()
     # compute_all_gamma()
     # param = 10e-3
     # param = 1
-    # solve_all_qp(param)
+    # model_name = 'glove'
+    # solve_all_qp(param,model_name)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
