@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # landmark-based pivot selection method
 import select_pivots as sp 
 import numpy
 import pickle
 import glob
 import gensim,logging
-from glove import Corpus
+from glove import Corpus, Glove
 import glove
 from cvxopt import matrix
 from cvxopt.solvers import qp
@@ -44,19 +47,50 @@ def word_to_vec(feature,model):
 
 # GloVe
 # trained by a single domain: S_L
-def glo2ve(domain_name):
+def glove_single(domain_name):
     corpus_model = Corpus()
     corpus_model.fit(labeled_reviews(domain_name), window=10)
     corpus_model.save('../work/%s/corpus.model'% domain_name)
     print('Dict size: %s' % len(corpus_model.dictionary))
     print('Collocations: %s' % corpus_model.matrix.nnz)
     print('Training the GloVe model')
-    model = glove.Glove(no_components=100, learning_rate=0.05)
+    model = Glove(no_components=100, learning_rate=0.05)
     model.fit(corpus_model.matrix, epochs=int(10),
               no_threads=6, verbose=True)
     model.add_dictionary(corpus_model.dictionary)
     model.save('../work/%s/glove.model' % domain_name) 
     return
+
+# trained by two domains: S_L and T_U
+def glove(source,target):
+    reviews = labeled_reviews(source) + unlabeled_reviews(target)
+    corpus_model = Corpus()
+    corpus_model.fit(reviews, window=10)
+    # corpus_model.save('../work/%s-%s/corpus.model'% (source,target))
+    print('Dict size: %s' % len(corpus_model.dictionary))
+    print('Collocations: %s' % corpus_model.matrix.nnz)
+    print('Training the GloVe model')
+    model = Glove(no_components=100, learning_rate=0.05)
+    model.fit(corpus_model.matrix, epochs=int(10),
+              no_threads=6, verbose=True)
+    model.add_dictionary(corpus_model.dictionary)
+    output_path = '../work/%s-%s/glove.model' % (source,target)
+    # model.save(output_path)
+    # glove_to_word2vec(output_path,output_path+'.gensim')
+    return model
+
+# get GloVe word vector
+def glove_to_word2vec(source,target):
+    # g2w.glove2word2vec(glove_model,output_path)
+    path = '../work/%s-%s/glove.model' % (source,target)
+    # print load_word2vec(path)
+    model = Glove.load(path)
+    print len(model.get_word_vector('good'))
+    pass
+
+def glove_to_vec(feature,model):
+    return model.get_word_vector(feature)
+
 
 # PPMI: replace all negative values in PMI with zero
 def ppmi(pmi_score):
@@ -97,6 +131,7 @@ def df_diff(df_source,src_reviews,df_target,tgt_reviews):
     return df_source/src_reviews - df_target/tgt_reviews
 
 # uk = f(Wk) * vector(Wk)
+# word2vec model
 def u_function(source,target):
     print 'loading objects...'
     df_source = load_grouped_obj(source,target,'x_src')
@@ -104,19 +139,41 @@ def u_function(source,target):
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
     features = load_grouped_obj(source,target,'filtered_features')
-    word2vec_model = gensim.models.Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
+    model = gensim.models.Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
 
     print 'calculating...'
     u_dict = {}
     for x in features:
         df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
-        x_vector = word_to_vec(x,word2vec_model)
-        u_dict[x] = df_function * x_vector
+        x_vector = word_to_vec(x,model)
+        u_dict[x] = numpy.dot(df_function,x_vector)
 
     dirname = '../work/%s-%s/obj/'% (source,target)
     print 'saving u_dict in ' + dirname
     save_loop_obj(u_dict,dirname,'u_dict')
     print 'u_dict saved'
+    pass
+
+# glove model
+def u_function_glove(source,target,model):
+    print 'loading objects...'
+    df_source = load_grouped_obj(source,target,'x_src')
+    df_target = load_grouped_obj(source,target,'x_un_tgt')
+    src_reviews = load_grouped_obj(source,target,'src_reviews')
+    tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
+    features = load_grouped_obj(source,target,'filtered_features')
+
+    print 'calculating with glove model...'
+    u_dict = {}
+    for x in features:
+        df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
+        x_vector = glove_to_vec(x,model)
+        u_dict[x] = numpy.dot(df_function,x_vector)
+
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    print 'saving u_dict_glove in ' + dirname
+    save_loop_obj(u_dict,dirname,'u_dict_glove')
+    print 'u_dict_glove saved'
     pass
 
 # optimization: QP
@@ -252,6 +309,19 @@ def create_word2vec_models():
     print '-----Complete!!-----'
     pass
 
+def create_glove_models():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'creating GloVe model for %s-%s ...' % (source,target) 
+            model = glove(source,target)
+            print 'calculating u for %s-%s ...' % (source,target)
+            u_function_glove(source,target,model)
+    print '-----Complete!!-----'
+    pass
+
 def calculate_all_u():
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
@@ -319,18 +389,26 @@ def print_alpha():
     print '%s-%s alpha length: %d'%(source,target,len(alpha))
     pass
 
-
+def glove_model_test():
+    source = 'books'
+    target = 'electronics'
+    # glove(source,target)
+    glove_to_word2vec(source,target)
+    pass
 
 # main
 if __name__ == "__main__":
     # collect_filtered_features(5)
     # collect_features()
     # create_word2vec_models()
+    create_glove_models()
     # calculate_all_u()
     # compute_all_gamma()
-    # solve_qp() 
     # param = 10e-3
-    param = 1
-    solve_all_qp(param)
+    # param = 1
+    # solve_all_qp(param)
+    ######test##########
+    # solve_qp() 
     # construct_freq_dict()
     # print_alpha()
+    # glove_model_test()
