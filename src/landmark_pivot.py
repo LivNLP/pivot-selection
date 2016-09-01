@@ -396,9 +396,10 @@ def construct_freq_dict():
 def print_alpha():
     source = 'books'
     target = 'dvd'
-    param = 1
-    alpha = load_alpha(source,target,param)
-    print '%s-%s alpha length: %d'%(source,target,len(alpha))
+    param = 10e-3
+    model_name = 'word2vec'
+    alpha = load_alpha(source,target,param,model_name)
+    print '%s-%s alpha length for %s: %d'%(source,target,model_name,len(alpha))
     pass
 
 def glove_model_test():
@@ -423,5 +424,5 @@ if __name__ == "__main__":
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    # print_alpha()
+    print_alpha()
     # glove_model_test()
