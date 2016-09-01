@@ -74,16 +74,14 @@ def glove(source,target):
     model.fit(corpus_model.matrix, epochs=int(10),
               no_threads=6, verbose=True)
     model.add_dictionary(corpus_model.dictionary)
-    output_path = '../work/%s-%s/glove.model' % (source,target)
+    # output_path = '../work/%s-%s/glove.model' % (source,target)
     # model.save(output_path)
     # glove_to_word2vec(output_path,output_path+'.gensim')
     return model
 
 # get GloVe word vector
 def glove_to_word2vec(source,target):
-    # g2w.glove2word2vec(glove_model,output_path)
     path = '../work/%s-%s/glove.model' % (source,target)
-    # print load_word2vec(path)
     model = Glove.load(path)
     print len(model.get_word_vector('good'))
     pass
@@ -203,7 +201,7 @@ def opt_function(dirname,param,model_name):
     if model_name == 'word2vec':
         u_dict = load_loop_obj(dirname,'u_dict')
     else:
-        u_dict = load_loop_obj(dirname,'u_dict')
+        u_dict = load_loop_obj(dirname,'u_dict_glove')
 
     print 'solving QP...'
     alpha = qp_solver(u_dict,ppmi_dict,param)
@@ -418,11 +416,11 @@ if __name__ == "__main__":
     # calculate_all_u()
     # compute_all_gamma()
     # param = 10e-3
-    # param = 1
-    # model_name = 'glove'
-    # solve_all_qp(param,model_name)
+    param = 1
+    model_name = 'glove'
+    solve_all_qp(param,model_name)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha()
+    # print_alpha()
     # glove_model_test()
