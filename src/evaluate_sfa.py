@@ -335,8 +335,8 @@ if __name__ == "__main__":
     #evaluate_SA(source, target, False)
     # evaluate_SA(source, target, True, 500)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
-    methods = ["freq"]
+    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    # methods = ["freq"]
     n = 500
     for method in methods:
         batchEval(method,1, n)

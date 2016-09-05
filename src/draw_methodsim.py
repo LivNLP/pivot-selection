@@ -42,7 +42,7 @@ def collector_margnal(pv_method,lookfor_pair,max_end):
                 jaccard = float(p[4])
                 pv_start = int(float(p[5]))
                 pv_end = int(float(p[6]))
-                pv_range = "%s-%s"%(pv_start,pv_end)          
+                pv_range = "%s-%s"%(pv_start,pv_end)
                 new_list.append([jaccard,pv_range,domain_pair])
     return new_list
     pass
@@ -110,15 +110,23 @@ def constructer(sim_list):
     pass
 
 def convert_title(lookfor_pair,pv_method):
-    return "%s$_%s$ vs %s$_%s$" % (lookfor_pair[0],pv_method,lookfor_pair[1],pv_method)
-    pass
+    if pv_method == 'landmark':
+        return "%s vs %s" % (lookfor_pair[0],lookfor_pair[1])
+    else:
+        return "%s$_%s$ vs %s$_%s$" % (lookfor_pair[0],pv_method,lookfor_pair[1],pv_method)
 
 if __name__ == "__main__":
-    m1 = "freq"
-    m2 = "mi"
-    pv_method = "L"
-
+    # m1 = "freq"
+    # m2 = "mi"
+    # pv_method = "L"
+    # m1 = "landmark_word2vec"
+    # m2 = "landmark_word2vec_ppmi"
+    m1 = "landmark_glove"
+    m2 = "landmark_glove_ppmi"
+    # m2 = "landmark_glove"
+    pv_method = "landmark"
     lookfor_pair = (m1.upper(),m2.upper())
+    # lookfor_pair = (m1,m2)
     # drawer(constructer(collector(pv_method, lookfor_pair)))
     drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
     

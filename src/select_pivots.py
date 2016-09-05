@@ -487,6 +487,37 @@ def landmark_methods_eval(test_k):
     resFile.close()
     pass
 
+# additonal expeirment on dividing the top list into parts
+def landmark_methods_eval_range(test_k):
+    resFile = open("../work/sim/MethodSim_range.landmark.csv", "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    method_pairs = list(itertools.combinations(methods, 2))
+    print "We are going to compare ", method_pairs, " in landmark"
+    resFile.write("Source, Target, Method, Method, JC, #pivots_start, #pivots_end\n")
+    # initial k, start point of the range of k
+    start_k = 0 
+    for k in test_k:
+        print "#pivots_start = %f, #pivots_end = %f"% (start_k, k)
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                for (i, j) in method_pairs:
+                    method_i = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,i))
+                    method_j = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,j))
+                    h1 = method_i[start_k:k]
+                    h2 = method_j[start_k:k]
+                    JC = cr.jaccard_coefficient(h1,h2)
+                    # KC = cr.kendall_rank_coefficient(h1,h2)
+                    print "%s -> %s (%s, %s): JC = %f" % (source, target, i, j, JC)
+                    resFile.write("%s, %s, %s, %s, %f, %f, %f\n" % (source, target, i, j, JC,start_k, k))
+                    resFile.flush()
+        start_k = k
+    resFile.close()
+    pass
+
+
 # get top-k pivots with its value and print on the screen
 def top_k_pivots(source,target,method, k):
     pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
@@ -552,8 +583,9 @@ if __name__ == "__main__":
     # targets = ["electronics", "dvd", "kitchen"]
     # for target in targets:
     #     top_k_pivots(source,target,method,k)
-    # test_k = [100,200,300,400,500,1000,1500,2000]
+    test_k = [100,200,300,400,500]
+    landmark_methods_eval_range(test_k)
     # mi_eval(test_k)
     # pmi_eval(test_k)
-    test_k = [500]
-    landmark_methods_eval(test_k)
+    # test_k = [500]
+    # landmark_methods_eval(test_k)
