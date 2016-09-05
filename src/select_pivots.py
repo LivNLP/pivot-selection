@@ -309,6 +309,10 @@ def save_obj(obj, name):
     with open('obj/'+ name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+def save_local_obj(obj, name):
+    with open(name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
 # load object
 def load_obj(name):
     with open('obj/' + name + '.pkl', 'rb') as f:
@@ -467,14 +471,27 @@ def top_k_pivots(source,target,method, k):
     print "###########################################\n\n"
 pass
 
+def select_freq_collection():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            name = '../work/%s-%s/freq'% (source,target)
+            pivots  = select_pivots_freq(source,target)
+            print 'store freq in %s' % name
+            save_local_obj(pivots,name)
+    pass
+
 # main
 if __name__ == "__main__":
+    select_freq_collection()
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
-    source = "books"
-    target = "kitchen"
-    print "source =", source
-    print "target =", target
+    # source = "books"
+    # target = "kitchen"
+    # print "source =", source
+    # print "target =", target
     # save_obj(select_pivots_freq(source,target),"freq")
     # save_obj(select_un_pivots_freq(source,target),"un_freq")
     # save_obj(select_pivots_mi(),"mi")
@@ -501,12 +518,12 @@ if __name__ == "__main__":
     # k = 10
     # for method in methods:
     #     top_k_pivots(source,target,method,k)
-    k = 100
-    method = "un_pmi"
-    source =  "books"
-    targets = ["electronics", "dvd", "kitchen"]
-    for target in targets:
-        top_k_pivots(source,target,method,k)
+    # k = 100
+    # method = "un_pmi"
+    # source =  "books"
+    # targets = ["electronics", "dvd", "kitchen"]
+    # for target in targets:
+    #     top_k_pivots(source,target,method,k)
     # test_k = [100,200,300,400,500,1000,1500,2000]
     # mi_eval(test_k)
     # pmi_eval(test_k)

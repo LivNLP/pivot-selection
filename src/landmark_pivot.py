@@ -207,6 +207,22 @@ def opt_function(dirname,param,model_name):
     alpha = qp_solver(u_dict,ppmi_dict,param)
     return alpha
 
+# alpha in [0,1], larger is more close to be a landmark (pivot)
+def select_pivots_by_alpha(source,target,param,model):
+    features = load_grouped_obj(source,target,'filtered_features')
+    features.sort()
+    alpha = load_alpha(source,target,param,model)
+    s = two_lists_to_dictionary(features,alpha)
+    L = s.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    method = method_name('landmark',model,param)
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    save_loop_obj(L,dirname,method)
+    print '%s saved' % method
+    # print L[:5]# test
+    return L
+
+
 # helper method
 def sort_by_keys(dic):
     dic.keys().sort()
@@ -234,6 +250,16 @@ def freq_keys(source,target,limit):
 
 def matrix_to_array(M):
     return numpy.squeeze(numpy.asarray(M))
+
+def two_lists_to_dictionary(keys,values):
+    return dict(zip(keys, values))
+
+def method_name(method,word_model,param):
+    if param > 10e-3:
+        return '%s_%s_ppmi'%(method,word_model)
+    else:
+        return '%s_%s'%(method,word_model)
+    pass
 
 # save and load objects
 def load_alpha(source,target,param,model_name):
@@ -375,6 +401,18 @@ def solve_all_qp(param,model_name):
     print '-----Complete!!-----'
     pass
 
+def store_all_selections(param,model):
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'getting alpha from %s-%s ...' % (source,target)
+            select_pivots_by_alpha(source,target,param,model)
+            print 'selection completed' 
+    pass
+
+
 # test methods
 def solve_qp():
     source = 'books'
@@ -416,9 +454,12 @@ if __name__ == "__main__":
     # calculate_all_u()
     # compute_all_gamma()
     # param = 10e-3
-    param = 1
-    model_name = 'glove'
-    solve_all_qp(param,model_name)
+    params = [1,10e-3]
+    model_names = ['word2vec','glove']
+    for param in params:
+        for model in model_names:
+            store_all_selections(param,model)
+    # solve_all_qp(param,model_name)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()

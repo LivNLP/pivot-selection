@@ -320,7 +320,8 @@ if __name__ == "__main__":
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = ["un_pmi"]
     n = 500
     for method in methods:
