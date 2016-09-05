@@ -83,11 +83,11 @@ def constructer(methods,DAmethod):
     return pairs,accuracy_all.values(),interval_all.values()
 
 if __name__ == "__main__":
-    # DAmethod = "SCL"
-    DAmethod = "SFA"
+    DAmethod = "SCL"
+    # DAmethod = "SFA"
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","landmark_word2vec"]
-    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","landmark_word2vec"]
+    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # constructer(methods,DAmethod)
     pairs,accuracy_all,interval_all = constructer(methods,DAmethod)
     drawer(methods,pairs,accuracy_all,interval_all,DAmethod)
