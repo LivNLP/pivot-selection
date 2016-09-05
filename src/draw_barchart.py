@@ -30,7 +30,7 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
     fig, ax = plt.subplots(figsize=(15,5))
 
     index = np.arange(n_pairs)
-    bar_width = 0.145
+    bar_width = 0.1
     opacity = 0.4
     err_config = {'ecolor':'0.3'}
 
@@ -38,7 +38,7 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
     for method in methods:
         acc_m = accuracy_all[i]
         interval_m = interval_all[i]
-        rect = plt.bar(index + bar_width * i, acc_m, bar_width, alpha=opacity, color=colors[i],
+        rect = plt.bar(index + bar_width*i , acc_m, bar_width, alpha=opacity, color=colors[i],
             yerr=interval_m, error_kw=err_config, label=convert(method))
         i += 1
     
@@ -54,11 +54,19 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
     plt.show()
     pass
 
+# convert names
 def convert(method):
-    if "un_" in method:
-        return "%s$_U$" % method.replace("un_","").upper()
+    if "landmark_" in method:
+        if "_ppmi" in method:
+            return "%s with PPMI" % method.replace("_ppmi","")
+        else:
+            return method
     else:
-        return "%s$_L$" % method.upper()
+        if "un_" in method:
+            return "%s$_U$" % method.replace("un_","").upper()
+        else:
+            return "%s$_L$" % method.upper()
+
 
 def constructer(methods,DAmethod):
     accuracy_all={}
@@ -75,9 +83,11 @@ def constructer(methods,DAmethod):
     return pairs,accuracy_all.values(),interval_all.values()
 
 if __name__ == "__main__":
-    DAmethod = "SCL"
-    # DAmethod = "SFA"
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # DAmethod = "SCL"
+    DAmethod = "SFA"
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","landmark_word2vec"]
+    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # constructer(methods,DAmethod)
     pairs,accuracy_all,interval_all = constructer(methods,DAmethod)
     drawer(methods,pairs,accuracy_all,interval_all,DAmethod)

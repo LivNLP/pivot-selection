@@ -461,6 +461,32 @@ def pmi_eval(test_k):
     resFile.close()
     pass
 
+def landmark_methods_eval(test_k):
+    resFile = open("../work/sim/MethodSim.landmark.csv", "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    method_pairs = list(itertools.combinations(methods, 2))
+    print "We are going to compare ", method_pairs, " in landmark-based methods"
+    resFile.write("Source, Target, Method, Method, JC, KC, #pivots\n")
+    for k in test_k:
+        print "#pivots = ", k
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                for (i, j) in method_pairs:
+                    method_i = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,i))
+                    method_j = load_stored_obj("../work/%s-%s/obj/%s"%(source,target,j))
+                    h1 = method_i[:k]
+                    h2 = method_j[:k]
+                    JC = cr.jaccard_coefficient(h1,h2)
+                    KC = cr.kendall_rank_coefficient(h1,h2)
+                    print "%s -> %s (%s, %s): JC = %f KC = %f" % (source, target, i, j, JC, KC)
+                    resFile.write("%s, %s, %s, %s, %f, %f, %f\n" % (source, target, i, j, JC, KC, k))
+                    resFile.flush()
+    resFile.close()
+    pass
+
 # get top-k pivots with its value and print on the screen
 def top_k_pivots(source,target,method, k):
     pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
@@ -483,9 +509,11 @@ def select_freq_collection():
             save_local_obj(pivots,name)
     pass
 
+
+
 # main
 if __name__ == "__main__":
-    select_freq_collection()
+    # select_freq_collection()
     # label_presets("electronics", "books")
     # unlabel_presets("electronics", "books")
     # source = "books"
@@ -527,3 +555,5 @@ if __name__ == "__main__":
     # test_k = [100,200,300,400,500,1000,1500,2000]
     # mi_eval(test_k)
     # pmi_eval(test_k)
+    test_k = [500]
+    landmark_methods_eval(test_k)
