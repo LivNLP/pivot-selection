@@ -322,8 +322,8 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 if __name__ == "__main__":
-    source = "kitchen"
-    target = "dvd"
+    # source = "kitchen"
+    # target = "dvd"
     # method = "pmi"
     #generateFeatureVectors("books")
     #generateFeatureVectors("dvd")

@@ -1,3 +1,10 @@
+#########################################
+################## USAGE ################
+# add get_word_vector(self,word) before you use glove-python library
+# to get an individual word vector for the word you like.
+# OR copy this .py file, rename to glove.py 
+# then replace with the one in the local lib
+##########################################
 # GloVe model from the NLP lab at Stanford:
 # http://nlp.stanford.edu/projects/glove/.
 import array
