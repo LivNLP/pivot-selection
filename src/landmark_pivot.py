@@ -32,13 +32,13 @@ def review_list(fname):
 # trained by a single domain: S_L
 def word2vec_single(domain_name):
     model = gensim.models.Word2Vec(labeled_reviews(domain_name), min_count=1,workers=4)
-    model.save('../work/%s/word2vec.model' % domain_name) 
+    model.save('../work/%s/word2vec.model' % domain_name,ignore=[]) 
     return model
 
 # trained by two domains: S_L and T_U
 def word2vec(source,target):
     reviews = labeled_reviews(source) + unlabeled_reviews(target)
-    model = gensim.models.Word2Vec(reviews, min_count=1,workers=4)
+    model = gensim.models.Word2Vec(reviews, min_count=1,workers=4,size=300)
     model.save('../work/%s-%s/word2vec.model' % (source,target))
     return model
 
@@ -55,7 +55,7 @@ def glove_single(domain_name):
     print('Dict size: %s' % len(corpus_model.dictionary))
     print('Collocations: %s' % corpus_model.matrix.nnz)
     print('Training the GloVe model')
-    model = Glove(no_components=100, learning_rate=0.05)
+    model = Glove(no_components=300, learning_rate=0.05)
     model.fit(corpus_model.matrix, epochs=int(10),
               no_threads=6, verbose=True)
     model.add_dictionary(corpus_model.dictionary)
@@ -71,12 +71,12 @@ def glove(source,target):
     print('Dict size: %s' % len(corpus_model.dictionary))
     print('Collocations: %s' % corpus_model.matrix.nnz)
     print('Training the GloVe model')
-    model = Glove(no_components=100, learning_rate=0.05)
+    model = Glove(no_components=300, learning_rate=0.05)
     model.fit(corpus_model.matrix, epochs=int(10),
               no_threads=6, verbose=True)
     model.add_dictionary(corpus_model.dictionary)
-    # output_path = '../work/%s-%s/glove.model' % (source,target)
-    # model.save(output_path)
+    output_path = '../work/%s-%s/glove.model' % (source,target)
+    model.save(output_path, use_binary=0)
     # glove_to_word2vec(output_path,output_path+'.gensim')
     return model
 
@@ -187,7 +187,8 @@ def u_function_glove(source,target,model):
     print 'u_dict_glove saved'
     pass
 
-# any pretrained models
+# pretrained models with domain specific model support
+# Word2Vec
 def u_function_pretrained(source,target,model):
     print 'loading objects...'
     df_source = load_grouped_obj(source,target,'x_src')
@@ -195,17 +196,47 @@ def u_function_pretrained(source,target,model):
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
     features = load_grouped_obj(source,target,'filtered_features')
+    ds_model = gensim.models.Word2Vec.load('../work/%s-%s/word2vec.model' % (source,target))
 
-    print 'calculating with pretrained model...'
+    print 'calculating with pretrained word2vec model...'
     u_dict = {}
     for x in features:
         df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
-        x_vector = word_to_vec(x,model)
+        if x in model.vocab:
+            x_vector = word_to_vec(x,model)
+        else:
+            x_vector = word_to_vec(x,ds_model)
         u_dict[x] = numpy.dot(df_function,x_vector)
 
     dirname = '../work/%s-%s/obj/'% (source,target)
     print 'saving u_dict_pretrained in ' + dirname
     save_loop_obj(u_dict,dirname,'u_dict_pretrained')
+    print 'u_dict_pretrained saved'
+    pass
+
+# GloVe
+def u_function_pretrained_glove(source,target,model):
+    print 'loading objects...'
+    df_source = load_grouped_obj(source,target,'x_src')
+    df_target = load_grouped_obj(source,target,'x_un_tgt')
+    src_reviews = load_grouped_obj(source,target,'src_reviews')
+    tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
+    features = load_grouped_obj(source,target,'filtered_features')
+    ds_model = glove(source,target)
+
+    print 'calculating with pretrained glove model...'
+    u_dict = {}
+    for x in features:
+        df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
+        if model.get(x,0)==0:
+            x_vector = glove_to_vec(x,ds_model)
+        else:
+            x_vector = word_to_vec(x,model)
+        u_dict[x] = numpy.dot(df_function,x_vector)
+
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    print 'saving u_dict_pretrained in ' + dirname
+    save_loop_obj(u_dict,dirname,'u_dict_pretrained_glove')
     print 'u_dict_pretrained saved'
     pass
 
@@ -231,27 +262,37 @@ def qp_solver(Uk,Rk,param):
     alpha = matrix_to_array(solver['x'])
     return alpha
 
-def opt_function(dirname,param,model_name):
+def opt_function(dirname,param,model_name,pretrained):
     print 'loading objects...'
     ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
-    if model_name == 'word2vec':
-        u_dict = load_loop_obj(dirname,'u_dict')
+    if pretrained == 0:
+        if model_name == 'word2vec':
+            u_dict = load_loop_obj(dirname,'u_dict')
+        else:
+            u_dict = load_loop_obj(dirname,'u_dict_glove')
     else:
-        u_dict = load_loop_obj(dirname,'u_dict_glove')
+        if model_name == 'word2vec':
+            u_dict = load_loop_obj(dirname,'u_dict_pretrained')
+        else:
+            u_dict = load_loop_obj(dirname,'u_dict_pretrained_glove')
 
     print 'solving QP...'
     alpha = qp_solver(u_dict,ppmi_dict,param)
     return alpha
 
+# Selecting pivots
 # alpha in [0,1], larger is more close to be a landmark (pivot)
-def select_pivots_by_alpha(source,target,param,model):
+def select_pivots_by_alpha(source,target,param,model,pretrained):
     features = load_grouped_obj(source,target,'filtered_features')
     features.sort()
     alpha = load_alpha(source,target,param,model)
     s = two_lists_to_dictionary(features,alpha)
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    method = method_name('landmark',model,param)
+    temp = 'landmark'
+    if pretrained == 1:
+        temp = 'landmark_pretrained'
+    method = method_name(temp,model,param)
     dirname = '../work/%s-%s/obj/'% (source,target)
     save_loop_obj(L,dirname,method)
     print '%s saved' % method
@@ -391,6 +432,20 @@ def create_glove_models():
 
 def calculate_all_u_pretrained():
     # load pretrained model here
+    path = '../data/GoogleNews-vectors-negative300.bin'
+    model = gensim.models.Word2Vec.load_word2vec_format(path,binary=True)
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'calcualting u_pretrained for %s-%s ...' % (source,target)
+            u_function_pretrained(source,target,model) 
+    print '-----Complete!!-----'
+    pass
+
+def calculate_all_u_pretrained_glove():
+    # load pretrained model here
     path = '../data/glove.42B.300d.txt'
     model = load_pretrained_glove(path)
     domains = ["books", "electronics", "dvd", "kitchen"]
@@ -398,8 +453,8 @@ def calculate_all_u_pretrained():
         for target in domains:
             if source ==target:
                 continue
-            print 'calcualting u_pretrainedfor %s-%s ...' % (source,target)
-            u_function_pretrained(source,target,model) 
+            print 'calcualting u_pretrained for %s-%s ...' % (source,target)
+            u_function_pretrained_glove(source,target,model) 
     print '-----Complete!!-----'
     pass
 
@@ -432,7 +487,7 @@ def compute_all_gamma():
     print '-----Complete!!-----'
     pass
 
-def solve_all_qp(param,model_name):
+def solve_all_qp(param,model_name,pretrained):
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
         for target in domains:
@@ -440,25 +495,32 @@ def solve_all_qp(param,model_name):
                 continue
             print 'solving QP for %s-%s ...' % (source,target)
             dirname = '../work/%s-%s/obj/'% (source,target)
-            alpha = opt_function(dirname,param,model_name)
+            alpha = opt_function(dirname,param,model_name,pretrained)
             print 'alpha length: %d' % len(alpha)
-            if model_name == 'word2vec':
-                save_loop_obj(alpha,dirname,'alpha_%f'%param)
+            if pretrained == 0 : 
+                if model_name == 'word2vec':
+                    save_loop_obj(alpha,dirname,'alpha_%f'%param)
+                else:
+                    print 'alpha_%f_glove is going to be saved'%param
+                    save_loop_obj(alpha,dirname,'alpha_%f_glove'%param)
             else:
-                print 'alpha_%f_glove is going to be saved'%param
-                save_loop_obj(alpha,dirname,'alpha_%f_glove'%param)
+                if model_name == 'word2vec':
+                    save_loop_obj(alpha,dirname,'alpha_%f_pretrained'%param)
+                else:
+                    print 'alpha_%f_pretrained_glove is going to be saved'%param
+                    save_loop_obj(alpha,dirname,'alpha_%f_pretrained_glove'%param)
 
     print '-----Complete!!-----'
     pass
 
-def store_all_selections(param,model):
+def store_all_selections(param,model,pretrained):
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
         for target in domains:
             if source ==target:
                 continue
             print 'getting alpha from %s-%s ...' % (source,target)
-            select_pivots_by_alpha(source,target,param,model)
+            select_pivots_by_alpha(source,target,param,model,pretrained)
             print 'selection completed' 
     pass
 
@@ -501,6 +563,11 @@ def read_glove():
     print len(model['good'])
     pass
 
+def read_word2vec():
+    path = '../data/GoogleNews-vectors-negative300.bin'
+    model = gensim.models.Word2Vec.load_word2vec_format(path,binary=True)
+    print len(model['good'])
+    pass
 
 
 # main
@@ -509,19 +576,22 @@ if __name__ == "__main__":
     # collect_features()
     # create_word2vec_models()
     # create_glove_models()
-    calculate_all_u_pretrained()
+    # calculate_all_u_pretrained()
+    # calculate_all_u_pretrained_glove()
     # calculate_all_u()
     # compute_all_gamma()
     # param = 10e-3
-    # params = [1,10e-3]
-    # model_names = ['word2vec','glove']
-    # for param in params:
-    #     for model in model_names:
-    #         store_all_selections(param,model)
-    # solve_all_qp(param,model_name)
+    # model_name = 'word2vec'
+    params = [1,10e-3]
+    model_names = ['word2vec']#,'glove']
+    for param in params:
+        for model in model_names:
+            solve_all_qp(param,model,1)
+            store_all_selections(param,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
     # print_alpha()
     # glove_model_test()
     # read_glove()
+    # read_word2vec()
