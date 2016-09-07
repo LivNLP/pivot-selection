@@ -53,7 +53,7 @@ def kendall_rank_coefficient(a, b):
     return kendall_distance/float(len(all_objects)*(len(all_objects)-1)/2.0)
 
 
-#test method
+# test method
 # if __name__ == "__main__":
 #     a = [('a',1),('b',2),('c',3),('d',9)]
 #     b = [('b',1),('d',1),('e',2),('f',8)]
