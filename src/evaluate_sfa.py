@@ -337,7 +337,8 @@ if __name__ == "__main__":
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"] + 
     #     ["landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["freq"]
     n = 500
     for method in methods:
