@@ -76,7 +76,7 @@ def glove(source,target):
               no_threads=6, verbose=True)
     model.add_dictionary(corpus_model.dictionary)
     output_path = '../work/%s-%s/glove.model' % (source,target)
-    model.save(output_path, use_binary=0)
+    model.save(output_path)
     # glove_to_word2vec(output_path,output_path+'.gensim')
     return model
 
@@ -575,19 +575,19 @@ if __name__ == "__main__":
     # collect_filtered_features(5)
     # collect_features()
     # create_word2vec_models()
-    # create_glove_models()
+    create_glove_models()
     # calculate_all_u_pretrained()
     # calculate_all_u_pretrained_glove()
     # calculate_all_u()
     # compute_all_gamma()
     # param = 10e-3
     # model_name = 'word2vec'
-    params = [1,10e-3]
-    model_names = ['word2vec']#,'glove']
-    for param in params:
-        for model in model_names:
-            solve_all_qp(param,model,1)
-            store_all_selections(param,model,1)
+    # params = [1,10e-3]
+    # model_names = ['word2vec']#,'glove']
+    # for param in params:
+    #     for model in model_names:
+    #         solve_all_qp(param,model,1)
+    #         store_all_selections(param,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
