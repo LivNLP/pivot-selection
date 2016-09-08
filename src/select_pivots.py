@@ -462,9 +462,10 @@ def pmi_eval(test_k):
     pass
 
 def landmark_methods_eval(test_k):
-    resFile = open("../work/sim/MethodSim.landmark.csv", "w")
+    resFile = open("../work/sim/MethodSim.landmark_word2vec_pretrained.csv", "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    methods = ["landmark_word2vec","landmark_word2vec_ppmi","landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
+    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     method_pairs = list(itertools.combinations(methods, 2))
     print "We are going to compare ", method_pairs, " in landmark-based methods"
     resFile.write("Source, Target, Method, Method, JC, KC, #pivots\n")
@@ -489,9 +490,10 @@ def landmark_methods_eval(test_k):
 
 # additonal expeirment on dividing the top list into parts
 def landmark_methods_eval_range(test_k):
-    resFile = open("../work/sim/MethodSim_range.landmark.csv", "w")
+    resFile = open("../work/sim/MethodSim_range.landmark_word2vec_pretrained.csv", "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    methods = ["landmark_word2vec","landmark_word2vec_ppmi","landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
+    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     method_pairs = list(itertools.combinations(methods, 2))
     print "We are going to compare ", method_pairs, " in landmark"
     resFile.write("Source, Target, Method, Method, JC, #pivots_start, #pivots_end\n")
@@ -583,7 +585,8 @@ if __name__ == "__main__":
     # targets = ["electronics", "dvd", "kitchen"]
     # for target in targets:
     #     top_k_pivots(source,target,method,k)
-    test_k = [10,20,30,40,50,60,70,80,90,100]
+    test_k = [100,200,300,400,500]
+    # test_k = [10,20,30,40,50,60,70,80,90,100]
     landmark_methods_eval_range(test_k)
     # mi_eval(test_k)
     # pmi_eval(test_k)
