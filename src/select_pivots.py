@@ -583,7 +583,7 @@ if __name__ == "__main__":
     # targets = ["electronics", "dvd", "kitchen"]
     # for target in targets:
     #     top_k_pivots(source,target,method,k)
-    test_k = [100,200,300,400,500]
+    test_k = [10,20,30,40,50,60,70,80,90,100]
     landmark_methods_eval_range(test_k)
     # mi_eval(test_k)
     # pmi_eval(test_k)
