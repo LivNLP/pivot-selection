@@ -302,7 +302,7 @@ def opt_function(dirname,param,model_name,pretrained):
 def select_pivots_by_alpha(source,target,param,model,pretrained):
     features = load_grouped_obj(source,target,'filtered_features')
     features.sort()
-    alpha = load_alpha(source,target,param,model)
+    alpha = load_alpha(source,target,param,model,pretrained)
     s = two_lists_to_dictionary(features,alpha)
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
@@ -321,7 +321,7 @@ def select_pivots_by_alpha(source,target,param,model,pretrained):
 def select_pivots_by_alpha_with_param(source,target,param,model,pretrained):
     features = load_grouped_obj(source,target,'filtered_features')
     features.sort()
-    alpha = load_alpha(source,target,param,model)
+    alpha = load_alpha(source,target,param,model,pretrained)
     s = two_lists_to_dictionary(features,alpha)
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
@@ -378,13 +378,21 @@ def method_name_param(method,word_model,param):
     return 'test_%s_%s_%f'%(method,word_model,param)
 
 # save and load objects
-def load_alpha(source,target,param,model_name):
-    if model_name == 'word2vec':
-        with open("../work/%s-%s/obj/alpha_%f.pkl" % (source,target,param),'rb') as f:
-            return pickle.load(f)
+def load_alpha(source,target,param,model_name,pretrained):
+    if pretrained == 0:
+        if model_name == 'word2vec':
+            with open("../work/%s-%s/obj/alpha_%f.pkl" % (source,target,param),'rb') as f:
+                return pickle.load(f)
+        else:
+            with open("../work/%s-%s/obj/alpha_%f_glove.pkl" % (source,target,param),'rb') as f:
+                return pickle.load(f)
     else:
-        with open("../work/%s-%s/obj/alpha_%f_glove.pkl" % (source,target,param),'rb') as f:
-            return pickle.load(f)
+        if model_name == 'word2vec':
+            with open("../work/%s-%s/obj/alpha_%f_pretrained.pkl" % (source,target,param),'rb') as f:
+                return pickle.load(f)
+        else:
+            with open("../work/%s-%s/obj/alpha_%f_pretrained_glove.pkl" % (source,target,param),'rb') as f:
+                return pickle.load(f)
     pass
 
 def load_loop_obj(dirname,name):
@@ -569,7 +577,7 @@ def store_param_selections(params,model,pretrained):
     for param in params:
         solve_all_qp(param,model,pretrained)
         domains = ["books", "electronics", "dvd", "kitchen"]
-        for source in domians:
+        for source in domains:
             for target in domains:
                 if source ==target:
                     continue
@@ -637,7 +645,7 @@ if __name__ == "__main__":
     # param = 10e-3
     # model_name = 'word2vec'
     # params = [1,10e-3]
-    # model_names = ['word2vec']#,'glove']
+    # model_names = ['word2vec','glove']
     # model_names = ['glove']
     # for param in params:
     #     for model in model_names:
