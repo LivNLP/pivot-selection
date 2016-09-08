@@ -93,6 +93,22 @@ def load_pretrained_glove(gloveFile):
     print "Done.",len(model)," words loaded!"
     return model
 
+# filter of pretrained glove model to decrease the memory cost
+def load_filtered_glove(source,target,gloveFile):
+    print "Loading Glove Model"
+    f = open(gloveFile,'r')
+    model = {}
+    filtered_features = load_grouped_obj(source,target,'filtered_features')
+    for line in f:
+        splitLine = line.split()
+        word = splitLine[0]
+        if word in filtered_features:
+            embedding = [float(val) for val in splitLine[1:]]
+            model[word] = embedding
+    print "After filtering, ",len(model)," words loaded!"
+    return model
+
+
 # get GloVe word vector
 def glove_to_word2vec(source,target):
     path = '../work/%s-%s/glove.model' % (source,target)
@@ -222,7 +238,8 @@ def u_function_pretrained_glove(source,target,model):
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
     features = load_grouped_obj(source,target,'filtered_features')
-    ds_model = glove(source,target)
+    dirname = '../work/%s-%s/'% (source,target)
+    ds_model = Glove.load(dirname+'glove.model')
 
     print 'calculating with pretrained glove model...'
     u_dict = {}
@@ -299,6 +316,25 @@ def select_pivots_by_alpha(source,target,param,model,pretrained):
     # print L[:5]# test
     return L
 
+# without save the objects with different params
+# used for testing param values
+def select_pivots_by_alpha_with_param(source,target,param,model,pretrained):
+    features = load_grouped_obj(source,target,'filtered_features')
+    features.sort()
+    alpha = load_alpha(source,target,param,model)
+    s = two_lists_to_dictionary(features,alpha)
+    L = s.items()
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    temp = 'landmark'
+    if pretrained == 1:
+        temp = 'landmark_pretrained'
+    method = method_name_param(temp,model,param)
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    save_loop_obj(L,dirname,method)
+    print 'model = %s_%s, param = %f' % (temp,model,param)
+    # print L[:5]# test
+    return L
+
 
 # helper method
 def sort_by_keys(dic):
@@ -337,6 +373,9 @@ def method_name(method,word_model,param):
     else:
         return '%s_%s'%(method,word_model)
     pass
+
+def method_name_param(method,word_model,param):
+    return 'test_%s_%s_%f'%(method,word_model,param)
 
 # save and load objects
 def load_alpha(source,target,param,model_name):
@@ -447,13 +486,14 @@ def calculate_all_u_pretrained():
 def calculate_all_u_pretrained_glove():
     # load pretrained model here
     path = '../data/glove.42B.300d.txt'
-    model = load_pretrained_glove(path)
+    # model = load_pretrained_glove(path)
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
         for target in domains:
             if source ==target:
                 continue
             print 'calcualting u_pretrained for %s-%s ...' % (source,target)
+            model = load_filtered_glove(source,target,path)
             u_function_pretrained_glove(source,target,model) 
     print '-----Complete!!-----'
     pass
@@ -524,6 +564,17 @@ def store_all_selections(param,model,pretrained):
             print 'selection completed' 
     pass
 
+# params variation for the methods
+def store_param_selections(params,model,pretrained):
+    for param in params:
+        solve_all_qp(param,model,pretrained)
+        domains = ["books", "electronics", "dvd", "kitchen"]
+        for source in domians:
+            for target in domains:
+                if source ==target:
+                    continue
+                select_pivots_by_alpha_with_param(source,target,param,model,pretrained)
+    pass
 
 # test methods
 def solve_qp():
@@ -559,7 +610,10 @@ def glove_model_test():
 
 def read_glove():
     path = '../data/glove.42B.300d.txt'
-    model = load_pretrained_glove(path)
+    # model = load_pretrained_glove(path)
+    source = 'books'
+    target = 'dvd'
+    model = load_filtered_glove(source,target,path)   
     print len(model['good'])
     pass
 
@@ -584,14 +638,20 @@ if __name__ == "__main__":
     # model_name = 'word2vec'
     # params = [1,10e-3]
     # model_names = ['word2vec']#,'glove']
+    # model_names = ['glove']
     # for param in params:
     #     for model in model_names:
     #         solve_all_qp(param,model,1)
     #         store_all_selections(param,model,1)
+    ######param#########
+    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    model_names = ['word2vec']
+    for model in model_names:
+        store_param_selections(params,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
     # print_alpha()
     # glove_model_test()
-    read_glove()
+    # read_glove()
     # read_word2vec()
