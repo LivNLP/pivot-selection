@@ -575,22 +575,26 @@ if __name__ == "__main__":
     # for dataset in datasets:
     #     methods_eval_range(dataset, test_k)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # source =  "books"
-    # target = "dvd"
+    source =  "books"
+    target = "dvd"
     # methods = ['freq','landmark_pretrained_word2vec','landmark_pretrained_word2vec_ppmi']
     # methods = ['freq','landmark_pretrained_glove','landmark_pretrained_glove_ppmi']
-    # k = 100
-    # for method in methods:
-    #     top_k_pivots(source,target,method,k)
+    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    methods = ["landmark_pretrained_glove"]
+    k = 10
+    for method in methods:
+        for param in params:
+            test_method = "test_%s_%f"% (method,param)
+            top_k_pivots(source,target,test_method,k)
     # k = 100
     # method = "un_pmi"
 
     # targets = ["electronics", "dvd", "kitchen"]
     # for target in targets:
     #     top_k_pivots(source,target,method,k)
-    test_k = [100,200,300,400,500]
+    # test_k = [100,200,300,400,500]
     # test_k = [10,20,30,40,50,60,70,80,90,100]
-    landmark_methods_eval_range(test_k)
+    # landmark_methods_eval_range(test_k)
     # mi_eval(test_k)
     # pmi_eval(test_k)
     # test_k = [500]

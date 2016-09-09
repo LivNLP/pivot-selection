@@ -603,9 +603,11 @@ def construct_freq_dict():
 def print_alpha():
     source = 'books'
     target = 'dvd'
-    param = 10e-3
-    model_name = 'word2vec'
-    alpha = load_alpha(source,target,param,model_name)
+    param = 0.6
+    model_name = 'glove'
+    pretrained = 1
+    alpha = load_alpha(source,target,param,model_name,pretrained)
+    print alpha[:5]
     print '%s-%s alpha length for %s: %d'%(source,target,model_name,len(alpha))
     pass
 
@@ -652,14 +654,14 @@ if __name__ == "__main__":
     #         solve_all_qp(param,model,1)
     #         store_all_selections(param,model,1)
     ######param#########
-    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    model_names = ['word2vec']
-    for model in model_names:
-        store_param_selections(params,model,1)
+    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # model_names = ['word2vec']
+    # for model in model_names:
+    #     store_param_selections(params,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    # print_alpha()
+    print_alpha()
     # glove_model_test()
     # read_glove()
     # read_word2vec()
