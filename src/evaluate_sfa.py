@@ -322,22 +322,22 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 def choose_param(method,params,gamma,n):
-    resFile = open("../work/sim/SFAparams.%s.csv"% test_method, "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile = open("../work/sim/SFAparams.%s.csv"% method, "w")
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Params\n")
     for param in params:
+        test_method = "test_%s_%f"% (method,param)
         for source in domains:
             for target in domains:
                 if source == target:
                     continue
-                learnProjection(source, target, method, n)
+                learnProjection(source, target, test_method, n)
                 evaluation = evaluate_SA(source, target, True, gamma, n)
-                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, new_name(method,param), evaluation[0], evaluation[1][0],evaluation[1][1],param))
+                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],param))
                 resFile.flush()
     resFile.close()
     pass
 
-def new_name(method,param):
-    return method.replace('test_','').replace('_%f'%param,'')
 
 if __name__ == "__main__":
     # source = "kitchen"
@@ -353,19 +353,18 @@ if __name__ == "__main__":
     #evaluate_SA(source, target, False)
     # evaluate_SA(source, target, True, 500)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["freq"]
     # methods = ["landmark_pretrained_word2vec"]
-    n = 500
-    for method in methods:
-        batchEval(method,1, n)
+    n = 100
+    # for method in methods:
+    #     batchEval(method,1, n)
     # gammas = [1,5,10,20,50,100,1000]
     # for method in methods:
     #     choose_gamma(source, target, method,gammas,n)
-    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # for method in methods:
-    #     test_method = "test_%s_%f"% (method,param)
-    #     choose_param(test_method,params,1,n)
+    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    for method in methods:
+        choose_param(method,params,1,n)
