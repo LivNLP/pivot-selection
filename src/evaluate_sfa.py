@@ -331,7 +331,8 @@ def choose_param(method,params,gamma,n):
             for target in domains:
                 if source == target:
                     continue
-                learnProjection(source, target, test_method, n)
+                createMatrix(source, target, test_method, n)
+                learnProjection(source, target)
                 evaluation = evaluate_SA(source, target, True, gamma, n)
                 resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],param))
                 resFile.flush()
@@ -358,7 +359,7 @@ if __name__ == "__main__":
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["freq"]
-    # methods = ["landmark_pretrained_word2vec"]
+    methods = ["landmark_pretrained_glove"]
     n = 100
     # for method in methods:
     #     batchEval(method,1, n)
