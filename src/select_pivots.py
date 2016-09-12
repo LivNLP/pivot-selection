@@ -461,10 +461,10 @@ def pmi_eval(test_k):
     resFile.close()
     pass
 
-def landmark_methods_eval(test_k):
-    resFile = open("../work/sim/MethodSim.landmark_word2vec_pretrained.csv", "w")
+def landmark_methods_eval(test_k,methods):
+    resFile = open("../work/sim/MethodSim.100.csv", "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    methods = ["landmark_word2vec","landmark_word2vec_ppmi","landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
+    # methods = ["landmark_word2vec","landmark_word2vec_ppmi","landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     method_pairs = list(itertools.combinations(methods, 2))
     print "We are going to compare ", method_pairs, " in landmark-based methods"
@@ -489,10 +489,10 @@ def landmark_methods_eval(test_k):
     pass
 
 # additonal expeirment on dividing the top list into parts
-def landmark_methods_eval_range(test_k):
-    resFile = open("../work/sim/MethodSim_range.landmark_word2vec_pretrained.csv", "w")
+def landmark_methods_eval_range(test_k,methods):
+    resFile = open("../work/sim/MethodSim_range.100.csv", "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    methods = ["landmark_word2vec","landmark_word2vec_ppmi","landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
+    # methods = ["landmark_word2vec","landmark_word2vec_ppmi","landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     method_pairs = list(itertools.combinations(methods, 2))
     print "We are going to compare ", method_pairs, " in landmark"
@@ -575,27 +575,31 @@ if __name__ == "__main__":
     # for dataset in datasets:
     #     methods_eval_range(dataset, test_k)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    source =  "books"
-    target = "dvd"
+    # source =  "books"
+    # target = "dvd"
     # methods = ['freq','landmark_pretrained_word2vec','landmark_pretrained_word2vec_ppmi']
     # methods = ['freq','landmark_pretrained_glove','landmark_pretrained_glove_ppmi']
-    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    methods = ["landmark_pretrained_glove"]
-    k = 10
-    for method in methods:
-        for param in params:
-            test_method = "test_%s_%f"% (method,param)
-            top_k_pivots(source,target,test_method,k)
-    # k = 100
+    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # methods = ["landmark_pretrained_glove"]
+    # k = 10
+    # for method in methods:
+    #     for param in params:
+    #         test_method = "test_%s_%f"% (method,param)
+    #         top_k_pivots(source,target,test_method,k)
+    # # k = 100
     # method = "un_pmi"
 
     # targets = ["electronics", "dvd", "kitchen"]
     # for target in targets:
     #     top_k_pivots(source,target,method,k)
-    # test_k = [100,200,300,400,500]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods = methods+["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
+
+    test_k = [100,200,300,400,500]
     # test_k = [10,20,30,40,50,60,70,80,90,100]
-    # landmark_methods_eval_range(test_k)
+    # landmark_methods_eval_range(test_k,methods)
     # mi_eval(test_k)
     # pmi_eval(test_k)
-    # test_k = [500]
-    # landmark_methods_eval(test_k)
+    
+    # test_k = [100]
+    landmark_methods_eval(test_k,methods)

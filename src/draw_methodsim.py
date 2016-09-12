@@ -51,9 +51,10 @@ def drawer(argmts):
     x,ys,domain_pairs = argmts
     fig, ax = plt.subplots(figsize=(9,6))
     index = np.arange(len(x))
+    markers = ['o','^']*(len(domain_pairs)/2)
     i = 0
     for y in ys:
-        plt.plot(index,y, marker="o", alpha=opacity, label=domain_pairs[i])
+        plt.plot(index,y, marker= markers[i], alpha=opacity, label=domain_pairs[i])
         i += 1
 
     plt.title(convert_title(lookfor_pair,pv_method),size=22)        
@@ -73,9 +74,10 @@ def drawer_margnal(argmts):
     x,ys,domain_pairs = argmts
     fig, ax = plt.subplots(figsize=(9,6))
     index = np.arange(len(x))
+    markers = ['o','^']*(len(domain_pairs)/2)
     i = 0
     for y in ys:
-        plt.plot(index,y, marker="o", alpha=opacity, label=domain_pairs[i])
+        plt.plot(index,y, alpha=opacity, label=domain_pairs[i],marker= markers[i])
         i += 1
 
     plt.title(convert_title(lookfor_pair,pv_method),size=22)
@@ -110,8 +112,8 @@ def constructer(sim_list):
     pass
 
 def convert_title(lookfor_pair,pv_method):
-    if pv_method == 'landmark':
-        return "%s vs %s" % (lookfor_pair[0],lookfor_pair[1])
+    if 'landmark' in pv_method or 'landmark' in lookfor_pair:
+        return "%s vs %s" % (lookfor_pair[0].replace("LANDMARK_",""),lookfor_pair[1].replace("LANDMARK_",""))
     else:
         return "%s$_%s$ vs %s$_%s$" % (lookfor_pair[0],pv_method,lookfor_pair[1],pv_method)
 
@@ -121,12 +123,14 @@ if __name__ == "__main__":
     # pv_method = "L"
     # m1 = "landmark_word2vec"
     # m2 = "landmark_word2vec_ppmi"
-    m1 = "landmark_glove"
-    m2 = "landmark_glove_ppmi"
+    # m1 = "landmark_pretrained_glove"
+    # m2 = "landmark_pretrained_glove_ppmi"
+    m1 = "freq"
+    m2 = "landmark_pretrained_word2vec"
     # m2 = "landmark_glove"
-    pv_method = "landmark"
+    pv_method = "100"
     lookfor_pair = (m1.upper(),m2.upper())
     # lookfor_pair = (m1,m2)
     # drawer(constructer(collector(pv_method, lookfor_pair)))
-    drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500)))
+    drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 100)))
     

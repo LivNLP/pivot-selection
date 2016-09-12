@@ -34,6 +34,7 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
     opacity = 0.4
     err_config = {'ecolor':'0.3'}
 
+
     i = 0
     for method in methods:
         acc_m = accuracy_all[i]
@@ -73,6 +74,9 @@ def constructer(methods,DAmethod):
     interval_all={}
     i = 0
     for method in methods:
+        # 100 version settings
+        # m_list = collector("../work/100/batch%s.100.%s.csv"% (DAmethod, method))
+        # normal settings
         m_list = collector("../work/batch%s.%s.csv"% (DAmethod, method))
         accuracy_all[i] = [x[2] for x in m_list]
         interval_all[i] = [x[3] for x in m_list]
@@ -86,8 +90,9 @@ if __name__ == "__main__":
     # DAmethod = "SCL"
     DAmethod = "SFA"
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods = ["freq","mi","pmi","landmark_word2vec_ppmi"]
-    # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
+    methods = ["freq","mi","pmi","landmark_pretrained_word2vec_ppmi"]
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove_ppmi"]
+
     # constructer(methods,DAmethod)
     pairs,accuracy_all,interval_all = constructer(methods,DAmethod)
     drawer(methods,pairs,accuracy_all,interval_all,DAmethod)

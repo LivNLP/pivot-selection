@@ -21,7 +21,7 @@ def collecter(da_method,pv_method):
     return new_list
     pass
 
-def drawer(argmts,pv_method):
+def drawer(argmts,pv_method,da_method):
     domain_pairs,ys,intervals,x = argmts
     fig, ax = plt.subplots(figsize=(9,6))
     index = np.arange(len(x))
@@ -32,8 +32,8 @@ def drawer(argmts,pv_method):
         i += 1
     plt.xticks(index,x)
 
-    plt.title(pv_method.capitalize())
-    plt.xlabel('params',size=18)
+    plt.title(da_method+ ": " +pv_method.capitalize())
+    plt.xlabel('Lambda',size=18)
     plt.ylabel('Accuracy',size=18)
     #right box
     box = ax.get_position()
@@ -64,8 +64,10 @@ def constructer(param_list):
 
 
 if __name__ == "__main__":
-    pv_method = "landmark_pretrained_glove"
+    # pv_method = "landmark_pretrained_glove"
+    pv_method = "landmark_pretrained_word2vec"
     da_method = 'SFA'
+    # da_method = 'SCL'
     temp = collecter(da_method,pv_method)
     
-    drawer(constructer(temp),pv_method)
+    drawer(constructer(temp),pv_method,da_method)
