@@ -105,6 +105,8 @@ def load_filtered_glove(source,target,gloveFile):
         if word in filtered_features:
             embedding = [float(val) for val in splitLine[1:]]
             model[word] = embedding
+        # if 'happen' in word:
+        #     print word
     print "After filtering, ",len(model)," words loaded!"
     return model
 
@@ -481,6 +483,7 @@ def calculate_all_u_pretrained():
     # load pretrained model here
     path = '../data/GoogleNews-vectors-negative300.bin'
     model = gensim.models.Word2Vec.load_word2vec_format(path,binary=True)
+    # print model.most_similar('disappointed')
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
         for target in domains:
@@ -676,4 +679,4 @@ if __name__ == "__main__":
     # glove_model_test()
     # read_glove()
     # read_word2vec()
-    print_ppmi()
+    # print_ppmi()
