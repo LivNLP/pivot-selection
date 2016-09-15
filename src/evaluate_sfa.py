@@ -123,8 +123,8 @@ def createMatrix(source, target, method, n):
     """
 
     # Parameters
-    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
-    coocTh = 5
+    domainTh = {'books':1, 'dvd':1, 'kitchen':1, 'electronics':1}
+    coocTh = 1
     #n = 500
 
     print "Source = %s, Target = %s" % (source, target)
@@ -353,19 +353,19 @@ if __name__ == "__main__":
     # learnProjection(source, target)
     #evaluate_SA(source, target, False)
     # evaluate_SA(source, target, True, 500)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
-    # methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
+    methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["freq"]
-    methods = ["landmark_pretrained_glove"]
-    n = 100
-    # for method in methods:
-    #     batchEval(method,1, n)
+    # methods = ["landmark_pretrained_glove"]
+    n = 500
+    for method in methods:
+        batchEval(method,1, n)
     # gammas = [1,5,10,20,50,100,1000]
     # for method in methods:
     #     choose_gamma(source, target, method,gammas,n)
-    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    for method in methods:
-        choose_param(method,params,1,n)
+    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # for method in methods:
+        # choose_param(method,params,1,n)

@@ -633,6 +633,17 @@ def read_word2vec():
     print len(model['good'])
     pass
 
+def print_ppmi():
+    source = 'books'
+    target = 'dvd'
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
+    L = ppmi_dict.items()
+    # L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for x,score in L[:10]:
+        print x,ppmi_dict.get(x,0)
+    pass
+
 
 # main
 if __name__ == "__main__":
@@ -661,7 +672,8 @@ if __name__ == "__main__":
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha()
+    # print_alpha()
     # glove_model_test()
     # read_glove()
     # read_word2vec()
+    print_ppmi()
