@@ -1,7 +1,7 @@
 
 import numpy 
 from nltk.corpus import sentiwordnet as swn
-
+import select_pivots as pi
 
 # sentiwordnet score
 # sum up all the scores and take the average
@@ -20,8 +20,31 @@ def senti_list(feats):
     print 'neutral = %d, positive = %d, negative = %d'%(mid,pos,neg)
     return mid,pos,neg 
 
+def choose_param(method,params,n):
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile = open("../work/sim/Sentiparams.%s.csv"% method, "w")
+    resFile.write("Source, Target, Model, #Positive, #Negative, #Neutral, Param\n")
+    for param in params:
+        test_method = "test_%s_%f"% (method,param)
+        for source in domains:
+            for target in domains:
+                if source == target:
+                    continue
+                pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+                features = pi.load_stored_obj(pivotsFile)
+                mid,pos,neg = senti_list(dict(features[:n]).keys())
+                resFile.write("%s, %s, %s, %f, %f, %f, %f\n"%(source,target,method,pos,neg,mid,param))
+                resFile.flush()
+    resFile.close()
+    pass
 
 # main
 if __name__ == "__main__":
-    feats = ['happy','what','very__disappointed','bad']
-    senti_list(feats)
+    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    n = 100
+    params = [1,50,100,1000,10000]
+    for method in methods:
+        choose_param(method,params,1,n)   
+    #######test#########
+    # feats = ['happy','what','very__disappointed','bad']
+    # senti_list(feats)
