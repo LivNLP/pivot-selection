@@ -273,6 +273,7 @@ def qp_solver(Uk,Rk,param):
 
     P = numpy.dot(2,numpy.dot(U,T))
     P = P.astype(float) 
+    print "%d" % len(P)
     q = numpy.dot(param,R)
     n = len(q)
     G = matrix(0.0, (n,n))
@@ -338,7 +339,7 @@ def select_pivots_by_alpha_with_param(source,target,param,model,pretrained):
     dirname = '../work/%s-%s/obj/'% (source,target)
     save_loop_obj(L,dirname,method)
     print 'model = %s_%s, param = %f' % (temp,model,param)
-    # print L[:5]# test
+    print L[:5]# test
     return L
 
 
@@ -610,12 +611,14 @@ def construct_freq_dict():
 def print_alpha():
     source = 'books'
     target = 'dvd'
-    param = 0.6
+    param = 10e-3
     model_name = 'glove'
     pretrained = 1
-    alpha = load_alpha(source,target,param,model_name,pretrained)
+    # alpha = load_alpha(source,target,param,model_name,pretrained)
+    # print alpha[:5]
+    # print '%s-%s alpha length for %s: %d'%(source,target,model_name,len(alpha))
+    alpha = select_pivots_by_alpha_with_param(source,target,param,model_name,pretrained)
     print alpha[:5]
-    print '%s-%s alpha length for %s: %d'%(source,target,model_name,len(alpha))
     pass
 
 def glove_model_test():
@@ -672,11 +675,11 @@ if __name__ == "__main__":
     #         solve_all_qp(param,model,1)
     #         store_all_selections(param,model,1)
     ######param#########
-    params = [50,100,1000,10000]
+    # params = [1,50,100,1000,10000]
     # model_names = ['word2vec']
-    model_names = ['glove']
-    for model in model_names:
-        store_param_selections(params,model,1)
+    # model_names = ['glove']
+    # for model in model_names:
+        # store_param_selections(params,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
