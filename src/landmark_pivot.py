@@ -339,7 +339,7 @@ def select_pivots_by_alpha_with_param(source,target,param,model,pretrained):
     dirname = '../work/%s-%s/obj/'% (source,target)
     save_loop_obj(L,dirname,method)
     print 'model = %s_%s, param = %f' % (temp,model,param)
-    print L[:5]# test
+    # print L[:5]# test
     return L
 
 
@@ -533,13 +533,6 @@ def compute_all_gamma():
                 continue
             print 'computing gamma for %s-%s ...' % (source,target)
             gamma_function(source,target)
-            
-            # dirname = '../work/%s-%s/obj/'% (source,target)
-            # print 'top %s results:'%k
-            # ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
-            # for (x, pmi) in L[:k]:
-            #     print x, ppmi_dict.get(x,0)
-            # print '*****end of results*****'
     print '-----Complete!!-----'
     pass
 
