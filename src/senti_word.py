@@ -11,18 +11,9 @@ def senti_score(feature):
 
 # return number of neutral,pos,neg within a list
 def senti_list(feats):
-    mid = 0
-    pos = 0
-    neg = 0
-    for x in feats:
-        if senti_score(x) == 0:
-            mid += 1
-        else:
-            if senti_score(x) > 0:
-                pos += 1
-            else:
-                if senti_score(x) < 0:
-                    neg += 1
+    mid = sum(1 for x in feats if senti_score(x) == 0 )
+    pos = sum(1 for x in feats if senti_score(x) > 0 )
+    neg = sum(1 for x in feats if senti_score(x) < 0 )
     print 'neutral = %d, positive = %d, negative = %d'%(mid,pos,neg)
     return mid,pos,neg 
 
