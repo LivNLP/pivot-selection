@@ -359,7 +359,7 @@ if __name__ == "__main__":
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["freq"]
-    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
+    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     n = 100
     # for method in methods:
     #     batchEval(method,1, n)
