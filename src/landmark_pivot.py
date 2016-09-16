@@ -102,11 +102,11 @@ def load_filtered_glove(source,target,gloveFile):
     for line in f:
         splitLine = line.split()
         word = splitLine[0]
-        if word in filtered_features:
-            embedding = [float(val) for val in splitLine[1:]]
+        embedding = [float(val) for val in splitLine[1:]]
+        if word in filtered_features:     
             model[word] = embedding
-        # if 'happen' in word:
-        #     print word
+        if word.replace('.','__') in filtered_features:
+            model[word.replace('.','__')] = embedding
     print "After filtering, ",len(model)," words loaded!"
     return model
 
@@ -223,7 +223,11 @@ def u_function_pretrained(source,target,model):
         if x in model.vocab:
             x_vector = word_to_vec(x,model)
         else:
-            x_vector = word_to_vec(x,ds_model)
+            if x.replace('__','_') in model.vocab:
+                # print x.replace('__','_')
+                x_vector = word_to_vec(x.replace('__','_'),model)
+            else:
+                x_vector = word_to_vec(x,ds_model)
         u_dict[x] = numpy.dot(df_function,x_vector)
 
     dirname = '../work/%s-%s/obj/'% (source,target)
@@ -483,7 +487,7 @@ def calculate_all_u_pretrained():
     # load pretrained model here
     path = '../data/GoogleNews-vectors-negative300.bin'
     model = gensim.models.Word2Vec.load_word2vec_format(path,binary=True)
-    # print model.most_similar('disappointed')
+    # print model.most_similar('very')
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
         for target in domains:
@@ -627,7 +631,7 @@ def read_glove():
     source = 'books'
     target = 'dvd'
     model = load_filtered_glove(source,target,path)   
-    print len(model['good'])
+    # print len(model['good'])
     pass
 
 def read_word2vec():
@@ -661,17 +665,18 @@ if __name__ == "__main__":
     # param = 10e-3
     # model_name = 'word2vec'
     # params = [1,10e-3]
-    # model_names = ['word2vec','glove']
+    # model_names = ['word2vec']
     # model_names = ['glove']
     # for param in params:
     #     for model in model_names:
     #         solve_all_qp(param,model,1)
     #         store_all_selections(param,model,1)
     ######param#########
-    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    params = [50,100,1000,10000]
     # model_names = ['word2vec']
-    # for model in model_names:
-    #     store_param_selections(params,model,1)
+    model_names = ['glove']
+    for model in model_names:
+        store_param_selections(params,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
