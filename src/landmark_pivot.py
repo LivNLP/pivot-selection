@@ -267,11 +267,11 @@ def u_function_pretrained_glove(source,target,model):
 # optimization: QP
 def qp_solver(Uk,Rk,param):
     print "u and gamma length: %d, %d" %(len(Uk),len(Rk))
-    U = sort_by_keys(Uk).values()
-    T = numpy.transpose(U)
+    U = numpy.matrix(sort_by_keys(Uk).values())
+    # T = numpy.transpose(U)
     R = sort_by_keys(Rk).values()
 
-    P = numpy.dot(2,numpy.dot(U,T))
+    P = numpy.dot(2,U*U.T)
     P = P.astype(float) 
     print "%d" % len(P)
     q = numpy.dot(param,R)
@@ -590,8 +590,9 @@ def solve_qp():
     source = 'books'
     target = 'dvd'
     model_name = 'word2vec'
+    param = 1
     dirname = '../work/%s-%s/obj/'% (source,target)
-    opt_function(dirname,1,model_name)
+    opt_function(dirname,param,model_name,1)
     pass
 
 def construct_freq_dict():
@@ -604,14 +605,14 @@ def construct_freq_dict():
 def print_alpha():
     source = 'books'
     target = 'dvd'
-    param = 10e-3
+    param = 1
     model_name = 'glove'
     pretrained = 1
     # alpha = load_alpha(source,target,param,model_name,pretrained)
     # print alpha[:5]
     # print '%s-%s alpha length for %s: %d'%(source,target,model_name,len(alpha))
     alpha = select_pivots_by_alpha_with_param(source,target,param,model_name,pretrained)
-    print alpha[:5]
+    print alpha[:10]
     pass
 
 def glove_model_test():
@@ -668,11 +669,11 @@ if __name__ == "__main__":
     #         solve_all_qp(param,model,1)
     #         store_all_selections(param,model,1)
     ######param#########
-    # params = [1,50,100,1000,10000]
-    # model_names = ['word2vec']
+    params = [1,50,100,1000,10000]
+    model_names = ['word2vec']
     # model_names = ['glove']
-    # for model in model_names:
-        # store_param_selections(params,model,1)
+    for model in model_names:
+        store_param_selections(params,model,1)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
