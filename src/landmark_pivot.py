@@ -529,7 +529,7 @@ def construct_freq_dict():
 def print_alpha():
     source = 'books'
     target = 'dvd'
-    param = 1
+    param = 0.8
     model = 'glove'
     pretrained = 1
     paramOn=True
@@ -589,17 +589,17 @@ if __name__ == "__main__":
     # model_names = ['word2vec','glove']
     # ######param#########
     # params = [1,50,100,1000,10000]
-    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # model_names = ['word2vec']
-    model_names = ['glove']
-    paramOn = True
-    # paramOn = False
-    for model in model_names:
-        store_all_selections(params,model,1,paramOn)
+    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # # model_names = ['word2vec']
+    # model_names = ['glove']
+    # paramOn = True
+    # # paramOn = False
+    # for model in model_names:
+    #     store_all_selections(params,model,1,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    # print_alpha()
+    print_alpha()
     # glove_model_test()
     # read_glove()
     # read_word2vec()
