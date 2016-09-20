@@ -537,7 +537,6 @@ def print_alpha():
     temp = 'landmark' if pretrained == 0 else 'landmark_pretrained'
     method = method_name_param(temp,model,param) if paramOn==True else method_name(temp,model,param)
     alpha = load_loop_obj(dirname,method)
-    # L = alpha.items()
     for x,score in alpha[:10]:
         print x,score
     pass
