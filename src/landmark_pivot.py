@@ -321,25 +321,6 @@ def select_pivots_by_alpha(source,target,param,model,pretrained,paramOn):
     # print L[:5]# test
     return L
 
-# without save the objects with different params
-# used for testing param values
-# def select_pivots_by_alpha_with_param(source,target,param,model,pretrained):
-#     features = load_grouped_obj(source,target,'filtered_features')
-#     features.sort()
-#     alpha = load_alpha(source,target,param,model,pretrained)
-#     s = two_lists_to_dictionary(features,alpha)
-#     L = s.items()
-#     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-#     temp = 'landmark'
-#     if pretrained == 1:
-#         temp = 'landmark_pretrained'
-#     method = method_name_param(temp,model,param)
-#     dirname = '../work/%s-%s/obj/'% (source,target)
-#     save_loop_obj(L,dirname,method)
-#     print 'model = %s_%s, param = %f' % (temp,model,param)
-#     return L
-
-
 # helper method
 def sort_by_keys(dic):
     dic.keys().sort()
@@ -382,23 +363,6 @@ def method_name_param(method,word_model,param):
     return 'test_%s_%s_%f'%(method,word_model,param)
 
 # save and load objects
-# def load_alpha(source,target,param,model_name,pretrained):
-#     if pretrained == 0:
-#         if model_name == 'word2vec':
-#             with open("../work/%s-%s/obj/alpha_%f.pkl" % (source,target,param),'rb') as f:
-#                 return pickle.load(f)
-#         else:
-#             with open("../work/%s-%s/obj/alpha_%f_glove.pkl" % (source,target,param),'rb') as f:
-#                 return pickle.load(f)
-#     else:
-#         if model_name == 'word2vec':
-#             with open("../work/%s-%s/obj/alpha_%f_pretrained.pkl" % (source,target,param),'rb') as f:
-#                 return pickle.load(f)
-#         else:
-#             with open("../work/%s-%s/obj/alpha_%f_pretrained_glove.pkl" % (source,target,param),'rb') as f:
-#                 return pickle.load(f)
-#     pass
-
 def load_loop_obj(dirname,name):
     with open(dirname+"%s.pkl" % name,'rb') as f:
         return pickle.load(f)
@@ -533,32 +497,6 @@ def compute_all_gamma():
     print '-----Complete!!-----'
     pass
 
-# def solve_all_qp(param,model_name,pretrained):
-#     domains = ["books", "electronics", "dvd", "kitchen"]
-#     for source in domains:
-#         for target in domains:
-#             if source ==target:
-#                 continue
-#             print 'solving QP for %s-%s ...' % (source,target)
-#             dirname = '../work/%s-%s/obj/'% (source,target)
-#             alpha = opt_function(dirname,param,model_name,pretrained)
-#             print 'alpha length: %d' % len(alpha)
-#             if pretrained == 0 : 
-#                 if model_name == 'word2vec':
-#                     save_loop_obj(alpha,dirname,'alpha_%f'%param)
-#                 else:
-#                     print 'alpha_%f_glove is going to be saved'%param
-#                     save_loop_obj(alpha,dirname,'alpha_%f_glove'%param)
-#             else:
-#                 if model_name == 'word2vec':
-#                     save_loop_obj(alpha,dirname,'alpha_%f_pretrained'%param)
-#                 else:
-#                     print 'alpha_%f_pretrained_glove is going to be saved'%param
-#                     save_loop_obj(alpha,dirname,'alpha_%f_pretrained_glove'%param)
-
-#     print '-----Complete!!-----'
-#     pass
-
 def store_all_selections(params,model,pretrained,paramOn):
     domains = ["books", "electronics", "dvd", "kitchen"]
     for param in params:
@@ -570,18 +508,6 @@ def store_all_selections(params,model,pretrained,paramOn):
                 select_pivots_by_alpha(source,target,param,model,pretrained,paramOn)
                 print '------selection completed--------' 
     pass
-
-# params variation for the methods
-# def store_param_selections(params,model,pretrained):
-#     for param in params:
-#         solve_all_qp(param,model,pretrained)
-#         domains = ["books", "electronics", "dvd", "kitchen"]
-#         for source in domains:
-#             for target in domains:
-#                 if source ==target:
-#                     continue
-#                 select_pivots_by_alpha_with_param(source,target,param,model,pretrained)
-#     pass
 
 # test methods
 def solve_qp():
@@ -603,7 +529,7 @@ def construct_freq_dict():
 def print_alpha():
     source = 'books'
     target = 'dvd'
-    param = 50
+    param = 1
     model = 'glove'
     pretrained = 1
     paramOn=True
@@ -662,16 +588,19 @@ if __name__ == "__main__":
     # compute_all_gamma()
     # params = [1,10e-3]
     # model_names = ['word2vec','glove']
-    ######param#########
+    # ######param#########
     # params = [1,50,100,1000,10000]
+    params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # model_names = ['word2vec']
-    # # model_names = ['glove']
-    # for model in model_names:
-    #     store_all_selections(params,model,1,True)
+    model_names = ['glove']
+    paramOn = True
+    # paramOn = False
+    for model in model_names:
+        store_all_selections(params,model,1,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha()
+    # print_alpha()
     # glove_model_test()
     # read_glove()
     # read_word2vec()
