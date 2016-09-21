@@ -275,7 +275,7 @@ def qp_solver(Uk,Rk,param):
     P = P.astype(float) 
     # print "%d" % len(P)
     print Rk.keys()==Uk.keys()
-    q = numpy.dot(param,R)
+    q = numpy.dot(-param,R)
     n = len(q)
     G = matrix(0.0, (n,n))
     G[::n+1] = -1.0 
@@ -526,10 +526,10 @@ def construct_freq_dict():
     print len(freq_keys(source,target,limit))
     pass
 
-def print_alpha():
+def print_alpha(param):
     source = 'books'
-    target = 'dvd'
-    param = 0.8
+    target = 'electronics'
+    param = param
     model = 'glove'
     pretrained = 1
     paramOn=True
@@ -537,7 +537,7 @@ def print_alpha():
     temp = 'landmark' if pretrained == 0 else 'landmark_pretrained'
     method = method_name_param(temp,model,param) if paramOn==True else method_name(temp,model,param)
     alpha = load_loop_obj(dirname,method)
-    for x,score in alpha[:10]:
+    for x,score in alpha[:50]:
         print x,score
     pass
 
@@ -588,18 +588,18 @@ if __name__ == "__main__":
     # params = [1,10e-3]
     # model_names = ['word2vec','glove']
     # ######param#########
-    # params = [1,50,100,1000,10000]
+    # params = [50,100,1000,10000]
     # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # # model_names = ['word2vec']
+    # model_names = ['word2vec']
     # model_names = ['glove']
     # paramOn = True
-    # # paramOn = False
+    # paramOn = False
     # for model in model_names:
     #     store_all_selections(params,model,1,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha()
+    print_alpha(50)
     # glove_model_test()
     # read_glove()
     # read_word2vec()
