@@ -339,6 +339,7 @@ def sim_eval(method, test_k):
                 h2 = un_label[:k]
                 JC = cr.jaccard_coefficient(h1,h2)
                 KC = cr.kendall_rank_coefficient(h1,h2)
+                print "%d: %s -> %s (%s): JC = %f KC = %f" % (k, source, target, method, JC, KC)
                 resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, JC, KC, k))
                 resFile.flush()
     resFile.close()
@@ -566,14 +567,15 @@ if __name__ == "__main__":
     # un_mi = load_obj("un_mi")
     # pmi = load_obj("pmi")
     # un_pmi = load_obj("un_pmi")
-    # test_k = [100,500,1000,1500,2000,3000]
-    # methods = ["freq","mi","pmi"]
-    # for method in methods:
-    #     sim_eval(method, test_k)
+    test_k = [100,200,300,400,500,1000,1500,2000,3000]
+    methods = ["freq","mi","pmi"]
+    for method in methods:
+        sim_eval(method, test_k)
     # test_k = [100,200,300,400,500,1000,1500,2000]
     # datasets = ["L","U"]
     # for dataset in datasets:
-    #     methods_eval_range(dataset, test_k)
+        # methods_eval_range(dataset, test_k)
+        # methods_eval(dataset, test_k)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # source =  "books"
     # target = "dvd"
@@ -592,14 +594,14 @@ if __name__ == "__main__":
     # targets = ["electronics", "dvd", "kitchen"]
     # for target in targets:
     #     top_k_pivots(source,target,method,k)
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods = methods+["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # methods = methods+["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
 
-    test_k = [100,200,300,400,500]
+    # test_k = [100,200,300,400,500]
     # test_k = [10,20,30,40,50,60,70,80,90,100]
     # landmark_methods_eval_range(test_k,methods)
     # mi_eval(test_k)
     # pmi_eval(test_k)
     
     # test_k = [100]
-    landmark_methods_eval(test_k,methods)
+    # landmark_methods_eval(test_k,methods)

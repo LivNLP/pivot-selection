@@ -59,7 +59,7 @@ def drawer(methods,pairs,accuracy_all,interval_all,DAmethod):
 def convert(method):
     if "landmark_" in method:
         if "_ppmi" in method:
-            return "%s with PPMI" % method.replace("_ppmi","")
+            return "%s+PPMI" % method.replace("_ppmi","")
         else:
             return method
     else:

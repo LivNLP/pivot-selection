@@ -22,6 +22,19 @@ def collect_accuracy(csv_file):
     return new_list
     pass
 
+# convert names
+def convert(method):
+    if "landmark_" in method:
+        if "_ppmi" in method:
+            return "%s+PPMI" % method.replace("_ppmi","")
+        else:
+            return method
+    else:
+        if "un_" in method:
+            return "%s$_U$" % method.replace("un_","").upper()
+        else:
+            return "%s$_L$" % method.upper()
+
 def construct_accuracy_table(pv_methods,da_method):
     table = []
     i = 0
@@ -40,10 +53,12 @@ def construct_accuracy_table(pv_methods,da_method):
             # print tmp
         table.append(tmp)
 
-    print tabulate(table,[da_method]+pv_methods)
+    headers = [da_method]+[convert(x) for x in pv_methods]
+    print tabulate(table,headers)
+    # print tabulate(table,headers,tablefmt="latex")
     pass
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # DAmethod = "SCL"
-    DAmethod = "SFA"
+    DAmethod = "SCL"
+    # DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)

@@ -16,8 +16,9 @@ def collector(method,lookfor_pair):
         pair = "%s-%s"%(src,tgt)
         if lookfor_pair == pair:    
             jaccard = float(p[3])
+            kendall = float(p[4])
             n_pivots = int(float(p[5]))
-            new_list.append((jaccard,n_pivots))   
+            new_list.append((jaccard,n_pivots,kendall))   
     # print new_list
     return new_list
     pass
@@ -86,6 +87,17 @@ def convert(method):
 def convert_label(method,domain_pair):
     return "%s$_{%s}$"% (method.upper(),domain_pair)
 
+####runner####
+def draw_two(methods,pair_1,pair_2):
+    drawer_two_pairs(constructer(methods,pair_1),constructer(methods,pair_2),
+        pair_1, pair_2, methods)
+    pass
+
+def draw_one(methods,lookfor_pair):
+    drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
+    pass
+
+
 if __name__ == "__main__":
     methods = ["mi","pmi"]
     # methods = ["freq"]
@@ -93,6 +105,5 @@ if __name__ == "__main__":
     # lookfor_pair = "K-E"
     pair_1 = "E-K"
     pair_2 = "K-E"
-    drawer_two_pairs(constructer(methods,pair_1),constructer(methods,pair_2),
-        pair_1, pair_2, methods)
-    # drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
+    draw_two(methods,pair_1,pair_2)
+    draw_one(methods,lookfor_pair)

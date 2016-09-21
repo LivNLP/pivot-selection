@@ -530,8 +530,8 @@ def print_alpha(param):
     source = 'books'
     target = 'dvd'
     param = param
-    model = 'word2vec'
-    # model = 'glove'
+    # model = 'word2vec'
+    model = 'glove'
     pretrained = 1
     paramOn=True
     # paramOn=False
@@ -539,7 +539,7 @@ def print_alpha(param):
     temp = 'landmark' if pretrained == 0 else 'landmark_pretrained'
     method = method_name_param(temp,model,param) if paramOn==True else method_name(temp,model,param)
     alpha = load_loop_obj(dirname,method)
-    for x,score in alpha[:5]:
+    for x,score in alpha[:10]:
         print x,score
     pass
 
@@ -587,21 +587,21 @@ if __name__ == "__main__":
     # calculate_all_u_pretrained_glove()
     # calculate_all_u()
     # compute_all_gamma()
-    params = [0]
-    model_names = ['word2vec','glove']
+    # params = [1]
+    # model_names = ['word2vec','glove']
     # ######param#########
     # params = [50,100,1000,10000]
     # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # model_names = ['word2vec']
     # model_names = ['glove']
-    paramOn = True
+    # paramOn = True
     # paramOn = False
-    for model in model_names:
-        store_all_selections(params,model,1,paramOn)
+    # for model in model_names:
+    #     store_all_selections(params,model,1,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    # print_alpha(1)
+    print_alpha(2)
     # glove_model_test()
     # read_glove()
     # read_word2vec()
