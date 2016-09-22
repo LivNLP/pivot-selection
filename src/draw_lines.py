@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 opacity = 0.6
-font = {  'size'   : 15}
+font = {  'size'   : 13}
 matplotlib.rc('font', **font)
 
 def collector(method,lookfor_pair):
