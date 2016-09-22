@@ -567,8 +567,10 @@ if __name__ == "__main__":
     # un_mi = load_obj("un_mi")
     # pmi = load_obj("pmi")
     # un_pmi = load_obj("un_pmi")
-    test_k = [100,200,300,400,500,1000,1500,2000,3000]
-    methods = ["freq","mi","pmi"]
+    test_k = [100,200,300,400,500,1000,1500,2000]
+    # methods = ["mi"]
+    # methods = ['freq']
+    methods = ['pmi']
     for method in methods:
         sim_eval(method, test_k)
     # test_k = [100,200,300,400,500,1000,1500,2000]

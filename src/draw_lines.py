@@ -24,12 +24,12 @@ def collector(method,lookfor_pair):
     pass
 
 
-def drawer(draw_lists,lookfor_pair,methods):
+def drawer(draw_lists,lookfor_pair,methods,jaccard):
     plt.figure(figsize=(7,5.5))
     x = [tmp[1] for tmp in draw_lists[0]]
     ys = []
     for draw_list in draw_lists:
-        ys.append([tmp[0] for tmp in draw_list])
+        ys.append([tmp[0]  if jaccard == True else tmp[2] for tmp in draw_list])
     index = np.arange(len(x))
     i = 0
     for y in ys:    
@@ -40,21 +40,21 @@ def drawer(draw_lists,lookfor_pair,methods):
     plt.title(lookfor_pair)
     plt.xlabel('$k$(#pivots)')
     plt.xticks(index,x)
-    plt.ylabel('$J(L,U)$')
+    plt.ylabel('$J(L,U)$' if jaccard == True else '$K(L,U)$')
     plt.legend()
 
     plt.show()
     pass
 
-def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
+def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods,jaccard):
     plt.figure(figsize=(7,5.5))
     x = [tmp[1] for tmp in collection_1[0]]
     ys_1 = []
     ys_2 = []
     for draw_list in collection_1:
-        ys_1.append([tmp[0] for tmp in draw_list])
+        ys_1.append([tmp[0]  if jaccard == True else tmp[2] for tmp in draw_list])
     for draw_list in collection_2:
-        ys_2.append([tmp[0] for tmp in draw_list])
+        ys_2.append([tmp[0]  if jaccard == True else tmp[2] for tmp in draw_list])
     index = np.arange(len(x))
     i = 0
     for y_1 in ys_1:
@@ -68,7 +68,7 @@ def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods):
     plt.title("%s and %s"%(pair_1, pair_2))
     plt.xlabel('$k$(#pivots)')
     plt.xticks(index,x)
-    plt.ylabel('$J(L,U)$')
+    plt.ylabel('$J(L,U)$' if jaccard == True else '$K(L,U)$')
     plt.legend()
 
     plt.show()
@@ -88,12 +88,12 @@ def convert_label(method,domain_pair):
     return "%s$_{%s}$"% (method.upper(),domain_pair)
 
 ####runner####
-def draw_two(methods,pair_1,pair_2):
+def draw_two(methods,pair_1,pair_2,jaccard):
     drawer_two_pairs(constructer(methods,pair_1),constructer(methods,pair_2),
-        pair_1, pair_2, methods)
+        pair_1, pair_2, methods,jaccard)
     pass
 
-def draw_one(methods,lookfor_pair):
+def draw_one(methods,lookfor_pair,jaccard):
     drawer(constructer(methods,lookfor_pair),lookfor_pair,methods)
     pass
 
@@ -105,5 +105,6 @@ if __name__ == "__main__":
     # lookfor_pair = "K-E"
     pair_1 = "E-K"
     pair_2 = "K-E"
-    draw_two(methods,pair_1,pair_2)
-    draw_one(methods,lookfor_pair)
+    jaccard = False
+    draw_two(methods,pair_1,pair_2,jaccard)
+    # draw_one(methods,lookfor_pair,jaccard)
