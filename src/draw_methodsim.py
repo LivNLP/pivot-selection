@@ -31,7 +31,7 @@ def collector_margnal(pv_method,lookfor_pair,max_end):
     next(input_file)
     for line in input_file:
         p = line.strip('\n').split(', ')
-        if float(p[6]) <= max_end:
+        if float(p[7]) <= max_end:
             m1 = p[2].upper()
             m2 = p[3].upper()
             method_pair = (m1,m2)
@@ -41,10 +41,11 @@ def collector_margnal(pv_method,lookfor_pair,max_end):
                 tgt = p[1][0].capitalize()
                 domain_pair = "%s-%s"%(src,tgt)
                 jaccard = float(p[4])
-                pv_start = int(float(p[5]))
-                pv_end = int(float(p[6]))
+                kendall = float(p[5])
+                pv_start = int(float(p[6]))
+                pv_end = int(float(p[7]))
                 pv_range = "%s-%s"%(pv_start,pv_end)
-                new_list.append([jaccard,pv_range,domain_pair])
+                new_list.append([jaccard,pv_range,domain_pair,kendall])
     return new_list
     pass
 
@@ -71,7 +72,7 @@ def drawer(argmts,jaccard):
     plt.show()
     pass
 
-def drawer_margnal(argmts):
+def drawer_margnal(argmts,jaccard):
     x,ys,domain_pairs = argmts
     fig, ax = plt.subplots(figsize=(9,6))
     index = np.arange(len(x))
@@ -84,7 +85,7 @@ def drawer_margnal(argmts):
     plt.title(convert_title(lookfor_pair,pv_method),size=22)
     plt.xlabel('pivot range',size=18)
     plt.xticks(index,x)
-    plt.ylabel('$J(M_1,M_2)$',size=18)
+    plt.ylabel('$J(M_1,M_2)$' if jaccard == True else '$K(M_1,M_2)$',size=18)
     #right box
     box = ax.get_position()
     ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -122,8 +123,8 @@ def draw(pv_method,lookfor_pair,jaccard):
     drawer(constructer(collector(pv_method, lookfor_pair),jaccard),jaccard)
     pass
 
-def draw_margal(pv_method, lookfor_pair,jaccard):
-    drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 100),jaccard))
+def draw_margnal(pv_method, lookfor_pair,jaccard):
+    drawer_margnal(constructer(collector_margnal(pv_method, lookfor_pair, 500),jaccard),jaccard)
     pass
 
 if __name__ == "__main__":
@@ -142,4 +143,5 @@ if __name__ == "__main__":
     jaccard = False
     # lookfor_pair = (m1,m2)
     draw(pv_method,lookfor_pair,jaccard)
+    # draw_margnal(pv_method,lookfor_pair,jaccard)
     

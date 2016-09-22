@@ -383,7 +383,7 @@ def methods_eval_range(dataset,test_k):
         methods = ["un_freq","un_mi","un_pmi"]
     method_pairs = list(itertools.combinations(methods, 2))
     print "We are going to compare ", method_pairs, " in ", dataset
-    resFile.write("Source, Target, Method, Method, JC, #pivots_start, #pivots_end\n")
+    resFile.write("Source, Target, Method, Method, JC, KC, #pivots_start, #pivots_end\n")
     # initial k, start point of the range of k
     start_k = 0 
     for k in test_k:
@@ -398,9 +398,9 @@ def methods_eval_range(dataset,test_k):
                     h1 = method_i[start_k:k]
                     h2 = method_j[start_k:k]
                     JC = cr.jaccard_coefficient(h1,h2)
-                    # KC = cr.kendall_rank_coefficient(h1,h2)
-                    print "%s -> %s (%s, %s): JC = %f" % (source, target, i, j, JC)
-                    resFile.write("%s, %s, %s, %s, %f, %f, %f\n" % (source, target, i, j, JC,start_k, k))
+                    KC = cr.kendall_rank_coefficient(h1,h2)
+                    print "%s -> %s (%s, %s): JC = %f KC =%f" % (source, target, i, j, JC, KC)
+                    resFile.write("%s, %s, %s, %s, %f, %f, %f, %f\n" % (source, target, i, j, JC,KC, start_k, k))
                     resFile.flush()
         start_k = k
     resFile.close()
@@ -567,16 +567,16 @@ if __name__ == "__main__":
     # un_mi = load_obj("un_mi")
     # pmi = load_obj("pmi")
     # un_pmi = load_obj("un_pmi")
-    test_k = [100,200,300,400,500,1000,1500,2000]
+    # test_k = [100,200,300,400,500,1000,1500,2000]
     # methods = ["mi"]
     # methods = ['freq']
-    methods = ['pmi']
-    for method in methods:
-        sim_eval(method, test_k)
-    # test_k = [100,200,300,400,500,1000,1500,2000]
-    # datasets = ["L","U"]
-    # for dataset in datasets:
-        # methods_eval_range(dataset, test_k)
+    # methods = ['pmi']
+    # for method in methods:
+    #     sim_eval(method, test_k)
+    test_k = [100,200,300,400,500]
+    datasets = ["L","U"]
+    for dataset in datasets:
+        methods_eval_range(dataset, test_k)
         # methods_eval(dataset, test_k)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # source =  "books"

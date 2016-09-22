@@ -99,8 +99,8 @@ def draw_one(methods,lookfor_pair,jaccard):
 
 
 if __name__ == "__main__":
-    methods = ["mi","pmi"]
-    # methods = ["freq"]
+    # methods = ["mi","pmi"]
+    methods = ["freq"]
     # lookfor_pair = "E-K"
     # lookfor_pair = "K-E"
     pair_1 = "E-K"
