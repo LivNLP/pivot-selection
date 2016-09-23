@@ -592,6 +592,7 @@ if __name__ == "__main__":
     # ######param#########
     # params = [50,100,1000,10000]
     # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params = [10e-3,10e-4,10e-5,10e-6]
     # model_names = ['word2vec']
     # model_names = ['glove']
     # paramOn = True
@@ -601,7 +602,7 @@ if __name__ == "__main__":
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha(2)
+    print_alpha(10e-4)
     # glove_model_test()
     # read_glove()
     # read_word2vec()

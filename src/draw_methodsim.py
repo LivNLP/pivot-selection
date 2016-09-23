@@ -140,8 +140,8 @@ if __name__ == "__main__":
     # m2 = "landmark_glove"
     # pv_method = "100"
     lookfor_pair = (m1.upper(),m2.upper())
-    jaccard = False
+    jaccard = True
     # lookfor_pair = (m1,m2)
-    draw(pv_method,lookfor_pair,jaccard)
-    # draw_margnal(pv_method,lookfor_pair,jaccard)
+    # draw(pv_method,lookfor_pair,jaccard)
+    draw_margnal(pv_method,lookfor_pair,jaccard)
     

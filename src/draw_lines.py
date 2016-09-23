@@ -105,6 +105,6 @@ if __name__ == "__main__":
     # lookfor_pair = "K-E"
     pair_1 = "E-K"
     pair_2 = "K-E"
-    jaccard = False
+    jaccard = True
     draw_two(methods,pair_1,pair_2,jaccard)
     # draw_one(methods,lookfor_pair,jaccard)

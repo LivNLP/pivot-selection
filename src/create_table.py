@@ -59,6 +59,6 @@ def construct_accuracy_table(pv_methods,da_method):
     pass
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    DAmethod = "SCL"
-    # DAmethod = "SFA"
+    # DAmethod = "SCL"
+    DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)
