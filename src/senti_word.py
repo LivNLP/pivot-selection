@@ -17,7 +17,7 @@ def senti_list(feats):
     mid = sum(1 for x in feats if senti_score(x) == 0 )
     pos = sum(1 for x in feats if senti_score(x) > 0 )
     neg = sum(1 for x in feats if senti_score(x) < 0 )
-    print 'neutral = %d, positive = %d, negative = %d'%(mid,pos,neg)
+    # print 'neutral = %d, positive = %d, negative = %d'%(mid,pos,neg)
     return mid,pos,neg 
 
 def choose_param(method,params,n):
@@ -30,9 +30,10 @@ def choose_param(method,params,n):
             for target in domains:
                 if source == target:
                     continue
-                pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+                pivotsFile = "../work/%s-%s/obj/%s" % (source, target, test_method)
                 features = pi.load_stored_obj(pivotsFile)
                 mid,pos,neg = senti_list(dict(features[:n]).keys())
+                # print "dir: %s, %d,%d,%d"%(pivotsFile,mid,pos,neg)
                 resFile.write("%s, %s, %s, %f, %f, %f, %f\n"%(source,target,method,pos,neg,mid,param))
                 resFile.flush()
     resFile.close()
@@ -41,8 +42,9 @@ def choose_param(method,params,n):
 # main
 if __name__ == "__main__":
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    n = 1000
+    n = 100
     # params = [1,50,100,1000,10000]
+    # params = [0,10e-3,10e-4,10e-5,10e-6]
     params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     for method in methods:
         choose_param(method,params,n)   

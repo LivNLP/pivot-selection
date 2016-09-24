@@ -602,7 +602,7 @@ if __name__ == "__main__":
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha(10e-4)
+    print_alpha(10e-6)
     # glove_model_test()
     # read_glove()
     # read_word2vec()
