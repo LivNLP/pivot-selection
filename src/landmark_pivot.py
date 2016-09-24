@@ -539,6 +539,7 @@ def print_alpha(param):
     temp = 'landmark' if pretrained == 0 else 'landmark_pretrained'
     method = method_name_param(temp,model,param) if paramOn==True else method_name(temp,model,param)
     alpha = load_loop_obj(dirname,method)
+    print 'param = %f'%param
     for x,score in alpha[:10]:
         print x,score
     pass
@@ -602,7 +603,7 @@ if __name__ == "__main__":
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha(10e-6)
+    print_alpha(0)
     # glove_model_test()
     # read_glove()
     # read_word2vec()
