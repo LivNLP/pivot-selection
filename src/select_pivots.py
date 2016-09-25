@@ -188,7 +188,7 @@ def select_un_pivots_pmi():
     #     print x, mi_dict.get(x,0)
     # pass
 
-# to construct presets of labeled data in source and target domain
+# to construct presets of labeled data in source domain
 def label_presets(source, target):
     # source
     pos_src_reviews = count_reviews("../data/%s/train.positive" % source)

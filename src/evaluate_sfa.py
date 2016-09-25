@@ -111,6 +111,18 @@ def getVal(x, y, M):
         return 0
     pass
 
+def getVocab(S, fname):
+    """
+    Get the frequency of each feature in the file named fname. 
+    """
+    F = open(fname)
+    for line in F:
+        p = line.strip().split()
+        for w in p:
+            S[w] = S.get(w, 0) + 1
+    F.close()
+    pass
+
 def createMatrix(source, target, method, n):
     """
     Read the unlabeled data (test and train) for both source and the target domains. 
@@ -123,36 +135,18 @@ def createMatrix(source, target, method, n):
     """
 
     # Parameters
-    domainTh = {'books':1, 'dvd':1, 'kitchen':1, 'electronics':1}
-    coocTh = 1
-    #n = 500
-
+    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
+    coocTh = 5
+    noPivots = n
     print "Source = %s, Target = %s" % (source, target)
     
-    # Load domain independent feature list 
-    pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
-    features = pi.load_stored_obj(pivotsFile)
-    DI = dict(features[:n]).keys()
-    print "selecting top-%d features in %s as pivots" % (n, method)
-    # print DI
-
-    # Load features and get domain specific features
+    # Load features
     fname = "../work/%s-%s/obj/freq" % (source, target)
     if "un_" in method:
         fname = "../work/%s-%s/obj/un_freq" % (source, target)
     features = pi.load_stored_obj(fname)
-    feats = selectTh(dict(features),domainTh[source])
-    print "experimental features = ", len(feats)
-    # print feats.keys()
-
-    DSList = [item for item in feats if item not in DI]
-    # print len(DSList), len(feats)
+    V = selectTh(dict(features),domainTh[source])
     
-    nDS = len(DSList)
-    nDI = len(DI)
-    
-    # Get the union (and total frequency in both domains) for all features.
-    V = feats
     # Compute the co-occurrences of features in reviews
     M = {}
     print "Vocabulary size =", len(V)
@@ -162,15 +156,38 @@ def createMatrix(source, target, method, n):
     print "%s negative %d" % (source, len(M))
     getCounts(V, M, "../data/%s/train.unlabeled" % source)
     print "%s unlabeled %d" % (source, len(M))
-    getCounts(V, M, "../data/%s/train.positive" % target)
-    print "%s positive %d" % (target, len(M))   
-    getCounts(V, M, "../data/%s/train.negative" % target)
-    print "%s negative %d" % (target, len(M))   
+    # getCounts(V, M, "../data/%s/train.positive" % target)
+    # print "%s positive %d" % (target, len(M))   
+    # getCounts(V, M, "../data/%s/train.negative" % target)
+    # print "%s negative %d" % (target, len(M))   
     getCounts(V, M, "../data/%s/train.unlabeled" % target)
     print "%s unlabeled %d" % (target, len(M))  
     # Remove co-occurrence less than the coocTh
     M = selectTh(M, coocTh)
 
+    print "selecting top-%d features in %s as pivots" % (n, method)
+    pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+    features = pi.load_stored_obj(pivotsFile)
+    pi.load_stored_obj(pivotsFile)
+    DI = dict(features[:n]).keys()
+    # DI = []
+    # for w, v in pivots:
+    #     pivotsFile.write("%d %s P %s\n" % (i+1, w, str(v))) 
+    #     DI.append(w)
+    # pivotsFile.close()
+
+    DSList = [item for item in V.keys() if item not in DI]
+    print "Total no. of domain specific features =", len(DSList)
+
+    # Domain specific feature list.
+    DSFile = open("../work/%s-%s/DS_list" % (source, target), 'w')
+    count = 0
+    for w in DSList:
+        count += 1
+        DSFile.write("%d %s\n" % (count, w))
+    DSFile.close() 
+    nDS = len(DSList)
+    nDI = len(DI)
     # Compute matrix DSxSI and save it. 
     R = np.zeros((nDS, nDI), dtype=np.float)
     for i in range(0, nDS):
@@ -224,9 +241,13 @@ def evaluate_SA(source, target, project,gamma, n):
     M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj.mat" % (source, target))['proj'])
     (nDS, h) = M.shape
     # Load the domain specific features.
-    pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
-    features = pi.load_stored_obj(pivotsFile)
-    DSfeat = dict(features[:n])
+    DSfeat = {}
+    DSFile = open("../work/%s-%s/DS_list" % (source, target))
+    for line in DSFile:
+        p = line.strip().split()
+        DSfeat[p[1].strip()] = int(p[0])
+    DSFile.close()
+    
     
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.SFA" % (source, target)
@@ -343,18 +364,13 @@ def choose_param(method,params,gamma,n):
 if __name__ == "__main__":
     # source = "kitchen"
     # target = "dvd"
-    # method = "pmi"
-    #generateFeatureVectors("books")
-    #generateFeatureVectors("dvd")
-    #generateFeatureVectors("electronics")
-    #generateFeatureVectors("kitchen")
-    #generateAll()
+    # method = "freq"
     # createMatrix(source, target, method, 500)
     # learnProjection(source, target)
-    #evaluate_SA(source, target, False)
+    # evaluate_SA(source, target, False,1,500)
     # evaluate_SA(source, target, True, 500)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
@@ -368,5 +384,6 @@ if __name__ == "__main__":
     #     choose_gamma(source, target, method,gammas,n)
     # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params = [1,50,100,1000,10000]
+    # params = [10e-3,10e-4,10e-5,10e-6]
     # for method in methods:
     #     choose_param(method,params,1,n)

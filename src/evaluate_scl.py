@@ -116,7 +116,7 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     print "experimental features = ", len(feats)
     # print feats.keys()
 
-    DSwords = [item for item in feats if item not in pivots]
+    # DSwords = [item for item in feats if item not in pivots]
 
     feats = feats.keys()
     # Load train vectors.
