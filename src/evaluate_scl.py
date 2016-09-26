@@ -320,8 +320,7 @@ def evaluate_NA(source, target):
             # write the original features.
             for w in words:
                 featFile.write("%d %s\n" % (label, w))
-                print "%d %s\n" % (label, w)
-            #    featFile.write("%d %s\n" % label)
+                # print "%d %s\n" % (label, w)
         F.close()
     featFile.close()
     # write test feature vectors.
@@ -336,7 +335,7 @@ def evaluate_NA(source, target):
             # write the original features.
             for w in words:
                 featFile.write("%d %s\n" % (label, w))
-                print "%d %s\n" % (label, w)
+                # print "%d %s\n" % (label, w)
         F.close()
     featFile.close()
     # Train using classias.
@@ -368,6 +367,22 @@ def batchEval(method, gamma, n):
     resFile.close()
     pass
 
+def batchNA():
+    resFile = open("../work/batchNA.NA.csv", "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh\n")
+    for source in domains:
+        for target in domains:
+            if source == target:
+                continue
+            evaluation = evaluate_NA(source, target)
+            resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, 'NA', evaluation[0], evaluation[1][0],evaluation[1][1]))
+            resFile.flush()
+    resFile.close()
+    pass
+
+
+
 def choose_gamma(source, target, method, gammas, n):
     resFile = open("../work/gamma/%s-%s/SCLgamma.%s.csv"% (source, target, method), "w")
     resFile.write("Source, Target, Method, Proj, Gamma\n")
@@ -396,9 +411,10 @@ def choose_param(method,params,gamma,n):
     pass
 
 if __name__ == "__main__":
-    source = "dvd"
-    target = "books"
-    evaluate_NA(source,target)
+    # source = "dvd"
+    # target = "books"
+    # evaluate_NA(source,target)
+    batchNA()
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
