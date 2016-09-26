@@ -212,7 +212,7 @@ def evaluate_SA(source, target, project, gamma, method, n):
     pivots = dict(features[:n]).keys()
     print "selecting top-%d features in %s as pivots" % (n, method)
 
-    # Load features and get domain specific features
+    # Load features 
     fname = "../work/%s-%s/obj/freq" % (source, target)
     if "un_" in method:
         fname = "../work/%s-%s/obj/un_freq" % (source, target)
@@ -221,7 +221,7 @@ def evaluate_SA(source, target, project, gamma, method, n):
     print "experimental features = ", len(feats)
     #print feats
 
-    DSwords = [item for item in feats if item not in pivots]
+    # DSwords = [item for item in feats if item not in pivots]
 
     feats = feats.keys()
     # write train feature vectors.
@@ -285,6 +285,70 @@ def evaluate_SA(source, target, project, gamma, method, n):
     print "###########################################\n\n"
     return acc,intervals
 
+# NoAdapt Baseline
+def evaluate_NA(source, target):
+    """
+    Report the cross-domain sentiment classification accuracy. 
+    """
+    print "Source Domain", source
+    print "Target Domain", target
+
+ #    fname = "../work/%s-%s/obj/freq" % (source, target)
+ #    feats = pi.load_stored_obj(fname)[:500]
+
+ # # Load train vectors.
+ #    print "Loading Training vectors...",
+ #    startTime = time.time()
+ #    vects = []
+ #    vects.extend(loadFeatureVecors("../data/%s/train.positive" % source, feats))
+ #    vects.extend(loadFeatureVecors("../data/%s/train.negative" % source, feats))
+ #    vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % source, feats))
+ #    endTime = time.time()
+ #    print "%ss" % str(round(endTime-startTime, 2))     
+
+    # write train feature vectors.
+    trainFileName = "../work/%s-%s/trainVects.NA" % (source, target)
+    testFileName = "../work/%s-%s/testVects.NA" % (source, target)
+    featFile = open(trainFileName, 'w')
+    count = 0
+    for (label, fname) in [(1, 'train.positive'), (-1, 'train.negative')]:
+        F = open("../data/%s/%s" % (source, fname))
+        for line in F:
+            count += 1
+            print "Train ", count
+            words = set(line.strip().split())
+            # write the original features.
+            for w in words:
+                featFile.write("%d %s\n" % (label, w))
+                print "%d %s\n" % (label, w)
+            #    featFile.write("%d %s\n" % label)
+        F.close()
+    featFile.close()
+    # write test feature vectors.
+    featFile = open(testFileName, 'w')
+    count = 0
+    for (label, fname) in [(1, 'test.positive'), (-1, 'test.negative')]:
+        F = open("../data/%s/%s" % (target, fname))
+        for line in F:
+            count += 1
+            #print "Test ", count
+            words = set(line.strip().split())
+            # write the original features.
+            for w in words:
+                featFile.write("%d %s\n" % (label, w))
+                print "%d %s\n" % (label, w)
+        F.close()
+    featFile.close()
+    # Train using classias.
+    modelFileName = "../work/%s-%s/model.NA" % (source, target)
+    trainLBFGS(trainFileName, modelFileName)
+    # Test using classias.
+    [acc,correct,total] = testLBFGS(testFileName, modelFileName)
+    intervals = clopper_pearson(correct,total)
+    print "Accuracy =", acc
+    print "Intervals=", intervals
+    print "###########################################\n\n"
+    return acc,intervals
 
 def batchEval(method, gamma, n):
     """
@@ -332,8 +396,9 @@ def choose_param(method,params,gamma,n):
     pass
 
 if __name__ == "__main__":
-    # source = "dvd"
-    # target = "kitchen"
+    source = "dvd"
+    target = "books"
+    evaluate_NA(source,target)
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
@@ -341,15 +406,15 @@ if __name__ == "__main__":
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    n = 100
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    # n = 100
     # for method in methods:
     #     batchEval(method, 1, n)
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
     # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params = [10e-3,10e-4,10e-5,10e-6]
+    # params = [10e-3,10e-4,10e-5,10e-6]
     # params = [1,50,100,1000,10000]
-    for method in methods:
-        choose_param(method,params,1,n)
+    # for method in methods:
+    #     choose_param(method,params,1,n)
