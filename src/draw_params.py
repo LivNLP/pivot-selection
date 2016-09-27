@@ -14,7 +14,7 @@ def collecter(da_method,pv_method):
         domain_pair = "%s-%s"%(src,tgt)
         acc = float(p[3])*100
         interval = (float(p[5]) - float(p[4]))*100/2.0
-        param = '%.1f' % float(p[6])
+        param = '%f' % float(p[6])
         new_list.append([domain_pair,acc,interval,param])
 
     print new_list

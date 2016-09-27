@@ -56,9 +56,10 @@ def construct_accuracy_table(pv_methods,da_method):
         best_idx = [i for i, j in enumerate(tmp) if j == best]
         # second_best = heapq.nlargest(2,tmp[1:])[1]
         # new_tmp = ["%.2f*"%x if (x>second_best+5 and x==best) else x for x in tmp[1:]]
+        new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
         # print new_tmp
         print pair,[convert(pv_methods[i-1]) for i in best_idx],best
-        table.append(tmp)
+        table.append(new_tmp)
         # print table
 
     headers = [da_method]+[convert(x) for x in pv_methods]
@@ -68,6 +69,6 @@ def construct_accuracy_table(pv_methods,da_method):
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     methods = methods+["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    DAmethod = "SCL"
-    # DAmethod = "SFA"
+    # DAmethod = "SCL"
+    DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)
