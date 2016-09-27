@@ -51,6 +51,10 @@ def construct_accuracy_table(pv_methods,da_method):
             m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
             tmp.append([x[2] for x in m_list if x[0]==pair][0])
             # print tmp
+        best = max(tmp[1:len(tmp)])
+        # print best
+        best_idx = [i for i, j in enumerate(tmp) if j == best]
+        print pair,[convert(pv_methods[i-1]) for i in best_idx],best
         table.append(tmp)
         # print table
 
@@ -60,7 +64,7 @@ def construct_accuracy_table(pv_methods,da_method):
     pass
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
+    methods = methods+["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     DAmethod = "SCL"
     # DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)
