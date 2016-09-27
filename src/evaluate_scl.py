@@ -344,30 +344,21 @@ def evaluate_InDomain(source, target):
     print "Source Domain", source
     print "Target Domain", target 
 
-    # training features
-    pos_features = pi.features_list("../data/%s/train.positive" % target)
-    neg_features = pi.features_list("../data/%s/train.negative" % target)
-    feats = list(set(pos_features).union(set(neg_features)))
-    x = np.zeros(len(feats), dtype=float)
-
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.ID" % (source, target)
     testFileName = "../work/%s-%s/testVects.ID" % (source, target)
     featFile = open(trainFileName, 'w')
     count = 0
     for (label, fname) in [(1, 'train.positive'), (-1, 'train.negative')]:
-        F = open("../data/%s/%s" % (target, fname)) # target label
+        F = open("../data/%s/%s" % (target, fname))
         for line in F:
-            # count += 1
+            count += 1
             # print "Train ", count
             words = set(line.strip().split())
-            featFile.write("%d " % label)
             # write the original features.
             for w in words:
-                if w in feats:
-                    x[feats.index(w)] = 1
-            featFile.write("%s\n" % (" ".join(str(idx)+':'+str(item) for idx,item in enumerate(x))))
-            # print " ".join(str(item) for item in x)
+                featFile.write("%d %s\n" % (label, w))
+                # print "%d %s\n" % (label, w)
         F.close()
     featFile.close()
     # write test feature vectors.
@@ -376,15 +367,13 @@ def evaluate_InDomain(source, target):
     for (label, fname) in [(1, 'test.positive'), (-1, 'test.negative')]:
         F = open("../data/%s/%s" % (target, fname))
         for line in F:
-            # count += 1
+            count += 1
             #print "Test ", count
             words = set(line.strip().split())
-            featFile.write("%d " % label)
             # write the original features.
             for w in words:
-                if w in feats:
-                    x[feats.index(w)] = 1
-            featFile.write("%s\n" % (" ".join(str(idx)+':'+str(item) for idx,item in enumerate(x))))
+                featFile.write("%d %s\n" % (label, w))
+                # print "%d %s\n" % (label, w)
         F.close()
     featFile.close()
     # Train using classias.
