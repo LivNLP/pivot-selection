@@ -291,20 +291,7 @@ def evaluate_NA(source, target):
     Report the cross-domain sentiment classification accuracy. 
     """
     print "Source Domain", source
-    print "Target Domain", target
-
- #    fname = "../work/%s-%s/obj/freq" % (source, target)
- #    feats = pi.load_stored_obj(fname)[:500]
-
- # # Load train vectors.
- #    print "Loading Training vectors...",
- #    startTime = time.time()
- #    vects = []
- #    vects.extend(loadFeatureVecors("../data/%s/train.positive" % source, feats))
- #    vects.extend(loadFeatureVecors("../data/%s/train.negative" % source, feats))
- #    vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % source, feats))
- #    endTime = time.time()
- #    print "%ss" % str(round(endTime-startTime, 2))     
+    print "Target Domain", target 
 
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.NA" % (source, target)
@@ -315,7 +302,7 @@ def evaluate_NA(source, target):
         F = open("../data/%s/%s" % (source, fname))
         for line in F:
             count += 1
-            print "Train ", count
+            # print "Train ", count
             words = set(line.strip().split())
             # write the original features.
             for w in words:
@@ -349,6 +336,69 @@ def evaluate_NA(source, target):
     print "###########################################\n\n"
     return acc,intervals
 
+# InDomain Baseline
+def evaluate_InDomain(source, target):
+    """
+    Report the cross-domain sentiment classification accuracy. 
+    """
+    print "Source Domain", source
+    print "Target Domain", target 
+
+    # training features
+    pos_features = pi.features_list("../data/%s/train.positive" % target)
+    neg_features = pi.features_list("../data/%s/train.negative" % target)
+    feats = list(set(pos_features).union(set(neg_features)))
+    x = np.zeros(len(feats), dtype=float)
+
+    # write train feature vectors.
+    trainFileName = "../work/%s-%s/trainVects.ID" % (source, target)
+    testFileName = "../work/%s-%s/testVects.ID" % (source, target)
+    featFile = open(trainFileName, 'w')
+    count = 0
+    for (label, fname) in [(1, 'train.positive'), (-1, 'train.negative')]:
+        F = open("../data/%s/%s" % (target, fname)) # target label
+        for line in F:
+            # count += 1
+            # print "Train ", count
+            words = set(line.strip().split())
+            featFile.write("%d " % label)
+            # write the original features.
+            for w in words:
+                if w in feats:
+                    x[feats.index(w)] = 1
+            featFile.write("%s\n" % (" ".join(str(idx)+':'+str(item) for idx,item in enumerate(x))))
+            # print " ".join(str(item) for item in x)
+        F.close()
+    featFile.close()
+    # write test feature vectors.
+    featFile = open(testFileName, 'w')
+    count = 0
+    for (label, fname) in [(1, 'test.positive'), (-1, 'test.negative')]:
+        F = open("../data/%s/%s" % (target, fname))
+        for line in F:
+            # count += 1
+            #print "Test ", count
+            words = set(line.strip().split())
+            featFile.write("%d " % label)
+            # write the original features.
+            for w in words:
+                if w in feats:
+                    x[feats.index(w)] = 1
+            featFile.write("%s\n" % (" ".join(str(idx)+':'+str(item) for idx,item in enumerate(x))))
+        F.close()
+    featFile.close()
+    # Train using classias.
+    modelFileName = "../work/%s-%s/model.ID" % (source, target)
+    trainLBFGS(trainFileName, modelFileName)
+    # Test using classias.
+    [acc,correct,total] = testLBFGS(testFileName, modelFileName)
+    intervals = clopper_pearson(correct,total)
+    print "Accuracy =", acc
+    print "Intervals=", intervals
+    print "###########################################\n\n"
+    return acc,intervals
+
+
 def batchEval(method, gamma, n):
     """
     Evaluate on all 12 domain pairs. 
@@ -381,7 +431,19 @@ def batchNA():
     resFile.close()
     pass
 
-
+def batchID():
+    resFile = open("../work/batchID.ID.csv", "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh\n")
+    for source in domains:
+        for target in domains:
+            if source == target:
+                continue
+            evaluation = evaluate_InDomain(source, target)
+            resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, 'ID', evaluation[0], evaluation[1][0],evaluation[1][1]))
+            resFile.flush()
+    resFile.close()
+    pass
 
 def choose_gamma(source, target, method, gammas, n):
     resFile = open("../work/gamma/%s-%s/SCLgamma.%s.csv"% (source, target, method), "w")
@@ -414,7 +476,8 @@ if __name__ == "__main__":
     # source = "dvd"
     # target = "books"
     # evaluate_NA(source,target)
-    batchNA()
+    # batchNA()
+    batchID()
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
