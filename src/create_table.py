@@ -1,4 +1,5 @@
 import numpy as np 
+import heapq
 from tabulate import tabulate
 
 # same method used for draw_barchart
@@ -51,9 +52,11 @@ def construct_accuracy_table(pv_methods,da_method):
             m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
             tmp.append([x[2] for x in m_list if x[0]==pair][0])
             # print tmp
-        best = max(tmp[1:len(tmp)])
-        # print best
+        best = max(tmp[1:])
         best_idx = [i for i, j in enumerate(tmp) if j == best]
+        # second_best = heapq.nlargest(2,tmp[1:])[1]
+        # new_tmp = ["%.2f*"%x if (x>second_best+5 and x==best) else x for x in tmp[1:]]
+        # print new_tmp
         print pair,[convert(pv_methods[i-1]) for i in best_idx],best
         table.append(tmp)
         # print table
