@@ -567,17 +567,17 @@ if __name__ == "__main__":
     # un_mi = load_obj("un_mi")
     # pmi = load_obj("pmi")
     # un_pmi = load_obj("un_pmi")
-    test_k = [100,200,300,400,500,1000,1500,2000]
+    # test_k = [100,200,300,400,500,1000,1500,2000]
     # test_k = [100,500,1000,1500,2000,3000]
     # methods = ["mi"]
     # methods = ['freq']
     # methods = ['pmi']
-    for method in methods:
-        sim_eval(method, test_k)
-    # test_k = [100,200,300,400,500]
-    # datasets = ["L","U"]
-    # for dataset in datasets:
-    #     methods_eval_range(dataset, test_k)
+    # for method in methods:
+        # sim_eval(method, test_k)
+    test_k = [100,200,300,400,500]
+    datasets = ["L","U"]
+    for dataset in datasets:
+        methods_eval_range(dataset, test_k)
         # methods_eval(dataset, test_k)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # source =  "books"

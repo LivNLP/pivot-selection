@@ -56,6 +56,7 @@ def construct_accuracy_table(pv_methods,da_method):
         best_idx = [i for i, j in enumerate(tmp) if j == best]
         # second_best = heapq.nlargest(2,tmp[1:])[1]
         # new_tmp = ["%.2f*"%x if (x>second_best+5 and x==best) else x for x in tmp[1:]]
+        # highlight the best result
         new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
         # print new_tmp
         print pair,[convert(pv_methods[i-1]) for i in best_idx],best
@@ -66,6 +67,7 @@ def construct_accuracy_table(pv_methods,da_method):
     print tabulate(table,headers,floatfmt=".2f")
     # print tabulate(table,headers,tablefmt="latex")
     pass
+
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     methods = methods+["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
