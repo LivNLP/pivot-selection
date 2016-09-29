@@ -62,7 +62,7 @@ def drawer(argmts,jaccard):
     plt.title(convert_title(lookfor_pair,pv_method),size=22)        
     plt.xlabel('$k$(#pivots)',size=18)
     plt.xticks(index,x)
-    plt.ylabel('$J(M_1,M_2)$' if jaccard == True else '$K(M_1,M_2)$',size=18)
+    plt.ylabel('$J(M_1,M_2)$' if jaccard == True else '$\\tau(M_1,M_2)$',size=18)
     #right box
     # box = ax.get_position()
     # ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -85,7 +85,7 @@ def drawer_margnal(argmts,jaccard):
     plt.title(convert_title(lookfor_pair,pv_method),size=22)
     plt.xlabel('pivot range',size=18)
     plt.xticks(index,x)
-    plt.ylabel('$J(M_1,M_2)$' if jaccard == True else '$K(M_1,M_2)$',size=18)
+    plt.ylabel('$J(M_1,M_2)$' if jaccard == True else '$\\tau(M_1,M_2)$',size=18)
     #right box
     box = ax.get_position()
     ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     # m2 = "landmark_glove"
     # pv_method = "100"
     lookfor_pair = (m1.upper(),m2.upper())
-    jaccard = True
+    jaccard = False
     # lookfor_pair = (m1,m2)
     # draw(pv_method,lookfor_pair,jaccard)
     draw_margnal(pv_method,lookfor_pair,jaccard)

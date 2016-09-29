@@ -40,7 +40,7 @@ def drawer(draw_lists,lookfor_pair,methods,jaccard):
     plt.title(lookfor_pair)
     plt.xlabel('$k$(#pivots)')
     plt.xticks(index,x)
-    plt.ylabel('$J(L,U)$' if jaccard == True else '$K(L,U)$')
+    plt.ylabel('$J(L,U)$' if jaccard == True else '$\\tau(L,U)$')
     plt.legend()
 
     plt.show()
@@ -68,7 +68,7 @@ def drawer_two_pairs(collection_1,collection_2,pair_1,pair_2,methods,jaccard):
     plt.title("%s and %s"%(pair_1, pair_2))
     plt.xlabel('$k$(#pivots)')
     plt.xticks(index,x)
-    plt.ylabel('$J(L,U)$' if jaccard == True else '$K(L,U)$')
+    plt.ylabel('$J(L,U)$' if jaccard == True else '$\\tau(L,U)$')
     plt.legend()
 
     plt.show()
@@ -99,12 +99,12 @@ def draw_one(methods,lookfor_pair,jaccard):
 
 
 if __name__ == "__main__":
-    # methods = ["mi","pmi"]
-    methods = ["freq"]
+    methods = ["mi","pmi"]
+    # methods = ["freq"]
     # lookfor_pair = "E-K"
     # lookfor_pair = "K-E"
     pair_1 = "E-K"
     pair_2 = "K-E"
-    jaccard = True
+    jaccard = False
     draw_two(methods,pair_1,pair_2,jaccard)
     # draw_one(methods,lookfor_pair,jaccard)
