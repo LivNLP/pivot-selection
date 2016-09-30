@@ -39,6 +39,9 @@ def choose_param(method,params,n):
     resFile.close()
     pass
 
+def method_eval(method,n):
+    pass
+
 # main
 if __name__ == "__main__":
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]

@@ -144,15 +144,17 @@ def gamma_function(source,target):
             ppmi_dict[x] = (ppmi(pos_pmi)-ppmi(neg_pmi))**2
         else:
             ppmi_dict[x] = 0
-    L = ppmi_dict.items()
     
-    print 'sorting...'
-    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
 
     dirname = '../work/%s-%s/obj/'% (source,target)
     print 'saving ppmi_dict in ' + dirname
-    save_loop_obj(ppmi_dict,dirname,'ppmi_dict')
-    return L
+    temp = normalize_dict(ppmi_dict)     
+    # L = temp.items()
+    # print 'sorting...'
+    # L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    # print temp.items()[:5]
+    save_loop_obj(temp,dirname,'ppmi_dict')
+    pass
 
 # f(Wk) = document frequency of Wk in S_L / # documents in S_L -
 # document frequency of Wk in T_U / # documents in T_U
@@ -274,7 +276,7 @@ def qp_solver(Uk,Rk,param):
     P = numpy.dot(2,U*U.T)
     P = P.astype(float) 
     # print "%d" % len(P)
-    print Rk.keys()==Uk.keys()
+    print sort_by_keys(Rk).keys()==sort_by_keys(Uk).keys()
     q = numpy.dot(-param,R)
     n = len(q)
     G = matrix(0.0, (n,n))
@@ -322,6 +324,11 @@ def select_pivots_by_alpha(source,target,param,model,pretrained,paramOn):
     return L
 
 # helper method
+def normalize_dict(a):
+    total = sum(a.itervalues(), 0.0)
+    a.update((k,v/total) for k,v in a.items())
+    return a
+
 def sort_by_keys(dic):
     dic.keys().sort()
     return dic
@@ -572,7 +579,8 @@ def print_ppmi():
     dirname = '../work/%s-%s/obj/'% (source,target)
     ppmi_dict = load_loop_obj(dirname,'ppmi_dict')
     L = ppmi_dict.items()
-    # L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    print len(ppmi_dict)
     for x,score in L[:10]:
         print x,ppmi_dict.get(x,0)
     pass
@@ -592,18 +600,18 @@ if __name__ == "__main__":
     # model_names = ['word2vec','glove']
     # ######param#########
     # params = [50,100,1000,10000]
-    # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # params = [10e-3,10e-4,10e-5,10e-6]
-    # model_names = ['word2vec']
+    params = [0,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params = [0,10e-3,10e-4,10e-5,10e-6,1]
+    model_names = ['word2vec']
     # model_names = ['glove']
-    # paramOn = True
+    paramOn = True
     # paramOn = False
-    # for model in model_names:
-    #     store_all_selections(params,model,1,paramOn)
+    for model in model_names:
+        store_all_selections(params,model,1,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
-    print_alpha(0)
+    # print_alpha(0)
     # glove_model_test()
     # read_glove()
     # read_word2vec()
