@@ -599,11 +599,11 @@ if __name__ == "__main__":
     # params = [1]
     # model_names = ['word2vec','glove']
     # ######param#########
-    params = [0,1,50,100,1000,10000]
-    # params = [0,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # params = [0,10e-3,10e-4,10e-5,10e-6,1]
-    # model_names = ['word2vec']
-    model_names = ['glove']
+    # params = [0,1,50,100,1000,10000]
+    # # params = [0,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    params = [10e-3,10e-4,10e-5,10e-6]
+    model_names = ['word2vec']
+    # model_names = ['glove']
     paramOn = True
     # paramOn = False
     for model in model_names:

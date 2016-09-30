@@ -20,6 +20,7 @@ def senti_list(feats):
     # print 'neutral = %d, positive = %d, negative = %d'%(mid,pos,neg)
     return mid,pos,neg 
 
+# different lambdas for single word embedding model
 def choose_param(method,params,n):
     domains = ["books", "electronics", "dvd", "kitchen"]
     resFile = open("../work/sim/Sentiparams.%s.csv"% method, "w")
@@ -39,7 +40,21 @@ def choose_param(method,params,n):
     resFile.close()
     pass
 
+# diffferent pv methods
 def method_eval(method,n):
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile = open("../work/sim/Sentisim.%s.csv"% method, "w")
+    resFile.write("Source, Target, Method, #Positive, #Negative, #Neutral\n")
+    for source in domains:
+        for target in domains:
+            if source == target:
+                continue
+            pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+            features = pi.load_stored_obj(pivotsFile)
+            mid,pos,neg = senti_list(dict(features[:n]).keys())
+            # print "dir: %s, %d,%d,%d"%(pivotsFile,mid,pos,neg)
+            resFile.write("%s, %s, %s, %f, %f, %f, %f\n"%(source,target,method,pos,neg,mid))
+            resFile.flush()
     pass
 
 # main
