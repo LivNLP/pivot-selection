@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from cycler import cycler
 from tabulate import tabulate
 opacity = 0.6
@@ -103,6 +103,6 @@ if __name__ == "__main__":
     # pv_method = "landmark_pretrained_word2vec"
     # da_method = 'SFA'
     da_method = 'SCL'
-    draw_figure(da_method,pv_method)
-    # draw_table(da_method,pv_method)
+    # draw_figure(da_method,pv_method)
+    draw_table(da_method,pv_method)
     

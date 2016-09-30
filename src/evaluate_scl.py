@@ -484,6 +484,7 @@ if __name__ == "__main__":
     # params = [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params = [10e-3,10e-4,10e-5,10e-6]
     # params = [1,50,100,1000,10000]
-    params = [0,10e-3,0.2,0.4,0.6,0.8,1]
+    params = [0,1,50,100,1000,10000]
+    # params = [0,10e-3,0.2,0.4,0.6,0.8,1]
     for method in methods:
         choose_param(method,params,1,n)
