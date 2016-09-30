@@ -374,7 +374,7 @@ if __name__ == "__main__":
     # methods = methods + ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
     # methods = ["freq"]
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    n = 100
+    n = 500
     # for method in methods:
     #     batchEval(method,1, n)
     # gammas = [1,5,10,20,50,100,1000]

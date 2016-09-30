@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from cycler import cycler
+from tabulate import tabulate
 opacity = 0.6
 
 def collecter(da_method,pv_method):
@@ -17,7 +18,7 @@ def collecter(da_method,pv_method):
         param = '%f' % float(p[6])
         new_list.append([domain_pair,acc,interval,param])
 
-    print new_list
+    # print new_list
     return new_list
     pass
 
@@ -56,18 +57,52 @@ def constructer(param_list):
         ys.append([tmp[1] for tmp in param_list if tmp[0] == pair])
         yerrs.append([tmp[2] for tmp in param_list if tmp[0] == pair])
 
-    print ys
-    print yerrs
-    print x
+    # print ys
+    # print yerrs
+    # print x
     return domain_pairs,ys,yerrs,x
     pass
 
+def construct_accuracy_table(param_list):
+    table = []
+    domain_pairs = list(set([p[0] for p in param_list]))
+    domain_pairs.sort()
+    params = list(set([p[3] for p in param_list]))
+    params.sort()
+
+    
+    for pair in domain_pairs:
+        tmp = []
+        tmp.append(pair)
+        for param in params:
+           tmp.append([x[1] for x in param_list if (x[0] == pair and x[3]==param)][0])
+        
+        best = max(tmp[1:])
+        best_idx = [i for i, j in enumerate(tmp) if j == best]
+        new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
+
+        table.append(new_tmp)
+    headers = ['lambda']+[str(x) for x in params]
+    print tabulate(table,headers,floatfmt=".2f")
+    pass
+
+def draw_figure(da_method,pv_method):
+    temp = collecter(da_method,pv_method)
+    drawer(constructer(temp),pv_method,da_method)
+    pass
+
+def draw_table(da_method,pv_method):
+    temp = collecter(da_method,pv_method)
+    print 'DA method = '+da_method
+    print 'PV method = '+pv_method
+    construct_accuracy_table(temp)
+    pass
 
 if __name__ == "__main__":
-    # pv_method = "landmark_pretrained_glove"
-    pv_method = "landmark_pretrained_word2vec"
+    pv_method = "landmark_pretrained_glove"
+    # pv_method = "landmark_pretrained_word2vec"
     da_method = 'SFA'
     # da_method = 'SCL'
-    temp = collecter(da_method,pv_method)
+    # draw_figure(da_method,pv_method)
+    draw_table(da_method,pv_method)
     
-    drawer(constructer(temp),pv_method,da_method)
