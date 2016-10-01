@@ -1,7 +1,8 @@
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from cycler import cycler
 from tabulate import tabulate
+from decimal import *
 opacity = 0.6
 
 def collecter(da_method,pv_method):
@@ -15,7 +16,7 @@ def collecter(da_method,pv_method):
         domain_pair = "%s-%s"%(src,tgt)
         acc = float(p[3])*100
         interval = (float(p[5]) - float(p[4]))*100/2.0
-        param = '%f' % float(p[6])
+        param = '%.1f' % float(p[6]) if float(p[6])>0.1 else '%.1e'%Decimal(p[6])
         new_list.append([domain_pair,acc,interval,param])
 
     # print new_list
@@ -51,7 +52,7 @@ def constructer(param_list):
     domain_pairs = list(set([p[0] for p in param_list]))
     domain_pairs.sort()
     x = list(set([p[3] for p in param_list]))
-    x.sort()
+    x.sort(key=float)
 
     for pair in domain_pairs:
         ys.append([tmp[1] for tmp in param_list if tmp[0] == pair])
@@ -68,7 +69,7 @@ def construct_accuracy_table(param_list):
     domain_pairs = list(set([p[0] for p in param_list]))
     domain_pairs.sort()
     params = list(set([p[3] for p in param_list]))
-    params.sort()
+    params.sort(key=float)
 
     
     for pair in domain_pairs:
@@ -101,8 +102,8 @@ def draw_table(da_method,pv_method):
 if __name__ == "__main__":
     pv_method = "landmark_pretrained_glove"
     # pv_method = "landmark_pretrained_word2vec"
-    # da_method = 'SFA'
-    da_method = 'SCL'
-    # draw_figure(da_method,pv_method)
-    draw_table(da_method,pv_method)
+    da_method = 'SFA'
+    # da_method = 'SCL'
+    draw_figure(da_method,pv_method)
+    # draw_table(da_method,pv_method)
     
