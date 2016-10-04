@@ -100,10 +100,10 @@ def draw_table(da_method,pv_method):
     pass
 
 if __name__ == "__main__":
-    pv_method = "landmark_pretrained_glove"
-    # pv_method = "landmark_pretrained_word2vec"
-    da_method = 'SFA'
-    # da_method = 'SCL'
+    # pv_method = "landmark_pretrained_glove"
+    pv_method = "landmark_pretrained_word2vec"
+    # da_method = 'SFA'
+    da_method = 'SCL'
     draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
     
