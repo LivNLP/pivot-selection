@@ -16,12 +16,11 @@ def collecter(da_method,pv_method):
         domain_pair = "%s-%s"%(src,tgt)
         acc = float(p[3])*100
         interval = (float(p[5]) - float(p[4]))*100/2.0
-        param = '%.1f' % float(p[6]) if float(p[6])>0.1 else '%.1e'%Decimal(p[6])
+        param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
         new_list.append([domain_pair,acc,interval,param])
 
     # print new_list
     return new_list
-    pass
 
 def drawer(argmts,pv_method,da_method):
     domain_pairs,ys,intervals,x = argmts
@@ -62,7 +61,6 @@ def constructer(param_list):
     # print yerrs
     # print x
     return domain_pairs,ys,yerrs,x
-    pass
 
 def construct_accuracy_table(param_list):
     table = []
