@@ -188,6 +188,65 @@ def select_un_pivots_pmi():
     #     print x, mi_dict.get(x,0)
     # pass
 
+# PPMI: replace all negative values in PMI with zero
+def ppmi(pmi_score):
+    return 0 if pmi_score < 0 else pmi_score
+
+# labelled ppmi
+def select_pivots_ppmi():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            features = load_grouped_obj(source,target,'features')
+            x_src = load_grouped_obj(source,target,'x_src')
+            x_pos_src = load_grouped_obj(source,target,'x_pos_src')
+            x_neg_src = load_grouped_obj(source,target,'x_neg_src')
+            src_reviews = load_grouped_obj(source,target,'src_reviews')
+            pos_src_reviews = load_grouped_obj(source,target,'pos_src_reviews')
+            neg_src_reviews = load_grouped_obj(source,target,'neg_src_reviews')
+            ppmi_dict = {}
+            for x in features:
+                if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
+                    pos_pmi = pointwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
+                    neg_pmi = pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
+                    ppmi_dict[x] = abs(ppmi(pos_pmi)-ppmi(neg_pmi))
+            L = ppmi_dict.items()
+            L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
+            dirname = '../work/%s-%s/obj/'% (source,target)
+            print 'saving ppmi in ' + dirname
+            save_loop_obj(L,dirname,'ppmi')
+    pass
+
+# unlabelled ppmi
+def select_un_pivots_ppmi():
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            un_src_reviews = load_grouped_obj(source,target,"un_src_reviews")
+            un_tgt_reviews = load_grouped_obj(source,target,"un_tgt_reviews")
+            un_reviews = load_grouped_obj(source,target,"un_reviews")
+            un_features = load_grouped_obj(source,target,"un_features")
+            x_un_src = load_grouped_obj(source,target,"x_un_src")
+            x_un_tgt = load_grouped_obj(source,target,"x_un_tgt")
+            x_un = load_grouped_obj(source,target,"x_un")
+            ppmi_dict = {}
+            for x in un_features:
+                if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
+                    src_pmi = pointwise_mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
+                    tgt_pmi = pointwise_mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
+                    ppmi_dict[x] = abs(ppmi(src_pmi)-ppmi(tgt_pmi))
+            L = ppmi_dict.items()
+            L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
+            dirname = '../work/%s-%s/obj/'% (source,target)
+            print 'saving un_ppmi in ' + dirname
+            save_loop_obj(L,dirname,'un_ppmi')
+    pass
+
+
 # to construct presets of labeled data in source domain
 def label_presets(source, target):
     # source
@@ -313,6 +372,10 @@ def save_local_obj(obj, name):
     with open(name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+def save_loop_obj(obj,dirname,name):
+    with open(dirname+"%s.pkl" % name,'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
 # load object
 def load_obj(name):
     with open('obj/' + name + '.pkl', 'rb') as f:
@@ -321,6 +384,14 @@ def load_obj(name):
 # load stored object
 def load_stored_obj(name):
     with open( name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
+def load_loop_obj(dirname,name):
+    with open(dirname+"%s.pkl" % name,'rb') as f:
+        return pickle.load(f)
+
+def load_grouped_obj(source,target,name):
+    with open("../../group-generation/%s-%s/obj/%s.pkl" % (source,target,name), 'rb') as f:
         return pickle.load(f)
 
 # compare similaries between L and U
@@ -574,10 +645,10 @@ if __name__ == "__main__":
     # methods = ['pmi']
     # for method in methods:
         # sim_eval(method, test_k)
-    test_k = [100,200,300,400,500]
-    datasets = ["L","U"]
-    for dataset in datasets:
-        methods_eval_range(dataset, test_k)
+    # test_k = [100,200,300,400,500]
+    # datasets = ["L","U"]
+    # for dataset in datasets:
+    #     methods_eval_range(dataset, test_k)
         # methods_eval(dataset, test_k)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # source =  "books"
@@ -605,6 +676,8 @@ if __name__ == "__main__":
     # landmark_methods_eval_range(test_k,methods)
     # mi_eval(test_k)
     # pmi_eval(test_k)
+    # select_pivots_ppmi()
+    select_un_pivots_ppmi()
     
     # test_k = [100]
     # landmark_methods_eval(test_k,methods)

@@ -59,6 +59,7 @@ def method_eval(methods,n):
     resFile.close()
     pass
 
+
 # main
 if __name__ == "__main__":
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     # for method in methods:
     #     choose_param(method,params,n)   
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
+    # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     n = 500
     method_eval(methods,n)
     #######test#########

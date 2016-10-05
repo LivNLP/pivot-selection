@@ -130,14 +130,14 @@ def select_pivots_pmi(k):
     neg_tgt_reviews = load_obj("neg_tgt_reviews")
 
     pmi_dict = {}
-    others = {}
+    # others = {}
     for x in features:
         if x_src.get(x,0)*x_pos_src.get(x,0)*x_neg_src.get(x,0) > 0:
             pos_pmi = pointwise_mutual_info(x_src.get(x,0), x_pos_src.get(x,0), pos_src_reviews, src_reviews) 
             neg_pmi = pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
             pmi_dict[x] = abs(pos_pmi[0]-neg_pmi[0])
             # others[x] = [round_5(pos_pmi[1]),round_5(pos_pmi[2]),round_5(neg_pmi[2])]
-            others[x] = [x_src.get(x,0),x_pos_src.get(x,0),x_neg_src.get(x,0)]
+            # others[x] = [x_src.get(x,0),x_pos_src.get(x,0),x_neg_src.get(x,0)]
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
     # h = L[:k]
@@ -181,14 +181,11 @@ def select_un_pivots_pmi(k):
     x_un = load_obj("x_un")
 
     pmi_dict = {}
-    others = {}
     for x in un_features:
         if x_un.get(x,0)*x_un_src.get(x,0)*x_un_tgt.get(x,0) > 0:
             src_pmi = pointwise_mutual_info(x_un.get(x,0), x_un_src.get(x,0), un_src_reviews, un_reviews) 
             tgt_pmi = pointwise_mutual_info(x_un.get(x,0), x_un_tgt.get(x,0), un_tgt_reviews, un_reviews)
-            pmi_dict[x] = abs(src_pmi[0]-tgt_pmi[0])
-            # others[x] = [round_5(src_pmi[1]),round_5(src_pmi[2]),round_5(tgt_pmi[2])]
-            others[x] = [x_un.get(x,0),x_un_src.get(x,0),x_un_tgt.get(x,0),]
+            pmi_dict[x] = abs(src_pmi-tgt_pmi)
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
     #h = L[:k]
@@ -196,6 +193,7 @@ def select_un_pivots_pmi(k):
     for (x, pmi) in L[:k]:
         print x, pmi_dict.get(x,0),others.get(x,0)
     pass
+
 
 # to construct presets of labeled data in source and target domain
 def label_presets(source, target):
@@ -318,6 +316,10 @@ def save_obj(obj, name):
     with open('obj/'+ name + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+def save_loop_obj(obj,dirname,name):
+    with open(dirname+"%s.pkl" % name,'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
 # load object
 def load_obj(name):
     with open('obj/' + name + '.pkl', 'rb') as f:
@@ -326,6 +328,14 @@ def load_obj(name):
 # load stored object
 def load_stored_obj(name):
     with open( name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
+def load_loop_obj(dirname,name):
+    with open(dirname+"%s.pkl" % name,'rb') as f:
+        return pickle.load(f)
+
+def load_grouped_obj(source,target,name):
+    with open("../../group-generation/%s-%s/obj/%s.pkl" % (source,target,name), 'rb') as f:
         return pickle.load(f)
 
 # compare similaries between L and U
@@ -421,9 +431,11 @@ if __name__ == "__main__":
     # unlabel_presets("electronics", "books")
     # source = "books"
     # target = "dvd"
-    select_pivots_pmi(20)
-    print "###########################\n\n"
-    select_un_pivots_pmi(20)
+    # select_pivots_ppmi()
+    # select_un_pivots_ppmi()
+    # select_pivots_pmi(20)
+    # print "###########################\n\n"
+    # select_un_pivots_pmi(20)
     # print "source =", source
     # print "target =", target
     # save_obj(select_pivots_freq(source,target),"freq")
