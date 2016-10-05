@@ -55,7 +55,8 @@ def drawer(argmts,lookfor_pair):
     ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
           fancybox=True, shadow=True, ncol=5)
-    plt.show()
+    # plt.show()
+    plt.savefig(lookfor_pair+'.png')
     pass
 
 # convert names
