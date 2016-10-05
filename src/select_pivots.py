@@ -213,7 +213,7 @@ def select_pivots_ppmi():
                     neg_pmi = pointwise_mutual_info(x_src.get(x,0), x_neg_src.get(x,0), neg_src_reviews, src_reviews)
                     ppmi_dict[x] = abs(ppmi(pos_pmi)-ppmi(neg_pmi))
             L = ppmi_dict.items()
-            L.sort(lambda x, y: -1 if x[1] < y[1] else 1)
+            L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
             dirname = '../work/%s-%s/obj/'% (source,target)
             print 'saving ppmi in ' + dirname
             save_loop_obj(L,dirname,'ppmi')
@@ -676,8 +676,8 @@ if __name__ == "__main__":
     # landmark_methods_eval_range(test_k,methods)
     # mi_eval(test_k)
     # pmi_eval(test_k)
-    # select_pivots_ppmi()
-    select_un_pivots_ppmi()
+    select_pivots_ppmi()
+    # select_un_pivots_ppmi()
     
     # test_k = [100]
     # landmark_methods_eval(test_k,methods)

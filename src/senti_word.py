@@ -70,7 +70,7 @@ if __name__ == "__main__":
     # params.sort()
     # for method in methods:
     #     choose_param(method,params,n)   
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     n = 500
     method_eval(methods,n)
