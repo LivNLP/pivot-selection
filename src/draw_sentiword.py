@@ -145,9 +145,9 @@ def construct_senti_params(argmts):
     for pair in domain_pairs:  
         ys.append([tmp[2] for tmp in param_list if (p[1]==method and tmp[0] == pair)])
 
-    print ys
-    print x
-    print domain_pairs
+    # print ys
+    # print x
+    # print domain_pairs
     return domain_pairs,ys,x
 
 
