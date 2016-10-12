@@ -24,7 +24,7 @@ def collecter(da_method,pv_method):
 
 def drawer(argmts,pv_method,da_method):
     domain_pairs,ys,intervals,x = argmts
-    fig, ax = plt.subplots(figsize=(9,6))
+    fig, ax = plt.subplots(figsize=(12,6))
     index = np.arange(len(x))
     markers = ['.','x']*(len(domain_pairs)/2)
     i =0
@@ -102,6 +102,6 @@ if __name__ == "__main__":
     pv_method = "landmark_pretrained_word2vec"
     da_method = 'SFA'
     # da_method = 'SCL'
-    # draw_figure(da_method,pv_method)
-    draw_table(da_method,pv_method)
+    draw_figure(da_method,pv_method)
+    # draw_table(da_method,pv_method)
     

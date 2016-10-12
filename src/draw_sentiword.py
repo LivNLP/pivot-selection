@@ -33,6 +33,25 @@ def collect_sentiword(methods,lookfor_pair):
     # print new_list
     return new_list,methods
 
+def collect_sentiword_params(method):
+    new_list = []
+    input_file = open("../work/sim/Sentiparams.%s.csv"%method,'r')
+    next(input_file)
+    for line in input_file:
+        p = line.strip('\n').split(', ')
+        src = p[0][0].capitalize()
+        tgt = p[1][0].capitalize()
+        pair = "%s-%s"%(src,tgt)   
+        pos = float(p[3])
+        neg = float(p[4])
+        mid = float(p[5])
+        senti_percentage = senti_bearing(pos,neg,mid)
+        param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
+        new_list.append([pair,method,senti_percentage,param])
+# print new_list
+    return new_list,method
+
+
 def senti_bearing(pos,neg,mid):
     return float((pos+neg)/(pos+neg+mid))*100
 
@@ -57,6 +76,30 @@ def drawer(argmts,lookfor_pair):
           fancybox=True, shadow=True, ncol=5)
     # plt.show()
     plt.savefig(lookfor_pair+'.png')
+    pass
+
+def drawer_params(argmts,pv_method):
+    domain_pairs,ys,x = argmts
+    fig, ax = plt.subplots(figsize=(12,6))
+    index = np.arange(len(x))
+    markers = ['.','x']*(len(domain_pairs)/2)
+    i =0
+    for y in ys:
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=domain_pairs[i])
+        i += 1
+    plt.xticks(index,x)
+
+    plt.title(method,size=18)
+    plt.xlabel('Lambda',size=18)
+    plt.ylabel('% sentiment bearing pivots',size=18)
+    #right box
+    box = ax.get_position()
+    ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
+
+    ax.legend(loc='upper center', bbox_to_anchor=(1.1,0.9),
+          fancybox=True, shadow=True, ncol=1)
+    plt.show()
+
     pass
 
 # convert names
@@ -90,14 +133,39 @@ def construct_senti_figure(argmts):
     # print methods
     return methods,ys,x
 
+def construct_senti_params(argmts):
+    param_list,method = argmts
+    ys = []
+    domain_pairs = list(set([p[0] for p in param_list]))
+    domain_pairs.sort()
+
+    x = list(set([p[3] for p in param_list]))
+    x.sort(key=float)
+
+    for pair in domain_pairs:  
+        ys.append([tmp[2] for tmp in param_list if (p[1]==method and tmp[0] == pair)])
+
+    print ys
+    print x
+    print domain_pairs
+    return domain_pairs,ys,x
+
+
 def draw(methods,lookfor_pair):
     drawer(construct_senti_figure(collect_sentiword(methods,lookfor_pair)),lookfor_pair)
     pass
 
+def draw_params(method):
+    drawer_params(construct_senti_params(collect_sentiword_params(method)),method)
+    pass
+
 
 if __name__ == "__main__":
+    # method = "landmark_pretrained_word2vec"
+    method = "landmark_pretrained_glove"
     lookfor_pair = "B-D"
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    draw(methods,lookfor_pair)
+    # draw(methods,lookfor_pair)
+    draw_params(method)
     
