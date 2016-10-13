@@ -66,7 +66,8 @@ def drawer(argmts,pv_method,da_method):
 
     ax.legend(loc='upper center', bbox_to_anchor=(1.1,0.9),
           fancybox=True, shadow=True, ncol=1)
-    plt.show()
+    # plt.show()
+    plt.savefig('%s:%s acc.png'%(pv_method,da_method))
     pass
 
 def draw_methods(argmts,da_method):
@@ -88,7 +89,8 @@ def draw_methods(argmts,da_method):
     ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
           fancybox=True, shadow=True, ncol=5)
-    plt.show()
+    # plt.show()
+    plt.savefig('%s:%s acc.png'%(lookfor_pair,da_method))
     pass
 
 def constructer(param_list):
@@ -184,12 +186,12 @@ def draw_table(da_method,pv_method):
 
 if __name__ == "__main__":
     # pv_method = "landmark_pretrained_glove"
-    # pv_method = "landmark_pretrained_word2vec"
+    pv_method = "landmark_pretrained_word2vec"
     da_method = 'SFA'
     # da_method = 'SCL'
-    # draw_figure(da_method,pv_method)
+    draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
-    lookfor_pair = "B-D"
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    draw_methods_figure(da_method,methods,lookfor_pair)
+    # lookfor_pair = "B-D"
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    # methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    # draw_methods_figure(da_method,methods,lookfor_pair)

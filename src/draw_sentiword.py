@@ -75,7 +75,7 @@ def drawer(argmts,lookfor_pair):
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
           fancybox=True, shadow=True, ncol=5)
     # plt.show()
-    plt.savefig(lookfor_pair+'.png')
+    plt.savefig(lookfor_pair+' senti.png')
     pass
 
 def drawer_params(argmts,pv_method):
@@ -98,8 +98,8 @@ def drawer_params(argmts,pv_method):
 
     ax.legend(loc='upper center', bbox_to_anchor=(1.1,0.9),
           fancybox=True, shadow=True, ncol=1)
-    plt.show()
-
+    # plt.show()
+    plt.savefig(pv_method+' senti.png')
     pass
 
 # convert names
