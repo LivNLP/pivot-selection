@@ -35,6 +35,7 @@ def collect_methods(da_method,methods,lookfor_pair):
             src = p[0][0].capitalize()
             tgt = p[1][0].capitalize()
             pair = "%s-%s"%(src,tgt)
+            # print p
             if lookfor_pair == pair:
                 acc = float(p[3])*100
                 interval = (float(p[5]) - float(p[4]))*100/2.0
@@ -186,12 +187,12 @@ def draw_table(da_method,pv_method):
 
 if __name__ == "__main__":
     # pv_method = "landmark_pretrained_glove"
-    pv_method = "landmark_pretrained_word2vec"
-    da_method = 'SFA'
-    # da_method = 'SCL'
-    draw_figure(da_method,pv_method)
+    # pv_method = "landmark_pretrained_word2vec"
+    # da_method = 'SFA'
+    da_method = 'SCL'
+    # draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
-    # lookfor_pair = "B-D"
-    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    # methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    # draw_methods_figure(da_method,methods,lookfor_pair)
+    lookfor_pair = "B-D"
+    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    draw_methods_figure(da_method,methods,lookfor_pair)
