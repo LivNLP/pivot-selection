@@ -53,8 +53,8 @@ def drawer(argmts,pv_method,da_method):
     index = np.arange(len(x))
     markers = ['.','x']*(len(domain_pairs)/2)
     i =0
-    for y in ys:
-        plt.errorbar(index,y,marker= markers[i],alpha=opacity, yerr=intervals[i],label=domain_pairs[i])
+    for y in ys: #yerr=intervals[i]
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=domain_pairs[i])
         i += 1
     plt.xticks(index,x)
 
@@ -77,8 +77,8 @@ def draw_methods(argmts,da_method):
     index = np.arange(len(x))
     markers = ['.','x']*(len(methods)/2)
     i = 0
-    for y in ys:
-        plt.errorbar(index,y,marker= markers[i],alpha=opacity,yerr=yerrs[i],label=convert(methods[i]))
+    for y in ys: #yerr=yerrs[i]
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=convert(methods[i]))
         i += 1
     plt.xticks(index,x)
 
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     da_method = 'SCL'
     # draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
-    lookfor_pair = "B-D"
+    lookfor_pair = "K-E"
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     draw_methods_figure(da_method,methods,lookfor_pair)

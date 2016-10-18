@@ -123,9 +123,9 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     print "Loading Training vectors...",
     startTime = time.time()
     vects = []
-    vects.extend(loadFeatureVecors("../data/%s/train.positive" % sourceDomain, feats))
-    vects.extend(loadFeatureVecors("../data/%s/train.negative" % sourceDomain, feats))
-    vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % sourceDomain, feats))
+    # vects.extend(loadFeatureVecors("../data/%s/train.positive" % sourceDomain, feats))
+    # vects.extend(loadFeatureVecors("../data/%s/train.negative" % sourceDomain, feats))
+    # vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % sourceDomain, feats))
     vects.extend(loadFeatureVecors("../data/%s/train.unlabeled" % targetDomain, feats))
     endTime = time.time()
     print "%ss" % str(round(endTime-startTime, 2))     
@@ -470,9 +470,9 @@ if __name__ == "__main__":
     # method = "un_mi"
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # methods = ["ppmi",'un_ppmi']
-    methods = ["mi","un_mi","pmi","un_pmi"]
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods += ["ppmi",'un_ppmi']
+    # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_word2vec","landmark_glove","landmark_word2vec_ppmi","landmark_glove_ppmi"]
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi"]
