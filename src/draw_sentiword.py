@@ -161,10 +161,10 @@ def draw_params(method):
 
 
 if __name__ == "__main__":
-    method = "landmark_pretrained_word2vec"
-    # method = "landmark_pretrained_glove"
-    lookfor_pair = "B-D"
+    # method = "landmark_pretrained_word2vec"
+    method = "landmark_pretrained_glove"
+    lookfor_pair = "K-E"
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    draw_params(method)
-    
+    # draw_params(method)
+    draw(methods,lookfor_pair)

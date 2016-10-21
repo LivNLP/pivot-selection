@@ -59,21 +59,71 @@ def method_eval(methods,n):
     resFile.close()
     pass
 
+def get_best_k_with_score(feats):
+    temp = ""
+    for x in feats:
+        temp+=  "%s%s "%(x,symbol(senti_score(x)))
+    return temp
+
+def symbol(score):
+    return '(+)' if score > 0 else '(-)' if score < 0 else '(n)'
+
+def create_top_k_table(methods,params,n,source,target):
+    domain_pair = "%s-%s"%(source[0].capitalize(),target[0].capitalize())
+    if params:
+        resFile = open("../work/sim/top-%d %s.csv"%(n,domain_pair),"w")
+        resFile.write("Lambda, CBOW, GloVe\n")
+        for param in params:
+            resFile.write('%f'%param)
+            for method in methods:
+                test_method = "test_%s_%f"% (method,param)
+                pivotsFile = "../work/%s-%s/obj/%s" % (source, target, test_method)
+                features = pi.load_stored_obj(pivotsFile)
+                temp = get_best_k_with_score(dict(features[:n]).keys())
+                print temp
+                resFile.write(', %s'%temp)
+            resFile.write('\n')
+            resFile.flush()
+        resFile.close()
+    else:
+        resFile = open("../work/sim/top-%d %s others.csv"%(n,domain_pair),"w")
+        for method in methods:
+            pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
+            features = pi.load_stored_obj(pivotsFile)
+            temp = get_best_k_with_score(dict(features[:n]).keys())
+            print temp
+            resFile.write("%s, %s\n"%(convert(method),temp))
+            resFile.flush()
+        resFile.close()
+    pass
+
+def convert(method):
+    if "un_" in method:
+        return "%s$_U$" % method.replace("un_","").upper()
+    else:
+        return "%s$_L$" % method.upper()
 
 # main
 if __name__ == "__main__":
-    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     # n = 500
     # # params = [0,1,50,100,1000,10000]
     # params = [0,10e-3,10e-4,10e-5,10e-6]
     # params += [0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params.sort()
     # for method in methods:
-    #     choose_param(method,params,n)   
+    #     choose_param(method,params,n)
+    source = 'kitchen'
+    target = 'electronics'
+    # source = 'books'
+    # target = 'dvd'
+    params = []
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    n = 500
-    method_eval(methods,n)
+    # n = 500
+    # method_eval(methods,n)
+    n = 5
+    create_top_k_table(methods,params,n,source,target)
     #######test#########
     # feats = ['happy','what','very__disappointed','bad']
     # senti_list(feats)
