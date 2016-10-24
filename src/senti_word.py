@@ -62,7 +62,7 @@ def method_eval(methods,n):
 def get_best_k_with_score(feats):
     temp = ""
     for x in feats:
-        temp+=  "%s%s "%(x,symbol(senti_score(x)))
+        temp+=  "%s%s "%(x.replace('__','+'),symbol(senti_score(x)))
     return temp
 
 def symbol(score):
@@ -105,7 +105,7 @@ def convert(method):
 
 # main
 if __name__ == "__main__":
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     # n = 500
     # # params = [0,1,50,100,1000,10000]
     # params = [0,10e-3,10e-4,10e-5,10e-6]
