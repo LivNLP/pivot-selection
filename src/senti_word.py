@@ -65,6 +65,12 @@ def get_best_k_with_score(feats):
         temp+=  "%s%s "%(x.replace('__','+'),symbol(senti_score(x)))
     return temp
 
+def get_best_k(feats):
+    for x in feats:
+        temp += "%s "%x.replace('__','+')
+    return temp
+
+
 def symbol(score):
     return '(+)' if score > 0 else '(-)' if score < 0 else '(n)'
 
@@ -79,8 +85,9 @@ def create_top_k_table(methods,params,n,source,target):
                 test_method = "test_%s_%f"% (method,param)
                 pivotsFile = "../work/%s-%s/obj/%s" % (source, target, test_method)
                 features = pi.load_stored_obj(pivotsFile)
-                temp = get_best_k_with_score(dict(features[:n]).keys())
-                print temp
+                temp = get_best_k(dict(features[:n]).keys())
+                # temp = get_best_k_with_score(dict(features[:n]).keys())
+                # print temp
                 resFile.write(', %s'%temp)
             resFile.write('\n')
             resFile.flush()
@@ -90,8 +97,9 @@ def create_top_k_table(methods,params,n,source,target):
         for method in methods:
             pivotsFile = "../work/%s-%s/obj/%s" % (source, target, method)
             features = pi.load_stored_obj(pivotsFile)
-            temp = get_best_k_with_score(dict(features[:n]).keys())
-            print temp
+            temp = get_best_k(dict(features[:n]).keys())
+            # temp = get_best_k_with_score(dict(features[:n]).keys())
+            # print temp
             resFile.write("%s, %s\n"%(convert(method),temp))
             resFile.flush()
         resFile.close()

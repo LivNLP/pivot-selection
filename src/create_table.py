@@ -118,6 +118,6 @@ def construct_accuracy_table(pv_methods,da_method):
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    # DAmethod = "SCL"
-    DAmethod = "SFA"
+    DAmethod = "SCL"
+    # DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)
