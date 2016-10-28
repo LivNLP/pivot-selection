@@ -78,7 +78,7 @@ def create_top_k_table(methods,params,n,source,target):
     domain_pair = "%s-%s"%(source[0].capitalize(),target[0].capitalize())
     if params:
         resFile = open("../work/sim/top-%d %s.csv"%(n,domain_pair),"w")
-        resFile.write("Lambda, CBOW, GloVe\n")
+        resFile.write("Lambda, S-CBOW, S-GloVe\n")
         for param in params:
             resFile.write('%f'%param)
             for method in methods:
