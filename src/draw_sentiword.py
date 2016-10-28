@@ -67,7 +67,7 @@ def drawer(argmts,lookfor_pair):
     plt.xticks(index,x)
 
     plt.title(lookfor_pair+': SentiWordNet',size=18)
-    plt.xlabel('Lambda',size=18)
+    plt.xlabel('$\\lambda$',size=18)
     plt.ylabel('% sentiment bearing pivots',size=18)
     # bottom box
     box = ax.get_position()
@@ -75,7 +75,8 @@ def drawer(argmts,lookfor_pair):
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
           fancybox=True, shadow=True, ncol=5)
     # plt.show()
-    plt.savefig(lookfor_pair+' senti.png')
+    plt.autoscale()
+    plt.savefig(lookfor_pair+'-senti.png')
     pass
 
 def drawer_params(argmts,pv_method):
@@ -90,7 +91,7 @@ def drawer_params(argmts,pv_method):
     plt.xticks(index,x)
 
     plt.title(method,size=18)
-    plt.xlabel('Lambda',size=18)
+    plt.xlabel('$\\lambda$',size=18)
     plt.ylabel('% sentiment bearing pivots',size=18)
     #right box
     box = ax.get_position()
@@ -99,18 +100,26 @@ def drawer_params(argmts,pv_method):
     ax.legend(loc='upper center', bbox_to_anchor=(1.1,0.9),
           fancybox=True, shadow=True, ncol=1)
     # plt.show()
-    plt.savefig(pv_method+' senti.png')
+    plt.autoscale()
+    plt.savefig(pv_method+'-senti.png')
     pass
 
 # convert names
 def convert(method):
     if "landmark_" in method:
-        return "%s" % method.replace("_pretrained","")
+        if "_ppmi" in method:
+            return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
+        else:
+            if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
+                return "S-CBOW"
+            else:
+                return "S-GloVe"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()
         else:
             return "%s$_L$" % method.upper()
+
 
 
 def construct_senti_figure(argmts):

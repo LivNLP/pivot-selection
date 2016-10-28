@@ -49,7 +49,7 @@ def collect_methods(da_method,methods,lookfor_pair):
 
 def drawer(argmts,pv_method,da_method):
     domain_pairs,ys,intervals,x = argmts
-    fig, ax = plt.subplots(figsize=(12,6))
+    fig, ax = plt.subplots(figsize=(12,8))
     index = np.arange(len(x))
     markers = ['.','x']*(len(domain_pairs)/2)
     i =0
@@ -59,7 +59,7 @@ def drawer(argmts,pv_method,da_method):
     plt.xticks(index,x)
 
     plt.title(da_method+ ": " +pv_method.capitalize())
-    plt.xlabel('Lambda',size=18)
+    plt.xlabel('$\\lambda$',size=18)
     plt.ylabel('Accuracy',size=18)
     #right box
     box = ax.get_position()
@@ -68,12 +68,13 @@ def drawer(argmts,pv_method,da_method):
     ax.legend(loc='upper center', bbox_to_anchor=(1.1,0.9),
           fancybox=True, shadow=True, ncol=1)
     # plt.show()
-    plt.savefig('%s:%s acc.png'%(pv_method,da_method))
+    plt.autoscale()
+    plt.savefig('%s:%s-acc.png'%(pv_method,da_method))
     pass
 
 def draw_methods(argmts,da_method):
     methods,ys,yerrs,x,lookfor_pair = argmts
-    fig, ax = plt.subplots(figsize=(12,10))
+    fig, ax = plt.subplots(figsize=(12,8))
     index = np.arange(len(x))
     markers = ['.','x']*(len(methods)/2)
     i = 0
@@ -83,7 +84,7 @@ def draw_methods(argmts,da_method):
     plt.xticks(index,x)
 
     plt.title(lookfor_pair+': '+da_method,size=18)
-    plt.xlabel('Lambda',size=18)
+    plt.xlabel('$\\lambda$',size=18)
     plt.ylabel('Accuracy',size=18)
     # bottom box
     box = ax.get_position()
@@ -91,7 +92,8 @@ def draw_methods(argmts,da_method):
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
           fancybox=True, shadow=True, ncol=5)
     # plt.show()
-    plt.savefig('%s:%s acc.png'%(lookfor_pair,da_method))
+    plt.autoscale()
+    plt.savefig('%s:%s-acc.png'%(lookfor_pair,da_method))
     pass
 
 def constructer(param_list):
@@ -154,19 +156,26 @@ def construct_accuracy_table(param_list):
         new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
 
         table.append(new_tmp)
-    headers = ['lambda']+[str(x) for x in params]
+    headers = ['$\\lambda$']+[str(x) for x in params]
     print tabulate(table,headers,floatfmt=".2f")
     pass
 
 # convert names
 def convert(method):
     if "landmark_" in method:
-        return "%s" % method.replace("_pretrained","")
+        if "_ppmi" in method:
+            return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
+        else:
+            if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
+                return "S-CBOW"
+            else:
+                return "S-GloVe"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()
         else:
             return "%s$_L$" % method.upper()
+
 
 def draw_figure(da_method,pv_method):
     temp = collecter(da_method,pv_method)
