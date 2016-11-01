@@ -58,7 +58,7 @@ def drawer(argmts,pv_method,da_method):
         i += 1
     plt.xticks(index,x)
 
-    plt.title(da_method+ ": " +pv_method.capitalize())
+    plt.title(da_method+ ": " +convert(pv_method))
     plt.xlabel('$\\lambda$',size=18)
     plt.ylabel('Accuracy',size=18)
     #right box
@@ -69,7 +69,7 @@ def drawer(argmts,pv_method,da_method):
           fancybox=True, shadow=True, ncol=1)
     # plt.show()
     plt.autoscale()
-    plt.savefig('%s:%s-acc.png'%(pv_method,da_method))
+    plt.savefig('%s:%s-acc.png'%(convert(pv_method),da_method))
     pass
 
 def draw_methods(argmts,da_method):
@@ -93,6 +93,7 @@ def draw_methods(argmts,da_method):
           fancybox=True, shadow=True, ncol=5)
     # plt.show()
     plt.autoscale()
+    plt.ylim([57,80])
     plt.savefig('%s:%s-acc.png'%(lookfor_pair,da_method))
     pass
 
@@ -196,9 +197,9 @@ def draw_table(da_method,pv_method):
 
 if __name__ == "__main__":
     # pv_method = "landmark_pretrained_glove"
-    # pv_method = "landmark_pretrained_word2vec"
-    # da_method = 'SFA'
-    da_method = 'SCL'
+    pv_method = "landmark_pretrained_word2vec"
+    da_method = 'SFA'
+    # da_method = 'SCL'
     # draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
     lookfor_pair = "B-D"

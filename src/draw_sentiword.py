@@ -90,7 +90,7 @@ def drawer_params(argmts,pv_method):
         i += 1
     plt.xticks(index,x)
 
-    plt.title(method,size=18)
+    plt.title(convert(method),size=18)
     plt.xlabel('$\\lambda$',size=18)
     plt.ylabel('% sentiment bearing pivots',size=18)
     #right box
@@ -101,7 +101,7 @@ def drawer_params(argmts,pv_method):
           fancybox=True, shadow=True, ncol=1)
     # plt.show()
     plt.autoscale()
-    plt.savefig(pv_method+'-senti.png')
+    plt.savefig(convert(pv_method)+'-senti.png')
     pass
 
 # convert names
@@ -170,11 +170,11 @@ def draw_params(method):
 
 
 if __name__ == "__main__":
-    # method = "landmark_pretrained_word2vec"
-    method = "landmark_pretrained_glove"
+    method = "landmark_pretrained_word2vec"
+    # method = "landmark_pretrained_glove"
+    lookfor_pair = "B-D"
     # lookfor_pair = "K-E"
-    lookfor_pair = "K-E"
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    # draw_params(method)
-    draw(methods,lookfor_pair)
+    draw_params(method)
+    # draw(methods,lookfor_pair)
