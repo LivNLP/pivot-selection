@@ -2,6 +2,7 @@ import numpy as np
 import heapq
 from tabulate import tabulate
 from decimal import *
+import scipy.stats
 
 # same method used for draw_barchart
 def collect_accuracy(csv_file):
@@ -94,6 +95,7 @@ def construct_best_landmark(param_list):
 
 def construct_accuracy_table(pv_methods,da_method):
     table = []
+    table_nobest = []
     i = 0
     # collect domain pairs
     for method in pv_methods:
@@ -120,10 +122,36 @@ def construct_accuracy_table(pv_methods,da_method):
         # new_tmp = ["%.2f*"%x if (x>second_best+5 and x==best) else x for x in tmp[1:]]
         # highlight the best result
         new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
-        # print new_tmp
+
         print pair,[convert(pv_methods[i-1]) for i in best_idx],best
         table.append(new_tmp)
+        table_nobest.append(tmp)
         # print table
+
+    avg_list = []
+    a = []
+    b = []
+    for i in range(1,len(pv_methods)+1):
+        tmp = [x[i] for x in table_nobest]
+        # print tmp
+        avg_list.append(np.mean(tmp))
+    print avg_list
+    avg_idx = heapq.nlargest(2,avg_list)
+    for idx,x in enumerate(avg_idx):
+        i = avg_list.index(x)
+        tmp = [x[i+1] for x in table_nobest]
+        if idx == 0:
+            a = tmp
+            print convert(pv_methods[i]),
+        if idx == 1:
+            b = tmp
+            print convert(pv_methods[i]),
+    p = scipy.stats.wilcoxon(a,b).pvalue
+    print p
+    if p < 0.05:
+        print '*YES'
+    avg_list = ['avg']+avg_list 
+    table.append(avg_list)
 
     headers = [da_method]+[convert(x) for x in pv_methods]
     print tabulate(table,headers,floatfmt=".2f")
@@ -165,10 +193,14 @@ def construct_SCL_table(pv_methods):
     print tabulate(table,headers,floatfmt=".2f")
     pass
 
+def filter_num(tmp):
+    return filter(lambda i: isinstance(i, float), tmp)
+
+
 if __name__ == "__main__":
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    DAmethod = "SCL"
-    # DAmethod = "SFA"
-    # construct_accuracy_table(methods,DAmethod)
-    construct_SCL_table(methods)
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    # DAmethod = "SCL"
+    DAmethod = "SFA"
+    construct_accuracy_table(methods,DAmethod)
+    # construct_SCL_table(methods)
