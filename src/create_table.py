@@ -136,14 +136,14 @@ def construct_accuracy_table(pv_methods,da_method):
         # print tmp
         avg_list.append(np.mean(tmp))
     print avg_list
-    avg_idx = heapq.nlargest(2,avg_list)
+    avg_idx = heapq.nlargest(3,avg_list)
     for idx,x in enumerate(avg_idx):
         i = avg_list.index(x)
         tmp = [x[i+1] for x in table_nobest]
         if idx == 0:
             a = tmp
             print convert(pv_methods[i]),
-        if idx == 1:
+        if idx == 2:
             b = tmp
             print convert(pv_methods[i]),
     p = scipy.stats.wilcoxon(a,b).pvalue
@@ -200,7 +200,7 @@ def filter_num(tmp):
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    # DAmethod = "SCL"
-    DAmethod = "SFA"
+    DAmethod = "SCL"
+    # DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)
     # construct_SCL_table(methods)
