@@ -115,7 +115,7 @@ def convert(method):
 # main
 if __name__ == "__main__":
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    n = 500
+    # n = 500
     # # params = [0,1,50,100,1000,10000]
     params = [0,10e-3,10e-4,10e-5,10e-6]
     params += [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
