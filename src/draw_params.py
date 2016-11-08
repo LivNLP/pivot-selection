@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from cycler import cycler
 from tabulate import tabulate
 from decimal import *
+import itertools
 opacity = 0.6
 
 def collecter(da_method,pv_method):
@@ -93,7 +94,7 @@ def draw_methods(argmts,da_method):
           fancybox=True, shadow=True, ncol=5)
     # plt.show()
     plt.autoscale()
-    plt.ylim([57,80])
+    plt.ylim([57,90])
     plt.savefig('%s:%s-acc.png'%(lookfor_pair,da_method))
     pass
 
@@ -177,6 +178,12 @@ def convert(method):
         else:
             return "%s$_L$" % method.upper()
 
+def loop_pairs():
+    domains = ['B','D','E','K']
+    all_pairs = list(itertools.permutations(domains, 2))
+    pairs = ['%s-%s'%(i,j) for (i,j) in all_pairs]
+    return pairs
+
 
 def draw_figure(da_method,pv_method):
     temp = collecter(da_method,pv_method)
@@ -197,12 +204,16 @@ def draw_table(da_method,pv_method):
 
 if __name__ == "__main__":
     # pv_method = "landmark_pretrained_glove"
-    pv_method = "landmark_pretrained_word2vec"
-    da_method = 'SFA'
-    # da_method = 'SCL'
+    # pv_method = "landmark_pretrained_word2vec"
+    
     # draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
-    lookfor_pair = "B-D"
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    draw_methods_figure(da_method,methods,lookfor_pair)
+    # lookfor_pair = "B-D"
+    da_methods = ['SCL','SFA']
+    pairs = loop_pairs()
+    for da_method in da_methods:
+        for lookfor_pair in pairs:
+            methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+            methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+            draw_methods_figure(da_method,methods,lookfor_pair)
+

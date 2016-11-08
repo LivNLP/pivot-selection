@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from decimal import *
+import itertools
 # font = {  'size'   : 18}
 # matplotlib.rc('font', **font)
 opacity = 0.6
@@ -159,6 +160,11 @@ def construct_senti_params(argmts):
     # print domain_pairs
     return domain_pairs,ys,x
 
+def loop_pairs():
+    domains = ['B','D','E','K']
+    all_pairs = list(itertools.permutations(domains, 2))
+    pairs = ['%s-%s'%(i,j) for (i,j) in all_pairs]
+    return pairs
 
 def draw(methods,lookfor_pair):
     drawer(construct_senti_figure(collect_sentiword(methods,lookfor_pair)),lookfor_pair)
@@ -170,11 +176,13 @@ def draw_params(method):
 
 
 if __name__ == "__main__":
-    method = "landmark_pretrained_word2vec"
+    # method = "landmark_pretrained_word2vec"
     # method = "landmark_pretrained_glove"
-    lookfor_pair = "B-D"
+    # draw_params(method)
+    # lookfor_pair = "B-D"
     # lookfor_pair = "K-E"
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    draw_params(method)
-    # draw(methods,lookfor_pair)
+    pairs = loop_pairs()
+    for lookfor_pair in pairs:
+        methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+        methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+        draw(methods,lookfor_pair)
