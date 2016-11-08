@@ -66,6 +66,7 @@ def get_best_k_with_score(feats):
     return temp
 
 def get_best_k(feats):
+    temp = ""
     for x in feats:
         temp += "%s "%x.replace('__','+')
     return temp
@@ -119,19 +120,19 @@ if __name__ == "__main__":
     params = [0,10e-3,10e-4,10e-5,10e-6]
     params += [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     params.sort()
-    for method in methods:
-        choose_param(method,params,n)
+    # for method in methods:
+        # choose_param(method,params,n)
     # source = 'kitchen'
     # target = 'electronics'
-    # source = 'books'
-    # target = 'dvd'
+    source = 'electronics'
+    target = 'kitchen'
     # params = []
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    n = 500
-    method_eval(methods,n)
-    # n = 5
-    # create_top_k_table(methods,params,n,source,target)
+    # n = 500
+    # method_eval(methods,n)
+    n = 5
+    create_top_k_table(methods,params,n,source,target)
     #######test#########
     # feats = ['happy','what','very__disappointed','bad']
     # senti_list(feats)
