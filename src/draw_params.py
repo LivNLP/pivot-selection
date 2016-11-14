@@ -4,6 +4,7 @@ from cycler import cycler
 from tabulate import tabulate
 from decimal import *
 import itertools
+import math
 opacity = 0.6
 
 def collecter(da_method,pv_method):
@@ -17,7 +18,7 @@ def collecter(da_method,pv_method):
         domain_pair = "%s-%s"%(src,tgt)
         acc = float(p[3])*100
         interval = (float(p[5]) - float(p[4]))*100/2.0
-        param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
+        param = float(p[6])
         new_list.append([domain_pair,acc,interval,param])
 
     # print new_list
@@ -41,7 +42,7 @@ def collect_methods(da_method,methods,lookfor_pair):
                 acc = float(p[3])*100
                 interval = (float(p[5]) - float(p[4]))*100/2.0
                 if 'landmark' in method:
-                    param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
+                    param = float(p[6])
                     new_list.append([pair,method,acc,interval,param])
                 else:
                     if p[2] == method:
@@ -135,6 +136,7 @@ def construct_methods(argmts):
             ys.append([p[2] for p in param_list if p[1]==method]*len(x))
             yerrs.append([p[3] for p in param_list if p[1]==method]*len(x))
 
+    x = ['%.1f'%tmp if (tmp>0.1 or tmp==0) else '$10^{%d}$'%(math.log10(tmp)-1) for tmp in x]
     # print ys
     # print yerrs
     return methods,ys,yerrs,x,lookfor_pair
@@ -158,6 +160,7 @@ def construct_accuracy_table(param_list):
         new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
 
         table.append(new_tmp)
+    params = ['%.1f'%tmp if (tmp>0.1 or tmp==0) else '$10^{%d}$'%(math.log10(tmp)-1) for tmp in params]
     headers = ['$\\lambda$']+[str(x) for x in params]
     print tabulate(table,headers,floatfmt=".2f")
     pass

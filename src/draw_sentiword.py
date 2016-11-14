@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from decimal import *
 import itertools
+import math
 # font = {  'size'   : 18}
 # matplotlib.rc('font', **font)
 opacity = 0.6
@@ -26,7 +27,7 @@ def collect_sentiword(methods,lookfor_pair):
                 mid = float(p[5])
                 senti_percentage = senti_bearing(pos,neg,mid)
                 if 'landmark' in method:
-                    param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
+                    param = float(p[6])
                     new_list.append([pair,method,senti_percentage,param])
                 else :
                     if p[2]==method:
@@ -128,6 +129,7 @@ def construct_senti_figure(argmts):
     ys = []
     x = list(set([p[3] for p in param_list if len(p)>3]))
     x.sort(key=float)
+    # print x
 
     for method in methods:
         if 'landmark' in method:
@@ -138,6 +140,7 @@ def construct_senti_figure(argmts):
         else:
             ys.append([p[2] for p in param_list if p[1]==method]*len(x))
 
+    x = ['%.1f'%tmp if (tmp>0.1 or tmp==0) else '$10^{%d}$'%(math.log10(tmp)-1) for tmp in x]
     # print x
     # print ys
     # print methods
