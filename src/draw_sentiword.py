@@ -6,6 +6,8 @@ import itertools
 import math
 # font = {  'size'   : 18}
 # matplotlib.rc('font', **font)
+matplotlib.rc('ytick', labelsize=22) 
+plt.legend(loc=2,prop={'size':22})
 opacity = 0.6
 
 def collect_sentiword(methods,lookfor_pair):
@@ -66,11 +68,11 @@ def drawer(argmts,lookfor_pair):
     for y in ys:
         plt.errorbar(index,y,marker= markers[i],alpha=opacity, label=convert(methods[i]))
         i += 1
-    plt.xticks(index,x, size = 18)
+    plt.xticks(index,x, size = 22)
 
-    plt.title(lookfor_pair+': SentiWordNet',size=18)
-    plt.xlabel('$\\lambda$',size=18)
-    plt.ylabel('Sentiment Bearing Pivots',size=18)
+    plt.title(lookfor_pair+': SentiWordNet',size=22)
+    plt.xlabel('$\\lambda$',size=22)
+    plt.ylabel('Sentiment Bearing Pivots',size=22)
     # bottom box
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
@@ -94,7 +96,7 @@ def drawer_params(argmts,pv_method):
 
     plt.title(convert(method),size=18)
     plt.xlabel('$\\lambda$',size=18)
-    plt.ylabel('% sentiment bearing pivots',size=18)
+    plt.ylabel('Sentiment Bearing Pivots',size=18)
     #right box
     box = ax.get_position()
     ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])

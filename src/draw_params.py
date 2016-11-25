@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 from cycler import cycler
 from tabulate import tabulate
@@ -6,6 +7,8 @@ from decimal import *
 import itertools
 import math
 opacity = 0.6
+matplotlib.rc('xtick', labelsize=20) 
+matplotlib.rc('ytick', labelsize=20) 
 
 def collecter(da_method,pv_method):
     new_list = []
@@ -61,8 +64,8 @@ def drawer(argmts,pv_method,da_method):
     plt.xticks(index,x)
 
     plt.title(da_method+ ": " +convert(pv_method))
-    plt.xlabel('$\\lambda$',size=18)
-    plt.ylabel('Accuracy',size=18)
+    plt.xlabel('$\\lambda$',size=22)
+    plt.ylabel('Accuracy',size=22)
     #right box
     box = ax.get_position()
     ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -85,9 +88,9 @@ def draw_methods(argmts,da_method):
         i += 1
     plt.xticks(index,x)
 
-    plt.title(lookfor_pair+': '+da_method,size=18)
-    plt.xlabel('$\\lambda$',size=18)
-    plt.ylabel('Accuracy',size=18)
+    plt.title(lookfor_pair+': '+da_method,size=22)
+    plt.xlabel('$\\lambda$',size=22)
+    plt.ylabel('Accuracy',size=22)
     # bottom box
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
