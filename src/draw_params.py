@@ -83,6 +83,7 @@ def draw_methods(argmts,da_method):
     index = np.arange(len(x))
     markers = ['.','x']*(len(methods)/2)
     i = 0
+    # print index,[len(y) for y in ys]
     for y in ys: #yerr=yerrs[i]
         plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=convert(methods[i]))
         i += 1
@@ -92,10 +93,10 @@ def draw_methods(argmts,da_method):
     plt.xlabel('$\\lambda$',size=22)
     plt.ylabel('Accuracy',size=22)
     # bottom box
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
-          fancybox=True, shadow=True, ncol=5)
+    # box = ax.get_position()
+    # ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
+    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
+    #       fancybox=True, shadow=True, ncol=5)
     # plt.show()
     plt.autoscale()
     plt.ylim([57,90])
@@ -175,9 +176,9 @@ def convert(method):
             return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
         else:
             if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
-                return "S-CBOW"
+                return "T-CBOW"
             else:
-                return "S-GloVe"
+                return "T-GloVe"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()
@@ -214,7 +215,7 @@ if __name__ == "__main__":
     
     # draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
-    # lookfor_pair = "B-D"
+    # lookfor_pair = "K-E"
     da_methods = ['SCL','SFA']
     pairs = loop_pairs()
     for da_method in da_methods:

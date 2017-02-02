@@ -72,12 +72,12 @@ def drawer(argmts,lookfor_pair):
 
     plt.title(lookfor_pair+': SentiWordNet',size=22)
     plt.xlabel('$\\lambda$',size=22)
-    plt.ylabel('Sentiment Bearing Pivots',size=22)
+    plt.ylabel('Task Specific Pivots',size=22)
     # bottom box
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
-          fancybox=True, shadow=True, ncol=5)
+    # box = ax.get_position()
+    # ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
+    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
+    #       fancybox=True, shadow=True, ncol=5)
     # plt.show()
     plt.autoscale()
     plt.savefig(lookfor_pair+'-senti.png')
@@ -96,7 +96,7 @@ def drawer_params(argmts,pv_method):
 
     plt.title(convert(method),size=18)
     plt.xlabel('$\\lambda$',size=18)
-    plt.ylabel('Sentiment Bearing Pivots',size=18)
+    plt.ylabel('Task Specific Pivots',size=18)
     #right box
     box = ax.get_position()
     ax.set_position([box.x0-box.width*0.05, box.y0 , box.width*0.95, box.height])
@@ -115,9 +115,9 @@ def convert(method):
             return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
         else:
             if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
-                return "S-CBOW"
+                return "T-CBOW"
             else:
-                return "S-GloVe"
+                return "T-GloVe"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()

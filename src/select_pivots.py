@@ -88,14 +88,14 @@ def select_pivots_mi_jb():
     x_tgt = load_obj("x_tgt")
     x_pos_src = load_obj("x_pos_src")
     x_neg_src = load_obj("x_neg_src")
-    x_pos_tgt = load_obj("x_pos_tgt")
-    x_neg_tgt = load_obj("x_neg_tgt")
+    # x_pos_tgt = load_obj("x_pos_tgt")
+    # x_neg_tgt = load_obj("x_neg_tgt")
     src_reviews = load_obj("src_reviews")
-    tgt_reviews = load_obj("tgt_reviews")
+    # tgt_reviews = load_obj("tgt_reviews")
     pos_src_reviews = load_obj("pos_src_reviews")
     neg_src_reviews = load_obj("neg_src_reviews")
-    pos_tgt_reviews = load_obj("pos_tgt_reviews")
-    neg_tgt_reviews = load_obj("neg_tgt_reviews")
+    # pos_tgt_reviews = load_obj("pos_tgt_reviews")
+    # neg_tgt_reviews = load_obj("neg_tgt_reviews")
 
     mi_dict = {}
     for x in features:
@@ -114,7 +114,7 @@ def select_pivots_mi_jb():
 def select_pivots_pmi():
     features = load_obj("features")
     x_src = load_obj("x_src")
-    x_tgt = load_obj("x_tgt")
+    # x_tgt = load_obj("x_tgt")
     x_pos_src = load_obj("x_pos_src")
     x_neg_src = load_obj("x_neg_src")
     # x_pos_tgt = load_obj("x_pos_tgt")
@@ -280,16 +280,16 @@ def label_presets(source, target):
     save_obj(features,"features")
     save_obj(x_pos_src,"x_pos_src")
     save_obj(x_neg_src,"x_neg_src")
-    save_obj(x_pos_tgt,"x_pos_tgt")
-    save_obj(x_neg_tgt,"x_neg_tgt")
+    # save_obj(x_pos_tgt,"x_pos_tgt")
+    # save_obj(x_neg_tgt,"x_neg_tgt")
     save_obj(x_src,"x_src")
-    save_obj(x_tgt,"x_tgt")
+    # save_obj(x_tgt,"x_tgt")
     save_obj(src_reviews,"src_reviews")
-    save_obj(tgt_reviews,"tgt_reviews")
+    # save_obj(tgt_reviews,"tgt_reviews")
     save_obj(pos_src_reviews,"pos_src_reviews")
-    save_obj(pos_tgt_reviews,"pos_tgt_reviews")
+    # save_obj(pos_tgt_reviews,"pos_tgt_reviews")
     save_obj(neg_src_reviews,"neg_src_reviews")
-    save_obj(neg_tgt_reviews,"neg_tgt_reviews")
+    # save_obj(neg_tgt_reviews,"neg_tgt_reviews")
     pass
 
 # to construct presets for unlabeled data in source and target domain

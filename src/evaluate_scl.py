@@ -185,6 +185,7 @@ def loadFeatureVecors(fname, feats):
     for line in F:
         L.append(set(line.strip().split())&(set(feats)))
     F.close()
+    print L
     return L
 
 
@@ -467,24 +468,50 @@ if __name__ == "__main__":
     # evaluate_NA(source,target)
     # batchNA()
     # batchID()
-    # method = "un_mi"
+    # methods = ["un_mi"]
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # methods += ["ppmi",'un_ppmi']
     # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    n = 500
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    # n = 500
     # for method in methods:
     #     batchEval(method, 1, n)
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
-    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params += [10e-3,10e-4,10e-5,10e-6]
-    params.sort()
+    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params += [10e-3,10e-4,10e-5,10e-6]
+    # params.sort()
     # params = [1,50,100,1000,10000]
     # params = [0,1,50,100,1000,10000]
-    for method in methods:
-        choose_param(method,params,1,n)
+    # for method in methods:
+    #     choose_param(method,params,1,n)
+    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
+    source = "kitchen"
+    target = "books"
+    method = "un_mi"
+    M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj.mat" % (source, target))['proj'])
+    (nDS, h) = M.shape
+    print nDS,h
+    fname = "../work/%s-%s/obj/freq" % (source, target)
+    if "un_" in method:
+        fname = "../work/%s-%s/obj/un_freq" % (source, target)
+    features = pi.load_stored_obj(fname)
+    
+    feats = selectTh(dict(features),domainTh[source])
+    feats = feats.keys()
+    print "experimental features = ", len(feats)
+    x = sp.lil_matrix((1, nDS), dtype=np.float64)
+    print x[0].shape
+    if 'wish' in feats:
+        x[0,feats.index('wish')]=1
+    print x
+    y = x.tocsr().dot(M)
+    print y[0].shape
+    
+
+
+
