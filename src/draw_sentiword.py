@@ -63,10 +63,10 @@ def drawer(argmts,lookfor_pair):
     methods,ys,x = argmts
     fig, ax = plt.subplots(figsize=(12,10))
     index = np.arange(len(x))
-    markers = [6,7]*(len(methods)/2)
+    markers = ['.','x']*(len(methods)/2)
     i = 0
     for y in ys:
-        plt.errorbar(index,y,marker= markers[i],alpha=opacity, label=convert(methods[i]))
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity, label=convert(methods[i]),mew=3,linewidth=3.0,markersize=10)
         i += 1
     plt.xticks(index,x, size = 22)
 
@@ -90,7 +90,7 @@ def drawer_params(argmts,pv_method):
     markers = ['.','x']*(len(domain_pairs)/2)
     i =0
     for y in ys:
-        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=domain_pairs[i])
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=domain_pairs[i],mew=3,linewidth=3.0,markersize=10)
         i += 1
     plt.xticks(index,x)
 

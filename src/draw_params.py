@@ -59,7 +59,7 @@ def drawer(argmts,pv_method,da_method):
     markers = ['.','x']*(len(domain_pairs)/2)
     i =0
     for y in ys: #yerr=intervals[i]
-        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=domain_pairs[i])
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=domain_pairs[i],mew=3,linewidth=3.0,markersize=10)
         i += 1
     plt.xticks(index,x)
 
@@ -85,7 +85,7 @@ def draw_methods(argmts,da_method):
     i = 0
     # print index,[len(y) for y in ys]
     for y in ys: #yerr=yerrs[i]
-        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=convert(methods[i]))
+        plt.errorbar(index,y,marker= markers[i],alpha=opacity,label=convert(methods[i]),mew=3,linewidth=3.0,markersize=10)
         i += 1
     plt.xticks(index,x)
 
