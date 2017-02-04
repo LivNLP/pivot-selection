@@ -489,29 +489,26 @@ if __name__ == "__main__":
     # params = [0,1,50,100,1000,10000]
     # for method in methods:
     #     choose_param(method,params,1,n)
-    domainTh = {'books':5, 'dvd':5, 'kitchen':5, 'electronics':5}
-    source = "kitchen"
-    target = "books"
-    method = "un_mi"
-    M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj.mat" % (source, target))['proj'])
-    (nDS, h) = M.shape
-    print nDS,h
-    fname = "../work/%s-%s/obj/freq" % (source, target)
-    if "un_" in method:
-        fname = "../work/%s-%s/obj/un_freq" % (source, target)
-    features = pi.load_stored_obj(fname)
+    resFile = open("../work/sim/features.csv", "w")
+    resFile.write("Source, Target, Total, K\n")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source == target:
+                continue
+            fname = "../work/%s-%s/obj/filtered_features" % (source, target)
+            K = len(pi.load_stored_obj(fname))
+            fname1 = "../work/%s-%s/obj/freq" % (source, target)
+            fname2 = "../work/%s-%s/obj/un_freq" % (source, target)
+            total = len(pi.load_stored_obj(fname1))+len(pi.load_stored_obj(fname2))
+            resFile.write("%s, %s, %s, %f, %f\n" % (source, target, total,K))
+            resFile.flush()
+    resFile.close()
+    pass
+
+
     
-    feats = selectTh(dict(features),domainTh[source])
-    feats = feats.keys()
-    print "experimental features = ", len(feats)
-    x = sp.lil_matrix((1, nDS), dtype=np.float64)
-    print x[0].shape
-    if 'wish' in feats:
-        x[0,feats.index('wish')]=1
-    print x
-    y = x.tocsr().dot(M)
-    print y[0].shape
-    
+
 
 
 
