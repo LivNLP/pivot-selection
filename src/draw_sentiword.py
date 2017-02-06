@@ -61,7 +61,7 @@ def senti_bearing(pos,neg,mid):
 
 def drawer(argmts,lookfor_pair):
     methods,ys,x = argmts
-    fig, ax = plt.subplots(figsize=(12,10))
+    fig, ax = plt.subplots(figsize=(12,8))
     index = np.arange(len(x))
     markers = ['.','x']*(len(methods)/2)
     i = 0

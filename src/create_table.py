@@ -148,7 +148,7 @@ def construct_accuracy_table(pv_methods,da_method):
             print convert(pv_methods[i]),
     p = scipy.stats.wilcoxon(a,b).pvalue
     print p
-    if p < 0.05:
+    if p < 0.01:
         print '*YES'
     avg_list = ['avg']+avg_list 
     table.append(avg_list)

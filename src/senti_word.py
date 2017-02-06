@@ -131,8 +131,8 @@ if __name__ == "__main__":
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # n = 500
     # method_eval(methods,n)
-    n = 5
-    create_top_k_table(methods,params,n,source,target)
+    # n = 5
+    # create_top_k_table(methods,params,n,source,target)
     #######test#########
     # feats = ['happy','what','very__disappointed','bad']
     # senti_list(feats)
