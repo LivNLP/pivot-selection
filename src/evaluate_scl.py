@@ -185,7 +185,7 @@ def loadFeatureVecors(fname, feats):
     for line in F:
         L.append(set(line.strip().split())&(set(feats)))
     F.close()
-    print L
+    # print L
     return L
 
 
@@ -389,21 +389,23 @@ def evaluate_InDomain(source, target):
     return acc,intervals
 
 
-def batchEval(method, gamma, n):
+def batchEval(method, gamma):
     """
     Evaluate on all 12 domain pairs. 
     """
     resFile = open("../work/batchSCL.%s.csv"% method, "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh\n")
+    numbers = [100,200,300,500,1000,1500,2000]
+    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh,#pivots\n")
     for source in domains:
         for target in domains:
             if source == target:
                 continue
-            learnProjection(source, target, method, n)
-            evaluation = evaluate_SA(source, target, True, gamma, method, n)
-            resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1]))
-            resFile.flush()
+            for n in numbers:
+                learnProjection(source, target, method, n)
+                evaluation = evaluate_SA(source, target, True, gamma, method, n)
+                resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
+                resFile.flush()
     resFile.close()
     pass
 
@@ -445,9 +447,10 @@ def choose_gamma(source, target, method, gammas, n):
     resFile.close()
     pass
 
-def choose_param(method,params,gamma,n):
+def choose_param(method,params,gamma):
     resFile = open("../work/sim/SCLparams.%s.csv"% method, "w")
-    resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param\n")
+    numbers = [100,200,300,500,1000,1500,2000]
+    resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param,#pivots\n")
     domains = ["books", "electronics", "dvd", "kitchen"]
     for param in params:
         test_method = "test_%s_%f"% (method,param)
@@ -455,10 +458,11 @@ def choose_param(method,params,gamma,n):
             for target in domains:
                 if source == target:
                     continue
-                learnProjection(source, target, test_method, n)
-                evaluation = evaluate_SA(source, target, True, gamma, test_method, n)
-                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, method , evaluation[0], evaluation[1][0],evaluation[1][1],param))
-                resFile.flush()
+                for n in numbers:
+                    learnProjection(source, target, test_method, n)
+                    evaluation = evaluate_SA(source, target, True, gamma, test_method, n)
+                    resFile.write("%s, %s, %s, %f, %f, %f, %f, %f\n" % (source, target, method , evaluation[0], evaluation[1][0],evaluation[1][1],param,n))
+                    resFile.flush()
     resFile.close()
     pass
 
@@ -475,35 +479,36 @@ if __name__ == "__main__":
     # methods += ["ppmi",'un_ppmi']
     # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
     # n = 500
+
     # for method in methods:
-    #     batchEval(method, 1, n)
+    #     batchEval(method, 1)
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
-    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # params += [10e-3,10e-4,10e-5,10e-6]
-    # params.sort()
+    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    params += [10e-3,10e-4,10e-5,10e-6]
+    params.sort()
     # params = [1,50,100,1000,10000]
     # params = [0,1,50,100,1000,10000]
-    # for method in methods:
-    #     choose_param(method,params,1,n)
-    resFile = open("../work/sim/features.csv", "w")
-    resFile.write("Source, Target, Total, K\n")
-    domains = ["books", "electronics", "dvd", "kitchen"]
-    for source in domains:
-        for target in domains:
-            if source == target:
-                continue
-            fname = "../work/%s-%s/obj/filtered_features" % (source, target)
-            K = len(pi.load_stored_obj(fname))
-            fname1 = "../work/%s-%s/obj/freq" % (source, target)
-            fname2 = "../work/%s-%s/obj/un_freq" % (source, target)
-            total = len(pi.load_stored_obj(fname1))+len(pi.load_stored_obj(fname2))
-            resFile.write("%s, %s, %s, %f, %f\n" % (source, target, total,K))
-            resFile.flush()
-    resFile.close()
+    for method in methods:
+        choose_param(method,params,1)
+    # resFile = open("../work/sim/features.csv", "w")
+    # resFile.write("Source, Target, Total, K\n")
+    # domains = ["books", "electronics", "dvd", "kitchen"]
+    # for source in domains:
+    #     for target in domains:
+    #         if source == target:
+    #             continue
+    #         fname = "../work/%s-%s/obj/filtered_features" % (source, target)
+    #         K = len(pi.load_stored_obj(fname))
+    #         fname1 = "../work/%s-%s/obj/freq" % (source, target)
+    #         fname2 = "../work/%s-%s/obj/un_freq" % (source, target)
+    #         total = len(pi.load_stored_obj(fname1))+len(pi.load_stored_obj(fname2))
+    #         resFile.write("%s, %s, %s, %f, %f\n" % (source, target, total,K))
+    #         resFile.flush()
+    # resFile.close()
     pass
 
 

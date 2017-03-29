@@ -315,16 +315,18 @@ def batchEval(method, gamma, n):
     """
     resFile = open("../work/batchSFA.%s.csv"% method, "w")
     domains = ["books", "electronics", "dvd", "kitchen"]
-    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh\n")
+    numbers = [100,200,300,500,1000,1500,2000]
+    resFile.write("Source, Target, Method, Acc, IntLow, IntHigh,#pivots\n")
     for source in domains:
         for target in domains:
             if source == target:
                 continue
-            createMatrix(source, target, method, n)
-            learnProjection(source, target)
-            evaluation = evaluate_SA(source, target, True, gamma, n)
-            resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1]))
-            resFile.flush()
+            for n in numbers:
+                createMatrix(source, target, method, n)
+                learnProjection(source, target)
+                evaluation = evaluate_SA(source, target, True, gamma, n)
+                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
+                resFile.flush()
     resFile.close()
     pass
 
@@ -340,8 +342,9 @@ def choose_gamma(source, target, method, gammas, n):
     resFile.close()
     pass
 
-def choose_param(method,params,gamma,n):
+def choose_param(method,params,gamma):
     domains = ["books", "electronics", "dvd", "kitchen"]
+    numbers = [100,200,300,500,1000,1500,2000]
     resFile = open("../work/sim/SFAparams.%s.csv"% method, "w")
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param\n")
     for param in params:
@@ -350,11 +353,12 @@ def choose_param(method,params,gamma,n):
             for target in domains:
                 if source == target:
                     continue
-                createMatrix(source, target, test_method, n)
-                learnProjection(source, target)
-                evaluation = evaluate_SA(source, target, True, gamma, n)
-                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],param))
-                resFile.flush()
+                for n in numbers:
+                    createMatrix(source, target, test_method, n)
+                    learnProjection(source, target)
+                    evaluation = evaluate_SA(source, target, True, gamma, n)
+                    resFile.write("%s, %s, %s, %f, %f, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],param,n))
+                    resFile.flush()
     resFile.close()
     pass
 
@@ -371,7 +375,7 @@ if __name__ == "__main__":
     # methods = ["ppmi",'un_ppmi']
     # methods = ["freq"]
     methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-    n = 500
+    # n = 500
     # for method in methods:
     #     batchEval(method,1, n)
     # gammas = [1,5,10,20,50,100,1000]
@@ -383,4 +387,4 @@ if __name__ == "__main__":
     # params = [0,1,50,100,1000,10000]
     # params = [0,10e-3,0.2,0.4,0.6,0.8,1]
     for method in methods:
-        choose_param(method,params,1,n)
+        choose_param(method,params,1)
