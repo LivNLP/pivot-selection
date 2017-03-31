@@ -32,7 +32,7 @@ def select_top_k_words(k):
 def ppmi_embedding_model(id_list):
     ppmi_file = open("../data/xia_data/wiki-ppmi","r")
     model = {}
-    # print id_list
+    # print len(ppmi_file.readlines())
     for line in ppmi_file:
         splitLine = line.split()
         word = splitLine[0]
@@ -47,7 +47,7 @@ def ppmi_embedding_model(id_list):
             # print len(embedding)
         model[word] = embedding
         # print word,embedding
-    print len(model)," words loaded!",len(ppmi_file)==len(model)
+    print len(model)," words loaded!"
     return model
 
 # save model
@@ -68,4 +68,5 @@ def load_wiki_obj(name):
 
 # main
 if __name__ == "__main__":
-    save_wiki_obj(ppmi_embedding_model(select_top_k_words(2000)),'wiki_ppmi_%d.model'%k)
+    k = 2000
+    save_wiki_obj(ppmi_embedding_model(select_top_k_words(k)),'wiki_ppmi_%d.model'%k)
