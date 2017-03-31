@@ -265,6 +265,15 @@ def u_function_pretrained_glove(source,target,model):
     print 'u_dict_pretrained saved'
     pass
 
+# no embeddings approach from wiki-ppmi
+def u_function_wiki_ppmi(source,target,model):
+    print 'loading objects...'
+    df_source = load_grouped_obj(source,target,'x_src')
+    df_target = load_grouped_obj(source,target,'x_un_tgt')
+    src_reviews = load_grouped_obj(source,target,'src_reviews')
+    tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
+    features = load_grouped_obj(source,target,'filtered_features')
+    pass
 
 # optimization: QP
 def qp_solver(Uk,Rk,param):

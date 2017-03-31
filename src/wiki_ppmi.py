@@ -1,4 +1,6 @@
 import numpy
+import os
+import pickle
 
 # return a list of ids that has top 2000 frequencies
 # ids from ids ( no stop words in the list )
@@ -30,7 +32,7 @@ def select_top_k_words(k):
 def ppmi_embedding_model(id_list):
     ppmi_file = open("../data/xia_data/wiki-ppmi","r")
     model = {}
-    print id_list
+    # print id_list
     for line in ppmi_file:
         splitLine = line.split()
         word = splitLine[0]
@@ -48,6 +50,22 @@ def ppmi_embedding_model(id_list):
     print len(model)," words loaded!",len(ppmi_file)==len(model)
     return model
 
+# save model
+def save_wiki_obj(obj, name):
+    filename = '../work/wiki/'+name + '.pkl'
+    if not os.path.exists(os.path.dirname(filename)):
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except OSError as exc:
+            if exc.errno != errno.EEXIST:
+                raise
+    with open(filename, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_wiki_obj(name):
+    with open('../work/wiki/'+name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
 # main
 if __name__ == "__main__":
-    ppmi_embedding_model(select_top_k_words(10))
+    save_wiki_obj(ppmi_embedding_model(select_top_k_words(2000)),'wiki_ppmi_%d.model'%k)
