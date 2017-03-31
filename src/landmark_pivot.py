@@ -8,7 +8,8 @@ import pickle
 import glob
 import gensim,logging
 # from glove import Corpus, Glove
-import glove
+# import glove
+import wiki_ppmi
 from cvxopt import matrix
 from cvxopt.solvers import qp
 
@@ -273,6 +274,33 @@ def u_function_wiki_ppmi(source,target,model):
     src_reviews = load_grouped_obj(source,target,'src_reviews')
     tgt_reviews = load_grouped_obj(source,target,'un_tgt_reviews')
     features = load_grouped_obj(source,target,'filtered_features')
+
+    print 'calculating with wiki-ppmi no embedding...'
+    u_dict = {}
+    for x in features:
+        df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
+        if "_" in x:
+            #unigram
+            if model.get(x,0)==0:
+                x_vector = numpy.zeros(2000, dtype=float)
+            else:
+                x_vector = model[x]
+        else:
+            #bigram
+            p = x.split("_")
+            p0 = model.get(p[0],0)
+            p1 = model.get(p[1],0)
+            if p0==0:
+                p0 = numpy.zeros(2000, dtype=float)
+            if p1==0:
+                p1 = numpy.zeros(2000, dtype=float)
+            x_vector = p0+p1
+        u_dict[x] = numpy.dot(df_function,x_vector)
+
+    dirname = '../work/%s-%s/obj/'% (source,target)
+    print 'saving u_dict_pretrained in ' + dirname
+    save_loop_obj(u_dict,dirname,'u_dict_wiki_ppmi')
+    print 'u_dict_wiki_ppmi saved'
     pass
 
 # optimization: QP
@@ -502,6 +530,19 @@ def calculate_all_u():
     print '-----Complete!!-----'
     pass
 
+def calculate_all_u_wiki():
+    # load wiki model
+    model = wiki_ppmi.load_wiki_obj('wiki_ppmi_2000.model')
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    for source in domains:
+        for target in domains:
+            if source ==target:
+                continue
+            print 'calcualting u for %s-%s ...' % (source,target)
+            u_function_wiki_ppmi(source,target,model) 
+    print '-----Complete!!-----'
+    pass
+
 def compute_all_gamma():
     domains = ["books", "electronics", "dvd", "kitchen"]
     for source in domains:
@@ -594,6 +635,13 @@ def print_ppmi():
         print x,ppmi_dict.get(x,0)
     pass
 
+def u_wiki_test():
+    source = 'books'
+    target = 'dvd'
+    model = wiki_ppmi.load_wiki_obj('wiki_ppmi_2000.model')
+    u_function_wiki_ppmi(source,target,model)
+    pass
+
 
 # main
 if __name__ == "__main__":
@@ -610,14 +658,13 @@ if __name__ == "__main__":
     # ######param#########
     # params = [0,1,50,100,1000,10000]
     # params = [0,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params = [0.1]
     # params = [10e-3,10e-4,10e-5,10e-6]
     # model_names = ['word2vec']
-    model_names = ['glove']
-    paramOn = True
+    # model_names = ['glove']
+    # paramOn = True
     # paramOn = False
-    for model in model_names:
-        store_all_selections(params,model,1,paramOn)
+    # for model in model_names:
+    #     store_all_selections(params,model,1,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
@@ -626,3 +673,4 @@ if __name__ == "__main__":
     # read_glove()
     # read_word2vec()
     # print_ppmi()
+    u_wiki_test()
