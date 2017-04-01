@@ -41,11 +41,13 @@ def ppmi_embedding_model(id_list):
         for val in splitLine[1:]:
             p = val.split(':')
             # print p
-            id_value[p[0]] =p[1] 
+            id_value[int(p[0])] =float(p[1]) 
         embedding = [id_value.get(x,0) for x in id_list]
             # print len(embedding)
         if not len(embedding)==len(id_list):
             print word,len(embedding)
+        # else:
+        #     print word, embedding[:10]
         model[word] = embedding
         # print word,embedding
     print len(model)," words loaded!"
