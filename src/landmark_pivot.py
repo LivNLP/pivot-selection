@@ -287,16 +287,16 @@ def u_function_wiki_ppmi(source,target,model):
                 x_vector = model[x]
         else:
             #bigram
-            print x
+            # print x
             p = x.split("__")
-            print p
             p0 = model.get(p[0],0)
             p1 = model.get(p[1],0)
             if p0==0:
                 p0 = numpy.zeros(2000, dtype=float)
             if p1==0:
                 p1 = numpy.zeros(2000, dtype=float)
-            x_vector = p0+p1
+            x_vector = map(lambda x,y:x+y, p0, p1)
+            # print x_vector[:10]
         u_dict[x] = numpy.dot(df_function,x_vector)
 
     dirname = '../work/%s-%s/obj/'% (source,target)
@@ -641,8 +641,8 @@ def u_wiki_test():
     source = 'books'
     target = 'dvd'
     model = wiki_ppmi.load_wiki_obj('wiki_ppmi_2000.model')
-    print model.get('havent',0),len(model.get('havent',0))
-    # u_function_wiki_ppmi(source,target,model)
+    # print model.get('havent',0),len(model.get('havent',0))
+    u_function_wiki_ppmi(source,target,model)
     pass
 
 
@@ -655,6 +655,7 @@ if __name__ == "__main__":
     # calculate_all_u_pretrained()
     # calculate_all_u_pretrained_glove()
     # calculate_all_u()
+    calculate_all_u_wiki()
     # compute_all_gamma()
     # params = [0,1]
     # model_names = ['word2vec','glove']
@@ -676,4 +677,4 @@ if __name__ == "__main__":
     # read_glove()
     # read_word2vec()
     # print_ppmi()
-    u_wiki_test()
+    # u_wiki_test()
