@@ -37,14 +37,15 @@ def ppmi_embedding_model(id_list):
         splitLine = line.split()
         word = splitLine[0]
         embedding = []
+        id_value = {}
         for val in splitLine[1:]:
             p = val.split(':')
             # print p
-            if int(p[0]) in id_list:
-                embedding.append(float(p[1]))
-            elif len(embedding)<len(id_list):
-                embedding.append(0.0)
+            id_value[p[0]] =p[1] 
+        embedding = [id_value.get(x,0) for x in id_list]
             # print len(embedding)
+        if not len(embedding)==len(id_list):
+            print word,len(embedding)
         model[word] = embedding
         # print word,embedding
     print len(model)," words loaded!"

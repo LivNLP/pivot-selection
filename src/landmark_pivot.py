@@ -279,7 +279,7 @@ def u_function_wiki_ppmi(source,target,model):
     u_dict = {}
     for x in features:
         df_function = df_diff(df_source.get(x,0),src_reviews,df_target.get(x,0),tgt_reviews)
-        if "_" in x:
+        if "_" not in x:
             #unigram
             if model.get(x,0)==0:
                 x_vector = numpy.zeros(2000, dtype=float)
@@ -287,7 +287,9 @@ def u_function_wiki_ppmi(source,target,model):
                 x_vector = model[x]
         else:
             #bigram
-            p = x.split("_")
+            print x
+            p = x.split("__")
+            print p
             p0 = model.get(p[0],0)
             p1 = model.get(p[1],0)
             if p0==0:
@@ -639,7 +641,8 @@ def u_wiki_test():
     source = 'books'
     target = 'dvd'
     model = wiki_ppmi.load_wiki_obj('wiki_ppmi_2000.model')
-    u_function_wiki_ppmi(source,target,model)
+    print model.get('havent',0),len(model.get('havent',0))
+    # u_function_wiki_ppmi(source,target,model)
     pass
 
 
