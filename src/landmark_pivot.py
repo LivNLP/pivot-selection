@@ -338,12 +338,14 @@ def opt_function(dirname,param,model_name,pretrained):
     if pretrained == 0:
         if model_name == 'word2vec':
             u_dict = load_loop_obj(dirname,'u_dict')
-        else:
+        elif model_name == ' glove':
             u_dict = load_loop_obj(dirname,'u_dict_glove')
+        else:
+            u_dict = load_loop_obj(dirname,'u_dict_wiki_ppmi')
     else:
         if model_name == 'word2vec':
             u_dict = load_loop_obj(dirname,'u_dict_pretrained')
-        else:
+        elif model_name == ' glove':
             u_dict = load_loop_obj(dirname,'u_dict_pretrained_glove')
 
     print 'solving QP...'
@@ -655,20 +657,21 @@ if __name__ == "__main__":
     # calculate_all_u_pretrained()
     # calculate_all_u_pretrained_glove()
     # calculate_all_u()
-    calculate_all_u_wiki()
+    # calculate_all_u_wiki()
     # compute_all_gamma()
     # params = [0,1]
     # model_names = ['word2vec','glove']
     # ######param#########
     # params = [0,1,50,100,1000,10000]
-    # params = [0,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # params = [10e-3,10e-4,10e-5,10e-6]
+    params = [0,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    params += [10e-3,10e-4,10e-5,10e-6]
     # model_names = ['word2vec']
     # model_names = ['glove']
-    # paramOn = True
+    model_names = ['wiki_ppmi']
+    paramOn = True
     # paramOn = False
-    # for model in model_names:
-    #     store_all_selections(params,model,1,paramOn)
+    for model in model_names:
+        store_all_selections(params,model,0,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
