@@ -565,7 +565,7 @@ def store_all_selections(params,model,pretrained,paramOn):
             for target in domains:
                 if source ==target:
                     continue
-                print 'getting alpha from %s-%s ...' % (source,target)
+                print 'getting alpha=%f from %s-%s ...' % (param,source,target)
                 select_pivots_by_alpha(source,target,param,model,pretrained,paramOn)
                 print '------selection completed--------' 
     pass
