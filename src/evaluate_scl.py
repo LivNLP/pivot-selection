@@ -111,6 +111,8 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     fname = "../work/%s-%s/obj/freq" % (sourceDomain, targetDomain)
     if "un_" in pivotsMethod:
         fname = "../work/%s-%s/obj/un_freq" % (sourceDomain, targetDomain)
+    elif 'landmark' or 'wiki' in method:
+        fname = "../work/%s-%s/obj/filtered_features" % (sourceDomain, targetDomain)
     features = pi.load_stored_obj(fname)
     feats = selectTh(dict(features),domainTh[sourceDomain])
     print "experimental features = ", len(feats)
@@ -217,6 +219,8 @@ def evaluate_SA(source, target, project, gamma, method, n):
     fname = "../work/%s-%s/obj/freq" % (source, target)
     if "un_" in method:
         fname = "../work/%s-%s/obj/un_freq" % (source, target)
+    elif 'landmark' or 'wiki' in method:
+        fname = "../work/%s-%s/obj/filtered_features" % (source, target)
     features = pi.load_stored_obj(fname)
     feats = selectTh(dict(features),domainTh[source])
     print "experimental features = ", len(feats)
@@ -479,7 +483,8 @@ if __name__ == "__main__":
     # methods += ["ppmi",'un_ppmi']
     # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    methods = ["landmark_pretrained_word2vec"]
+    # methods = ["landmark_pretrained_word2vec"]
+    methods = ['wiki_ppmi']
     # methods = ["landmark_pretrained_glove"]
     # n = 500
 
@@ -495,8 +500,8 @@ if __name__ == "__main__":
     params.sort()
     # params = [1,50,100,1000,10000]
     # params = [0,1,50,100,1000,10000]
-    for method in methods:
-        choose_param(method,params,1)
+    # for method in methods:
+    #     choose_param(method,params,1)
     # resFile = open("../work/sim/features.csv", "w")
     # resFile.write("Source, Target, Total, K\n")
     # domains = ["books", "electronics", "dvd", "kitchen"]
