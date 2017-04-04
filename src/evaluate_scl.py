@@ -108,19 +108,21 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
 
     # Load features and get domain specific features
-    fname = "../work/%s-%s/obj/freq" % (sourceDomain, targetDomain)
-    if "un_" in pivotsMethod:
-        fname = "../work/%s-%s/obj/un_freq" % (sourceDomain, targetDomain)
-    elif 'landmark' or 'wiki' in method:
-        fname = "../work/%s-%s/obj/filtered_features" % (sourceDomain, targetDomain)
-    features = pi.load_stored_obj(fname)
-    feats = selectTh(dict(features),domainTh[sourceDomain])
-    print "experimental features = ", len(feats)
-    # print feats.keys()
+    if 'landmark' or 'wiki' in method:
+        fname = "../../group-generation/%s-%s/obj/filtered_features" % (sourceDomain, targetDomain)
+        feats = pi.load_stored_obj(fname)
+    else:
+        fname = "../work/%s-%s/obj/freq" % (sourceDomain, targetDomain)
+        if "un_" in pivotsMethod:
+            fname = "../work/%s-%s/obj/un_freq" % (sourceDomain, targetDomain)
+        features = pi.load_stored_obj(fname)
+        feats = selectTh(dict(features),domainTh[sourceDomain])
+        print "experimental features = ", len(feats)
+        # print feats.keys()
 
-    # DSwords = [item for item in feats if item not in pivots]
+        # DSwords = [item for item in feats if item not in pivots]
 
-    feats = feats.keys()
+        feats = feats.keys()
     # Load train vectors.
     print "Loading Training vectors...",
     startTime = time.time()
@@ -216,19 +218,22 @@ def evaluate_SA(source, target, project, gamma, method, n):
     print "selecting top-%d features in %s as pivots" % (n, method)
 
     # Load features 
-    fname = "../work/%s-%s/obj/freq" % (source, target)
-    if "un_" in method:
-        fname = "../work/%s-%s/obj/un_freq" % (source, target)
-    elif 'landmark' or 'wiki' in method:
-        fname = "../work/%s-%s/obj/filtered_features" % (source, target)
-    features = pi.load_stored_obj(fname)
-    feats = selectTh(dict(features),domainTh[source])
-    print "experimental features = ", len(feats)
-    #print feats
+    if 'landmark' or 'wiki' in method:
+        fname = "../../group-generation/%s-%s/obj/filtered_features" % (source, target)
+        feats = pi.load_stored_obj(fname)
+    else:
+        fname = "../work/%s-%s/obj/freq" % (source, target)
+        if "un_" in method:
+            fname = "../work/%s-%s/obj/un_freq" % (source, target)
+        
+        features = pi.load_stored_obj(fname)
+        feats = selectTh(dict(features),domainTh[source])
+        print "experimental features = ", len(feats)
+        #print feats
 
-    # DSwords = [item for item in feats if item not in pivots]
+        # DSwords = [item for item in feats if item not in pivots]
 
-    feats = feats.keys()
+        feats = feats.keys()
     # write train feature vectors.
     trainFileName = "../work/%s-%s/trainVects.SCL" % (source, target)
     testFileName = "../work/%s-%s/testVects.SCL" % (source, target)
@@ -452,8 +457,8 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 def choose_param(method,params,gamma):
-    resFile = open("../work/sim/SCLparams.%s.csv"% method, "w")
-    numbers = [100,200,300,500,1000,1500,2000]
+    resFile = open("../work/sim/n-SCLparams.%s.csv"% method, "w")
+    numbers = [100,200,300,400,500,600,700,800,900,1000]
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param,#pivots\n")
     domains = ["books", "electronics", "dvd", "kitchen"]
     for param in params:
@@ -483,8 +488,8 @@ if __name__ == "__main__":
     # methods += ["ppmi",'un_ppmi']
     # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    # methods = ["landmark_pretrained_word2vec"]
-    methods = ['wiki_ppmi']
+    methods = ["landmark_pretrained_word2vec"]
+    # methods = ['wiki_ppmi']
     # methods = ["landmark_pretrained_glove"]
     # n = 500
 
@@ -493,15 +498,15 @@ if __name__ == "__main__":
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
-    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # params += [10e-3,10e-4,10e-5,10e-6]
-    params = [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params += [10e-3,10e-4,10e-5]
+    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    params += [10e-3,10e-4,10e-5,10e-6]
+    # params = [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params += [10e-3,10e-4,10e-5]
     params.sort()
     # params = [1,50,100,1000,10000]
     # params = [0,1,50,100,1000,10000]
-    # for method in methods:
-    #     choose_param(method,params,1)
+    for method in methods:
+        choose_param(method,params,1)
     # resFile = open("../work/sim/features.csv", "w")
     # resFile.write("Source, Target, Total, K\n")
     # domains = ["books", "electronics", "dvd", "kitchen"]
