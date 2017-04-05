@@ -505,8 +505,8 @@ if __name__ == "__main__":
     params.sort()
     # params = [1,50,100,1000,10000]
     # params = [0,1,50,100,1000,10000]
-    for method in methods:
-        choose_param(method,params,1)
+    # for method in methods:
+    #     choose_param(method,params,1)
     # resFile = open("../work/sim/features.csv", "w")
     # resFile.write("Source, Target, Total, K\n")
     # domains = ["books", "electronics", "dvd", "kitchen"]
