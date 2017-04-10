@@ -343,9 +343,10 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 def choose_param(method,params,gamma):
-    domains = ["books", "electronics", "dvd", "kitchen"]
-    numbers = [100,200,300,500,1000,1500,2000]
-    resFile = open("../work/sim/SFAparams.%s.csv"% method, "w")
+    # domains = ["books", "electronics", "dvd", "kitchen"]
+    domains = ["books", "dvd"]
+    numbers = [100,200,300,400,500,600,700,800,900,1000]
+    resFile = open("../work/sim/f-SFAparams.%s.csv"% method, "w")
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param\n")
     for param in params:
         test_method = "test_%s_%f"% (method,param)
@@ -374,15 +375,17 @@ if __name__ == "__main__":
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
     # methods = ["ppmi",'un_ppmi']
     # methods = ["freq"]
-    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
+    methods = ['landmark_wiki_ppmi']
     # n = 500
     # for method in methods:
     #     batchEval(method,1, n)
     # gammas = [1,5,10,20,50,100,1000]
     # for method in methods:
     #     choose_gamma(source, target, method,gammas,n)
-    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params += [10e-3,10e-4,10e-5,10e-6]
+    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params += [10e-3,10e-4,10e-5,10e-6]
+    params = [10e-4]
     params.sort()
     # params = [0,1,50,100,1000,10000]
     # params = [0,10e-3,0.2,0.4,0.6,0.8,1]

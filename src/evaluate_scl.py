@@ -41,7 +41,7 @@ def testLBFGS(test_file, model_file):
     Evaluate on the test file.
     Read the output file and return the classification accuracy.
     """
-    output = "../work/output"
+    output = "../work/output_scl"
     retcode = subprocess.call("cat %s | classias-tag -m %s -t > %s" %\
                               (test_file, model_file, output), shell=True)
     F = open(output)
@@ -155,7 +155,7 @@ def learnProjection(sourceDomain, targetDomain, pivotsMethod, n):
     ut, s, vt = sparsesvd(M.tocsc(), h)
     endTime = time.time()
     print "%ss" % str(round(endTime-startTime, 2))     
-    sio.savemat("../work/%s-%s/proj.mat" % (sourceDomain, targetDomain), {'proj':ut.T})
+    sio.savemat("../work/%s-%s/proj_scl.mat" % (sourceDomain, targetDomain), {'proj':ut.T})
     pass
 
 
@@ -164,8 +164,8 @@ def getWeightVector(word, vects):
     Train a binary classifier to predict the given word and 
     return the corresponding weight vector. 
     """
-    trainFileName = "../work/trainFile"
-    modelFileName = "../work/modelFile"
+    trainFileName = "../work/temp/trainFile"
+    modelFileName = "../work/temp/modelFile"
     trainFile = open(trainFileName, 'w')
     for v in vects:
         fv = v.copy()
@@ -208,7 +208,7 @@ def evaluate_SA(source, target, project, gamma, method, n):
     else:
         print "Projection OFF"
     # Load the projection matrix.
-    M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj.mat" % (source, target))['proj'])
+    M = sp.csr_matrix(sio.loadmat("../work/%s-%s/proj_scl.mat" % (source, target))['proj'])
     (nDS, h) = M.shape
 
     # Load pivots.
@@ -235,8 +235,8 @@ def evaluate_SA(source, target, project, gamma, method, n):
 
         feats = feats.keys()
     # write train feature vectors.
-    trainFileName = "../work/%s-%s/trainVects.SCL" % (source, target)
-    testFileName = "../work/%s-%s/testVects.SCL" % (source, target)
+    trainFileName = "../work/%s-%s/trainVects_t.SCL" % (source, target)
+    testFileName = "../work/%s-%s/testVects_t.SCL" % (source, target)
     featFile = open(trainFileName, 'w')
     count = 0
     for (label, fname) in [(1, 'train.positive'), (-1, 'train.negative')]:
@@ -285,7 +285,7 @@ def evaluate_SA(source, target, project, gamma, method, n):
         F.close()
     featFile.close()
     # Train using classias.
-    modelFileName = "../work/%s-%s/model.SCL" % (source, target)
+    modelFileName = "../work/%s-%s/model_t.SCL" % (source, target)
     trainLBFGS(trainFileName, modelFileName)
     # Test using classias.
     [acc,correct,total] = testLBFGS(testFileName, modelFileName)
@@ -458,9 +458,11 @@ def choose_gamma(source, target, method, gammas, n):
 
 def choose_param(method,params,gamma):
     resFile = open("../work/sim/f-SCLparams.%s.csv"% method, "w")
+    # domains = ["books", "electronics", "dvd", "kitchen"]
+    domains = ["books", "dvd"]
     numbers = [100,200,300,400,500,600,700,800,900,1000]
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param,#pivots\n")
-    domains = ["books", "electronics", "dvd", "kitchen"]
+    
     for param in params:
         test_method = "test_%s_%f"% (method,param)
         for source in domains:
@@ -488,9 +490,9 @@ if __name__ == "__main__":
     # methods += ["ppmi",'un_ppmi']
     # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    methods = ["landmark_pretrained_word2vec"]
-    methods += ["landmark_pretrained_glove"]
-    methods += ['wiki_ppmi']
+    # methods = ["landmark_pretrained_word2vec"]
+    # methods += ["landmark_pretrained_glove"]
+    methods = ['landmark_wiki_ppmi']
     # n = 500
 
     # for method in methods:
@@ -500,7 +502,7 @@ if __name__ == "__main__":
         # choose_gamma(source, target, method,gammas,n)
     # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params += [10e-3,10e-4,10e-5,10e-6]
-    params = [10e-3]
+    params = [10e-4]
     # params = [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params += [10e-3,10e-4,10e-5]
     params.sort()
