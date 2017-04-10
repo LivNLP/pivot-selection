@@ -343,10 +343,11 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 def choose_param(method,params,gamma):
-    # domains = ["books", "electronics", "dvd", "kitchen"]
-    domains = ["books", "dvd"]
-    numbers = [100,200,300,400,500,600,700,800,900,1000]
-    resFile = open("../work/sim/f-SFAparams.%s.csv"% method, "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    # domains = ["books", "dvd"]
+    # numbers = [100,200,300,400,500,600,700,800,900,1000]
+    numbers=[500]
+    resFile = open("../work/sim/SFAparams.%s.csv"% method, "w")
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param\n")
     for param in params:
         test_method = "test_%s_%f"% (method,param)
