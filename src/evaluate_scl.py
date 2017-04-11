@@ -457,10 +457,11 @@ def choose_gamma(source, target, method, gammas, n):
     pass
 
 def choose_param(method,params,gamma):
-    resFile = open("../work/sim/f-SCLparams.%s.csv"% method, "w")
-    # domains = ["books", "electronics", "dvd", "kitchen"]
-    domains = ["books", "dvd"]
-    numbers = [100,200,300,400,500,600,700,800,900,1000]
+    resFile = open("../work/sim/SCLparams.%s.csv"% method, "w")
+    domains = ["books", "electronics", "dvd", "kitchen"]
+    # domains = ["books", "dvd"]
+    # numbers = [100,200,300,400,500,600,700,800,900,1000]
+    numbers=[500]
     resFile.write("Source, Target, Model, Acc, IntLow, IntHigh, Param,#pivots\n")
     
     for param in params:
@@ -500,9 +501,9 @@ if __name__ == "__main__":
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
-    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    # params += [10e-3,10e-4,10e-5,10e-6]
-    params = [10e-4]
+    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    params += [10e-3,10e-4,10e-5,10e-6]
+    # params = [10e-4]
     # params = [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params += [10e-3,10e-4,10e-5]
     params.sort()

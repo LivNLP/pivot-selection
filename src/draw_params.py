@@ -171,16 +171,13 @@ def construct_accuracy_table(param_list):
 
 # convert names
 def convert(method):
-    if "landmark_" in method:
-        if "_ppmi" in method:
-            return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
+    if "landmark_" in method: 
+        if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
+            return "T-CBOW"
+        elif method.replace("_pretrained","").replace("landmark_","") == "glove":
+            return "T-GloVe"
         else:
-            if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
-                return "T-CBOW"
-            elif method.replace("_pretrained","").replace("landmark_","") == "glove"::
-                return "T-GloVe"
-            else:
-                return "Wiki-PPMI"
+            return "Wiki-PPMI"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()

@@ -68,7 +68,7 @@ def convert(method):
         else:
             if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
                 return "T-CBOW"
-            elif method.replace("_pretrained","").replace("landmark_","") == "glove"::
+            elif method.replace("_pretrained","").replace("landmark_","") == "glove":
                 return "T-GloVe"
             else:
                 return "Wiki-PPMI"
