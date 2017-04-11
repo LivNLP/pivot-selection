@@ -60,7 +60,7 @@ def draw_methods(argmts,da_method):
     methods,ys,yerrs,x,lookfor_pair = argmts
     fig, ax = plt.subplots(figsize=(12,8))
     index = np.arange(len(x))
-    markers = ['.','x','o']*(len(methods)/3)
+    markers = ['.','x','^']*(len(methods)/3)
     # print methods
     i = 0
     # print index,[len(y) for y in ys]
