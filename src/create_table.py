@@ -67,9 +67,11 @@ def convert(method):
             return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
         else:
             if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
-                return "S-CBOW"
+                return "T-CBOW"
+            elif method.replace("_pretrained","").replace("landmark_","") == "glove"::
+                return "T-GloVe"
             else:
-                return "S-GloVe"
+                return "Wiki-PPMI"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()

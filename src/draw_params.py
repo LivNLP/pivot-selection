@@ -177,8 +177,10 @@ def convert(method):
         else:
             if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
                 return "T-CBOW"
-            else:
+            elif method.replace("_pretrained","").replace("landmark_","") == "glove"::
                 return "T-GloVe"
+            else:
+                return "Wiki-PPMI"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()
