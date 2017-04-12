@@ -73,15 +73,15 @@ def draw_methods(argmts,da_method):
     plt.xlabel('$k$(#pivots)',size=22)
     plt.ylabel('Accuracy',size=22)
     # bottom box
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
-          fancybox=True, shadow=True, ncol=5)
+    # box = ax.get_position()
+    # ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
+    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+    #       fancybox=True, shadow=True, ncol=5)
     
     plt.autoscale()
     plt.ylim([57,90])
-    plt.show()
-    # plt.savefig('%s:%s-acc.png'%(lookfor_pair,da_method))
+    # plt.show()
+    plt.savefig('%s:%s-pivots.png'%(lookfor_pair,da_method))
     pass
 
 
@@ -134,11 +134,12 @@ def draw_methods_figure(da_method,methods,lookfor_pair):
     pass
 
 if __name__ == "__main__":
-    da_method = "SFA"
+    da_method = "SCL"
+    # da_method="SFA"
     pv_method = "landmark_wiki_ppmi"
     methods = ["landmark_pretrained_word2vec"]
     methods += ["landmark_pretrained_glove"]
     methods += ['landmark_wiki_ppmi']
-    lookfor_pair = "D-B"
+    lookfor_pair = "B-D"
     # collecter(da_method,pv_method)
     draw_methods_figure(da_method,methods,lookfor_pair)
