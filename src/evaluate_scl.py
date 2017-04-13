@@ -402,8 +402,9 @@ def batchEval(method, gamma):
     """
     Evaluate on all 12 domain pairs. 
     """
-    resFile = open("../work/batchSCL.%s.csv"% method, "w")
-    domains = ["books", "electronics", "dvd", "kitchen"]
+    resFile = open("../work/f-batchSCL.%s.csv"% method, "w")
+    # domains = ["books", "electronics", "dvd", "kitchen"]
+    domains = ["books","dvd"]
     numbers = [100,200,300,400,500,600,700,800,900,1000]
     resFile.write("Source, Target, Method, Acc, IntLow, IntHigh,#pivots\n")
     for source in domains:
@@ -413,7 +414,7 @@ def batchEval(method, gamma):
             for n in numbers:
                 learnProjection(source, target, method, n)
                 evaluation = evaluate_SA(source, target, True, gamma, method, n)
-                resFile.write("%s, %s, %s, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
+                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (source, target, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
                 resFile.flush()
     resFile.close()
     pass
@@ -487,30 +488,30 @@ if __name__ == "__main__":
     # methods = ["un_mi"]
     # learnProjection(source, target, method, 500)
     # evaluate_SA(source, target, True, method, 500)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # methods += ["ppmi",'un_ppmi']
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods += ["ppmi",'un_ppmi']
     # methods = ["mi","un_mi","pmi","un_pmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
     # methods = ["landmark_pretrained_word2vec"]
     # methods += ["landmark_pretrained_glove"]
-    methods = ['landmark_wiki_ppmi']
+    # methods = ['landmark_wiki_ppmi']
     # n = 500
 
-    # for method in methods:
-    #     batchEval(method, 1)
+    for method in methods:
+        batchEval(method, 1)
     # gammas = [1,5,10,20,50,100]
     # for method in methods:
         # choose_gamma(source, target, method,gammas,n)
     # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
     # params += [10e-3,10e-4,10e-5,10e-6]
     # params = [10e-4]
-    params = [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params += [10e-3,10e-4,10e-5]
-    params.sort()
+    # params = [0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params += [10e-3,10e-4,10e-5]
+    # params.sort()
     # params = [1,50,100,1000,10000]
     # params = [0,1,50,100,1000,10000]
-    for method in methods:
-        choose_param(method,params,1)
+    # for method in methods:
+    #     choose_param(method,params,1)
     # resFile = open("../work/sim/features.csv", "w")
     # resFile.write("Source, Target, Total, K\n")
     # domains = ["books", "electronics", "dvd", "kitchen"]
