@@ -33,8 +33,8 @@ def collect_methods(da_method,methods,lookfor_pair):
     for method in methods:
         if 'landmark' in method:
             input_file = open("../work/sim/f-%sparams.%s.csv"%(da_method,method),'r')
-        # else:
-        #     input_file = open("../work/batch%s.%s.csv"%(da_method,method),'r')
+        else:
+            input_file = open("../work/f-batch%s.%s.csv"%(da_method,method),'r')
         next(input_file)
         for line in input_file:
             p = line.strip('\n').split(', ')
@@ -49,18 +49,18 @@ def collect_methods(da_method,methods,lookfor_pair):
                     param = float(p[6])
                     n_pivots = int(float(p[7])) # number of pivots
                     new_list.append([pair,method,acc,interval,param,n_pivots])
-                # else:
-                #     if p[2] == method:
-                #         new_list.append([pair,method,acc,interval])
+                elif p[2] == method:
+                    n_pivots = int(float(p[6]))
+                    new_list.append([pair,method,acc,interval,n_pivots])
         # print new_list,methods,lookfor_pair
     return new_list,methods,lookfor_pair
 
 
 def draw_methods(argmts,da_method):
     methods,ys,yerrs,x,lookfor_pair = argmts
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=(12,10))
     index = np.arange(len(x))
-    markers = ['.','x','^']*(len(methods)/3)
+    markers = ['.','x']*(len(methods)/2)+['^']
     # print methods
     i = 0
     # print index,[len(y) for y in ys]
@@ -73,10 +73,10 @@ def draw_methods(argmts,da_method):
     plt.xlabel('$k$(#pivots)',size=22)
     plt.ylabel('Accuracy',size=22)
     # bottom box
-    # box = ax.get_position()
-    # ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
-    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
-    #       fancybox=True, shadow=True, ncol=5)
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+          fancybox=True, shadow=True, ncol=6)
     
     plt.autoscale()
     plt.ylim([57,90])
@@ -92,21 +92,22 @@ def construct_methods(argmts):
     # get number of pivots to be x
     x = list(set([p[5] for p in param_list if len(p)>5]))
     x.sort(key=float)
-    # print x 
+    print x 
 
-    for method in methods:
-        if 'landmark' in method:
-            y = []
-            yerr = []
-            for n_pivots in x:
+    for method in methods:       
+        y = []
+        yerr = []
+        for n_pivots in x:
+            if 'landmark' in method:
                 y.append([p[2] for p in param_list if (p[1]==method and len(p)>5 and p[5]==n_pivots)][0])
                 yerr.append([p[3] for p in param_list if (p[1]==method and len(p)>5 and p[5]==n_pivots)][0])
-            ys.append(y)
-            yerrs.append(yerr)
-        # else:
-        #     ys.append([p[2] for p in param_list if p[1]==method]*len(x))
-        #     yerrs.append([p[3] for p in param_list if p[1]==method]*len(x))
-
+            else:
+                y.append([p[2] for p in param_list if (p[1]==method and p[4]==n_pivots)][0])
+                yerr.append([p[3] for p in param_list if (p[1]==method and p[4]==n_pivots)][0])
+            # print method, y
+        ys.append(y)
+        yerrs.append(yerr)
+        # print method, len(ys)
     # x = ['%.1f'%tmp if (tmp>0.1 or tmp==0) else '$10^{%d}$'%(math.log10(tmp)-1) for tmp in x]
     # print ys
     # print yerrs
@@ -137,9 +138,8 @@ if __name__ == "__main__":
     da_method = "SCL"
     # da_method="SFA"
     pv_method = "landmark_wiki_ppmi"
-    methods = ["landmark_pretrained_word2vec"]
-    methods += ["landmark_pretrained_glove"]
-    methods += ['landmark_wiki_ppmi']
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
     lookfor_pair = "B-D"
     # collecter(da_method,pv_method)
     draw_methods_figure(da_method,methods,lookfor_pair)

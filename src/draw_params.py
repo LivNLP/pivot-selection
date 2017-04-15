@@ -211,15 +211,17 @@ def draw_table(da_method,pv_method):
 if __name__ == "__main__":
     # pv_method = "landmark_pretrained_glove"
     # pv_method = "landmark_pretrained_word2vec"
-    
+    # da_method = "SCL"
+    # pv_method = "landmark_wiki_ppmi"
+    # da_method = "SFA"
     # draw_figure(da_method,pv_method)
     # draw_table(da_method,pv_method)
     # lookfor_pair = "K-E"
-    da_methods = ['SCL','SFA']
-    pairs = loop_pairs()
-    for da_method in da_methods:
-        for lookfor_pair in pairs:
-            methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
-            methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-            draw_methods_figure(da_method,methods,lookfor_pair)
+    # da_methods = ['SCL','SFA']
+    # pairs = loop_pairs()
+    # for da_method in da_methods:
+    #     for lookfor_pair in pairs:
+    #         methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    #         methods += ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    #         draw_methods_figure(da_method,methods,lookfor_pair)
 

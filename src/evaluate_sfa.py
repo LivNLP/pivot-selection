@@ -309,13 +309,14 @@ def evaluate_SA(source, target, project,gamma, n):
     print "###########################################\n\n"
     return acc,intervals
 
-def batchEval(method, gamma, n):
+def batchEval(method, gamma):
     """
     Evaluate on all 12 domain pairs. 
     """
-    resFile = open("../work/batchSFA.%s.csv"% method, "w")
-    domains = ["books", "electronics", "dvd", "kitchen"]
-    numbers = [100,200,300,500,1000,1500,2000]
+    resFile = open("../work/f-batchSFA.%s.csv"% method, "w")
+    # domains = ["books", "electronics", "dvd", "kitchen"]
+    domains = ["books","dvd"]
+    numbers = [100,200,300,400,500,600,700,800,900,1000]
     resFile.write("Source, Target, Method, Acc, IntLow, IntHigh,#pivots\n")
     for source in domains:
         for target in domains:
@@ -373,22 +374,22 @@ if __name__ == "__main__":
     # learnProjection(source, target)
     # evaluate_SA(source, target, False,1,500)
     # evaluate_SA(source, target, True, 500)
-    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
-    # methods = ["ppmi",'un_ppmi']
+    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi"]
+    methods += ["ppmi",'un_ppmi']
     # methods = ["freq"]
     # methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
-    methods = ['landmark_wiki_ppmi']
+    # methods = ['landmark_wiki_ppmi']
     # n = 500
-    # for method in methods:
-    #     batchEval(method,1, n)
+    for method in methods:
+        batchEval(method,1)
     # gammas = [1,5,10,20,50,100,1000]
     # for method in methods:
     #     choose_gamma(source, target, method,gammas,n)
-    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params += [10e-3,10e-4,10e-5,10e-6]
+    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params += [10e-3,10e-4,10e-5,10e-6]
     # params = [10e-4]
-    params.sort()
+    # params.sort()
     # params = [0,1,50,100,1000,10000]
     # params = [0,10e-3,0.2,0.4,0.6,0.8,1]
-    for method in methods:
-        choose_param(method,params,1)
+    # for method in methods:
+    #     choose_param(method,params,1)

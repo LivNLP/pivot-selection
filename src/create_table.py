@@ -62,16 +62,13 @@ def collect_params_on_server(da_method,pv_method):
 
 # convert names
 def convert(method):
-    if "landmark_" in method:
-        if "_ppmi" in method:
-            return "%s+PPMI" % method.replace("_ppmi","").replace("_pretrained","").replace("landmark_","")
+    if "landmark_" in method: 
+        if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
+            return "T-CBOW"
+        elif method.replace("_pretrained","").replace("landmark_","") == "glove":
+            return "T-GloVe"
         else:
-            if method.replace("_pretrained","").replace("landmark_","") == "word2vec":
-                return "T-CBOW"
-            elif method.replace("_pretrained","").replace("landmark_","") == "glove":
-                return "T-GloVe"
-            else:
-                return "Wiki-PPMI"
+            return "Wiki-PPMI"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()
@@ -201,7 +198,7 @@ def filter_num(tmp):
 
 if __name__ == "__main__":
     methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove"]
+    methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
     # DAmethod = "SCL"
     DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod)
