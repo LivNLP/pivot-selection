@@ -58,7 +58,7 @@ def collect_methods(da_method,methods,lookfor_pair):
 
 def draw_methods(argmts,da_method):
     methods,ys,yerrs,x,lookfor_pair = argmts
-    fig, ax = plt.subplots(figsize=(12,10))
+    fig, ax = plt.subplots(figsize=(12,8))
     index = np.arange(len(x))
     markers = ['.','x']*(len(methods)/2)+['^']
     # print methods
@@ -76,7 +76,7 @@ def draw_methods(argmts,da_method):
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.1,box.width, box.height * 0.9])
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
-          fancybox=True, shadow=True, ncol=6)
+          fancybox=True, shadow=True, ncol=5)
     
     plt.autoscale()
     plt.ylim([57,90])
@@ -92,7 +92,7 @@ def construct_methods(argmts):
     # get number of pivots to be x
     x = list(set([p[5] for p in param_list if len(p)>5]))
     x.sort(key=float)
-    print x 
+    # print x 
 
     for method in methods:       
         y = []
@@ -137,9 +137,9 @@ def draw_methods_figure(da_method,methods,lookfor_pair):
 if __name__ == "__main__":
     da_method = "SCL"
     # da_method="SFA"
-    pv_method = "landmark_wiki_ppmi"
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
+    # pv_method = "landmark_wiki_ppmi"
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    methods = ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
     lookfor_pair = "B-D"
     # collecter(da_method,pv_method)
     draw_methods_figure(da_method,methods,lookfor_pair)
