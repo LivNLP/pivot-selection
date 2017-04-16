@@ -177,7 +177,7 @@ def convert(method):
         elif method.replace("_pretrained","").replace("landmark_","") == "glove":
             return "T-GloVe"
         else:
-            return "Wiki-PPMI"
+            return "T-Wiki"
     else:
         if "un_" in method:
             return "%s$_U$" % method.replace("un_","").upper()
