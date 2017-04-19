@@ -624,7 +624,7 @@ def read_glove():
 def read_word2vec():
     path = '../data/GoogleNews-vectors-negative300.bin'
     model = gensim.models.Word2Vec.load_word2vec_format(path,binary=True)
-    print len(model['good'])
+    print model['cat'][:5]
     pass
 
 def print_ppmi():
@@ -663,21 +663,21 @@ if __name__ == "__main__":
     # model_names = ['word2vec','glove']
     # ######param#########
     # params = [0,1,50,100,1000,10000]
-    params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
-    params += [10e-3,10e-4,10e-5,10e-6]
+    # params = [0,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2]
+    # params += [10e-3,10e-4,10e-5,10e-6]
     # model_names = ['word2vec']
     # model_names = ['glove']
-    model_names = ['wiki_ppmi']
-    paramOn = True
+    # model_names = ['wiki_ppmi']
+    # paramOn = True
     # paramOn = False
-    for model in model_names:
-        store_all_selections(params,model,0,paramOn)
+    # for model in model_names:
+    #     store_all_selections(params,model,0,paramOn)
     ######test##########
     # solve_qp() 
     # construct_freq_dict()
     # print_alpha(0)
     # glove_model_test()
     # read_glove()
-    # read_word2vec()
+    read_word2vec()
     # print_ppmi()
     # u_wiki_test()
