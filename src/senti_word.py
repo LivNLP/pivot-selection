@@ -40,7 +40,7 @@ def choose_param(method,params,n):
     resFile.close()
     pass
 
-# diffferent pv methods
+# different pv methods
 def method_eval(methods,n):
     domains = ["books", "electronics", "dvd", "kitchen"]
     resFile = open("../work/sim/Sentisim.csv", "w")
