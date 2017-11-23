@@ -292,8 +292,8 @@ def evaluate_NA(dataset):
     Report the cross-domain sentiment classification accuracy. 
     """
 
-    trainFileName = "../work/%s/train" % (dataset)
-    testFileName = "../work/%s/test" % (dataset)
+    trainFileName = "../data/%s/train" % (dataset)
+    testFileName = "../data/%s/test" % (dataset)
     # Train using classias.
     modelFileName = "../work/%s/model.NA" % (dataset)
     trainLBFGS(trainFileName, modelFileName)
