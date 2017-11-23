@@ -238,7 +238,7 @@ def evaluate_SA(dataset, project, gamma, method, n):
         #print "Train ", count
         words = set(line.strip().split()[1:])
         # write the original features.
-        featFile.write("%d " % line.strip().split()[0])
+        featFile.write("%d " % int(line.strip().split()[0]))
         x = sp.lil_matrix((1, nDS), dtype=np.float64)
         for w in words:
             #featFile.write("%s:1 " % w)
@@ -261,7 +261,7 @@ def evaluate_SA(dataset, project, gamma, method, n):
         #print "Train ", count
         words = set(line.strip().split()[1:])
         # write the original features.
-        featFile.write("%d " % line.strip().split()[0])
+        featFile.write("%d " % int(line.strip().split()[0]))
         x = sp.lil_matrix((1, nDS), dtype=np.float64)
         for w in words:
             #featFile.write("%s:1 " % w)
