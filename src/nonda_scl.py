@@ -205,10 +205,10 @@ def evaluate_SA(dataset, project, gamma, method, n):
     (nDS, h) = M.shape
 
     # Load pivots.
-    pivotsFile = "../work/%s/obj/%s" % (dataset, method)
-    features = pi.load_stored_obj(pivotsFile)
-    pivots = dict(features[:n]).keys()
-    print "selecting top-%d features in %s as pivots" % (n, method)
+    # pivotsFile = "../work/%s/obj/%s" % (dataset, method)
+    # features = pi.load_stored_obj(pivotsFile)
+    # pivots = dict(features[:n]).keys()
+    # print "selecting top-%d features in %s as pivots" % (n, method)
 
     # Load features 
     fname = "../work/%s/obj/freq" % (dataset)
