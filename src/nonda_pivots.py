@@ -39,6 +39,8 @@ def select_pivots_freq(domain):
         s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (feat, freq) in L[:10]:
+        print feat, freq
     save_obj(L,domain,'un_freq')
     pass
 
