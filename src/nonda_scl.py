@@ -225,9 +225,58 @@ def evaluate_SA(dataset, project, gamma, method, n):
 
     feats = feats.keys()
     
-    trainFileName = "../work/%s/train" % (dataset)
-    testFileName = "../work/%s/test" % (dataset)
-    
+    # trainFileName = "../work/%s/train" % (dataset)
+    # testFileName = "../work/%s/test" % (dataset)
+        # write train feature vectors.
+    trainFileName = "../work/%s/trainVects.SCL" % (dataset)
+    testFileName = "../work/%s/testVects.SCL" % (dataset)
+    featFile = open(trainFileName, 'w')
+    count = 0
+    F = open("../data/%s/train" % dataset)
+    for line in F:
+        count += 1
+        #print "Train ", count
+        words = set(line.strip().split()[1:])
+        # write the original features.
+        featFile.write("%d " % line.strip().split()[0])
+        x = sp.lil_matrix((1, nDS), dtype=np.float64)
+        for w in words:
+            #featFile.write("%s:1 " % w)
+            if w in feats:
+                x[0, feats.index(w)] = 1
+        # write projected features.
+        if project:
+            y = x.tocsr().dot(M)
+            for i in range(0, h):
+                featFile.write("proj_%d:%f " % (i, gamma * y[0,i])) 
+        featFile.write("\n")
+    F.close()
+    featFile.close()
+    # write test feature vectors.
+    featFile = open(testFileName, 'w')
+    count = 0
+    F = open("../data/%s/test" % dataset)
+    for line in F:
+        count += 1
+        #print "Train ", count
+        words = set(line.strip().split()[1:])
+        # write the original features.
+        featFile.write("%d " % line.strip().split()[0])
+        x = sp.lil_matrix((1, nDS), dtype=np.float64)
+        for w in words:
+            #featFile.write("%s:1 " % w)
+            if w in feats:
+                x[0, feats.index(w)] = 1
+        # write projected features.
+        if project:
+            y = x.tocsr().dot(M)
+            for i in range(0, h):
+                featFile.write("proj_%d:%f " % (i, gamma * y[0,i])) 
+        featFile.write("\n")
+    F.close()
+    featFile.close()
+    # Train using classias.
+    modelFileName = "../work/%s-%s/model_t.SCL" % (source, target)
     # Train using classias.
     modelFileName = "../work/%s/model.SCL" % (dataset)
     trainLBFGS(trainFileName, modelFileName)
