@@ -184,7 +184,7 @@ def loadFeatureVecors(fname, feats):
     for line in F:
         L.append(set(line.strip().split()[1:])&(set(feats)))
     F.close()
-    print L
+    # print L
     return L
 
 
