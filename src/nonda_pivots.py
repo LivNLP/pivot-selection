@@ -3,7 +3,7 @@ pivot selection for non DA datasets
 
 unlabelled methods
 """
-import math
+import math,numpy
 import pickle
 import os
 
