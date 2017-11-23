@@ -310,7 +310,7 @@ def batchEval(method, gamma):
     """
     Evaluate on all 12 domain pairs. 
     """
-    resFile = open("../work/f-batchSCL.%s.csv"% method, "w")
+    resFile = open("../work/nonDA-batchSCL.%s.csv"% method, "w")
     # domains = ["books", "electronics", "dvd", "kitchen"]
     domains = ["TR", "CR", "SUBJ","MR"]
     # numbers = [100,200,300,400,500,600,700,800,900,1000]
@@ -326,7 +326,7 @@ def batchEval(method, gamma):
     pass
 
 def batchNA():
-    resFile = open("../work/batchNA.NA.csv", "w")
+    resFile = open("../work/nonDA-batchNA.NA.csv", "w")
     domains = ["TR", "CR", "SUBJ","MR"]
     resFile.write("dataset, Method, Acc, IntLow, IntHigh\n")
     for dataset in domains:
