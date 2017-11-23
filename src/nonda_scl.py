@@ -331,10 +331,8 @@ def choose_param(method,params,gamma):
     pass
 
 if __name__ == "__main__":
-    # methods = ["mi","un_mi","pmi","un_pmi"]
+    methods = ["un_freq","un_mi","un_pmi","un_ppmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_word2vec_ppmi","landmark_pretrained_glove","landmark_pretrained_glove_ppmi"]
-    # methods = ["landmark_pretrained_word2vec"]
-    # methods += ["landmark_pretrained_glove"]
     # methods = ['landmark_wiki_ppmi']
     # n = 500
 

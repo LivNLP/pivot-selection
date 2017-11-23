@@ -203,7 +203,6 @@ def load_obj(dataset,name):
 
 if __name__ == '__main__':
     datasets = ["TR", "CR", "SUBJ","MR"]
-    print "starting..."
     for dataset in datasets:
         print "dataset =",dataset
         select_pivots_freq(dataset)
