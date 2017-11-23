@@ -42,8 +42,8 @@ def select_pivots_freq(domain):
         s[feat] = min(src_freq.get(feat, 0), tgt_freq.get(feat, 0))
     L = s.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
-    for (feat, freq) in L[:10]:
-        print feat, freq
+    for (x, v) in L[:10]:
+        print x, v
     save_obj(L,domain,'un_freq')
     pass
 
@@ -72,6 +72,8 @@ def select_pivots_mi(domain):
             mi_dict[x] = (src_mi-tgt_mi)**2
     L = mi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (x, v) in L[:10]:
+        print x, v
     save_obj(L,domain,'un_mi')
 
 def select_pivots_pmi(domain):
@@ -99,6 +101,8 @@ def select_pivots_pmi(domain):
             pmi_dict[x] = (src_pmi-tgt_pmi)**2
     L = pmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (x, v) in L[:10]:
+        print x, v
     save_obj(L,domain,'un_pmi')
     pass
 
@@ -127,6 +131,8 @@ def select_pivots_ppmi(domain):
             ppmi_dict[x] = (src_ppmi-tgt_ppmi)**2
     L = ppmi_dict.items()
     L.sort(lambda x, y: -1 if x[1] > y[1] else 1)
+    for (x, v) in L[:10]:
+        print x, v
     save_obj(L,domain,'un_ppmi')
     pass
 
@@ -205,7 +211,8 @@ def load_obj(dataset,name):
         return pickle.load(f)
 
 if __name__ == '__main__':
-    datasets = ["TR", "CR", "SUBJ","MR"]
+    # datasets = ["TR", "CR", "SUBJ","MR"]
+    datasets = ["TR"]
     for dataset in datasets:
         print "dataset =",dataset
         select_pivots_freq(dataset)
