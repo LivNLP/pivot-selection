@@ -36,9 +36,9 @@ def word2vec_single(domain_name):
     model.save('../work/%s/word2vec.model' % domain_name,ignore=[]) 
     return model
 
-# trained by two domains: S_L and T_U
+# trained by two domains: S_U and T_U
 def word2vec(source,target):
-    reviews = labeled_reviews(source) + unlabeled_reviews(target)
+    reviews = unlabeled_reviews(source) + unlabeled_reviews(target)
     model = gensim.models.Word2Vec(reviews, min_count=1,workers=4,size=300)
     model.save('../work/%s-%s/word2vec.model' % (source,target))
     return model
