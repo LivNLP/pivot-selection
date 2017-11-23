@@ -235,12 +235,12 @@ def evaluate_SA(dataset, project, gamma, method, n):
     for line in F:
         count += 1
         #print "Train ", count
-        words = set(line.strip().split()[1:])
+        words = [word.replace(":1","") for word in set(line.strip().split()[1:])]
         # write the original features.
         featFile.write("%d " % int(line.strip().split()[0]))
         x = sp.lil_matrix((1, nDS), dtype=np.float64)
         for w in words:
-            featFile.write("%s:1 " % w)
+            # featFile.write("%s:1 " % w)
             if w in feats:
                 x[0, feats.index(w)] = 1
         # write projected features.
@@ -258,12 +258,12 @@ def evaluate_SA(dataset, project, gamma, method, n):
     for line in F:
         count += 1
         #print "Train ", count
-        words = set(line.strip().split()[1:])
+        words = [word.replace(":1","") for word in set(line.strip().split()[1:])]
         # write the original features.
         featFile.write("%d " % int(line.strip().split()[0]))
         x = sp.lil_matrix((1, nDS), dtype=np.float64)
         for w in words:
-            featFile.write("%s:1 " % w)
+            # featFile.write("%s:1 " % w)
             if w in feats:
                 x[0, feats.index(w)] = 1
         # write projected features.
