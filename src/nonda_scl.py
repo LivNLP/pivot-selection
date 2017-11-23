@@ -115,7 +115,7 @@ def learnProjection(dataset, pivotsMethod, n):
         fname = "../work/%s/obj/un_freq" % (dataset)
     features = pi.load_stored_obj(fname)
     feats = dict(features)
-    print pivots
+    print feats.keys()
 
     # DSwords = [item for item in feats if item not in pivots]
 
