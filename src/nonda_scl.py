@@ -318,7 +318,7 @@ def batchEval(method, gamma):
     resFile.write("dataset, Method, Acc, IntLow, IntHigh,#pivots\n")
     for dataset in domains:
         for n in numbers:
-            # learnProjection(dataset, method, n)
+            learnProjection(dataset, method, n)
             evaluation = evaluate_SA(dataset, True, gamma, method, n)
             resFile.write("%s, %s, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
             resFile.flush()
