@@ -107,7 +107,7 @@ def learnProjection(dataset, pivotsMethod, n):
     pivotsFile = "../work/%s/obj/%s" % (dataset, pivotsMethod)
     features = pi.load_stored_obj(pivotsFile)
     pivots = dict(features[:n]).keys()
-    print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
+    print "selecting top-%d features in %s as pivots" % (len(pivots), pivotsMethod)
 
 # Load features and get domain specific features
     fname = "../work/%s/obj/freq" % (dataset)
@@ -115,8 +115,7 @@ def learnProjection(dataset, pivotsMethod, n):
         fname = "../work/%s/obj/un_freq" % (dataset)
     features = pi.load_stored_obj(fname)
     feats = dict(features)
-    print "experimental features = ", len(feats)
-    # print feats.keys()
+    print pivots
 
     # DSwords = [item for item in feats if item not in pivots]
 
