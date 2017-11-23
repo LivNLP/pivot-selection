@@ -109,22 +109,18 @@ def learnProjection(dataset, pivotsMethod, n):
     pivots = dict(features[:n]).keys()
     print "selecting top-%d features in %s as pivots" % (n, pivotsMethod)
 
-    # Load features and get domain specific features
-    if 'landmark' or 'wiki' in method:
-        fname = "../../group-generation/%s/obj/filtered_features" % (dataset)
-        feats = pi.load_stored_obj(fname)
-    else:
-        fname = "../work/%s/obj/freq" % (dataset)
-        if "un_" in pivotsMethod:
-            fname = "../work/%s/obj/un_freq" % (dataset)
-        features = pi.load_stored_obj(fname)
-        feats = dict(features)
-        print "experimental features = ", len(feats)
-        # print feats.keys()
+# Load features and get domain specific features
+    fname = "../work/%s/obj/freq" % (dataset)
+    if "un_" in pivotsMethod:
+        fname = "../work/%s/obj/un_freq" % (dataset)
+    features = pi.load_stored_obj(fname)
+    feats = dict(features)
+    print "experimental features = ", len(feats)
+    # print feats.keys()
 
-        # DSwords = [item for item in feats if item not in pivots]
+    # DSwords = [item for item in feats if item not in pivots]
 
-        feats = feats.keys()
+    feats = feats.keys()
     # Load train vectors.
     print "Loading Training vectors...",
     startTime = time.time()
@@ -216,22 +212,18 @@ def evaluate_SA(dataset, project, gamma, method, n):
     print "selecting top-%d features in %s as pivots" % (n, method)
 
     # Load features 
-    if 'landmark' or 'wiki' in method:
-        fname = "../../group-generation/%s/obj/filtered_features" % (dataset)
-        feats = pi.load_stored_obj(fname)
-    else:
-        fname = "../work/%s/obj/freq" % (dataset)
-        if "un_" in method:
-            fname = "../work/%s/obj/un_freq" % (dataset)
-        
-        features = pi.load_stored_obj(fname)
-        feats = dict(features)
-        print "experimental features = ", len(feats)
-        #print feats
+    fname = "../work/%s/obj/freq" % (dataset)
+    if "un_" in method:
+        fname = "../work/%s/obj/un_freq" % (dataset)
+    
+    features = pi.load_stored_obj(fname)
+    feats = dict(features)
+    print "experimental features = ", len(feats)
+    #print feats
 
-        # DSwords = [item for item in feats if item not in pivots]
+    # DSwords = [item for item in feats if item not in pivots]
 
-        feats = feats.keys()
+    feats = feats.keys()
     
     trainFileName = "../work/%s/train" % (dataset)
     testFileName = "../work/%s/test" % (dataset)
