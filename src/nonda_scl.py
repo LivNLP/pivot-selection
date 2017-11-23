@@ -276,8 +276,6 @@ def evaluate_SA(dataset, project, gamma, method, n):
     F.close()
     featFile.close()
     # Train using classias.
-    modelFileName = "../work/%s-%s/model_t.SCL" % (source, target)
-    # Train using classias.
     modelFileName = "../work/%s/model.SCL" % (dataset)
     trainLBFGS(trainFileName, modelFileName)
     # Test using classias.
