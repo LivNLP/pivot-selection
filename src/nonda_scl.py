@@ -264,7 +264,7 @@ def evaluate_SA(dataset, project, gamma, method, n):
         featFile.write("%d " % int(line.strip().split()[0]))
         x = sp.lil_matrix((1, nDS), dtype=np.float64)
         for w in words:
-            #featFile.write("%s:1 " % w)
+            featFile.write("%s:1 " % w)
             if w in feats:
                 x[0, feats.index(w)] = 1
         # write projected features.
