@@ -314,7 +314,7 @@ def batchEval(method, gamma):
                 createMatrix(dataset, method, n)
                 learnProjection(dataset)
                 evaluation = evaluate_SA(dataset, True, gamma, n)
-                resFile.write("%s, %s, %s, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
+                resFile.write("%s, %s, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
                 resFile.flush()
     resFile.close()
     pass
@@ -325,7 +325,7 @@ def choose_gamma(dataset, method, gammas, n):
     createMatrix(dataset, method, n)
     learnProjection(dataset)
     for gamma in gammas:    
-        resFile.write("%s, %s, %s, %f, %f, %f\n" % (dataset, method, 
+        resFile.write("%s, %s,  %f, %f, %f\n" % (dataset, method, 
         evaluate_SA(dataset, False, gamma, n), evaluate_SA(dataset, True, gamma, n), gamma))
         resFile.flush()
     resFile.close()
@@ -346,7 +346,7 @@ def choose_param(method,params,gamma):
                     createMatrix(dataset, test_method, n)
                     learnProjection(dataset)
                     evaluation = evaluate_SA(dataset, True, gamma, n)
-                    resFile.write("%s, %s, %s, %f, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],param,n))
+                    resFile.write("%s, %s, %f, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],param,n))
                     resFile.flush()
     resFile.close()
     pass
