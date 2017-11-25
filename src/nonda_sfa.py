@@ -267,7 +267,7 @@ def evaluate_SA(dataset, project,gamma, n):
     # write test feature vectors.
     featFile = open(testFileName, 'w')
     count = 0
-    F = openopen("../data/%s/test" % dataset)
+    F = open("../data/%s/test" % dataset)
     for line in F:
         count += 1
         #print "Test ", count
