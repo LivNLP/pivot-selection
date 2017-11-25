@@ -224,9 +224,7 @@ def evaluate_SA(dataset, project, gamma, method, n):
 
     feats = feats.keys()
     
-    # trainFileName = "../work/%s/train" % (dataset)
-    # testFileName = "../work/%s/test" % (dataset)
-        # write train feature vectors.
+    # write train feature vectors.
     trainFileName = "../work/%s/trainVects.SCL" % (dataset)
     testFileName = "../work/%s/testVects.SCL" % (dataset)
     featFile = open(trainFileName, 'w')
@@ -310,7 +308,6 @@ def batchEval(method, gamma):
     Evaluate on all 12 domain pairs. 
     """
     resFile = open("../work/nonDA-batchSCL.%s.csv"% method, "w")
-    # domains = ["books", "electronics", "dvd", "kitchen"]
     domains = ["TR", "CR", "SUBJ","MR"]
     # numbers = [100,200,300,400,500,600,700,800,900,1000]
     numbers = [500]
