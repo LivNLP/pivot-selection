@@ -306,16 +306,13 @@ def batchEval(method, gamma):
     domains = ["TR", "CR", "SUBJ","MR"]
     numbers = [500]
     resFile.write("dataset, Method, Acc, IntLow, IntHigh,#pivots\n")
-    for source in domains:
-        for target in domains:
-            if source == target:
-                continue
-            for n in numbers:
-                createMatrix(dataset, method, n)
-                learnProjection(dataset)
-                evaluation = evaluate_SA(dataset, True, gamma, n)
-                resFile.write("%s, %s, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
-                resFile.flush()
+    for dataset in domains:
+        for n in numbers:
+            createMatrix(dataset, method, n)
+            learnProjection(dataset)
+            evaluation = evaluate_SA(dataset, True, gamma, n)
+            resFile.write("%s, %s, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],n))
+            resFile.flush()
     resFile.close()
     pass
 
@@ -338,16 +335,13 @@ def choose_param(method,params,gamma):
     resFile.write("dataset, Model, Acc, IntLow, IntHigh, Param\n")
     for param in params:
         test_method = "test_%s_%f"% (method,param)
-        for source in domains:
-            for target in domains:
-                if source == target:
-                    continue
-                for n in numbers:
-                    createMatrix(dataset, test_method, n)
-                    learnProjection(dataset)
-                    evaluation = evaluate_SA(dataset, True, gamma, n)
-                    resFile.write("%s, %s, %f, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],param,n))
-                    resFile.flush()
+        for dataset in domains:
+            for n in numbers:
+                createMatrix(dataset, test_method, n)
+                learnProjection(dataset)
+                evaluation = evaluate_SA(dataset, True, gamma, n)
+                resFile.write("%s, %s, %f, %f, %f, %f, %f\n" % (dataset, method, evaluation[0], evaluation[1][0],evaluation[1][1],param,n))
+                resFile.flush()
     resFile.close()
     pass
 
