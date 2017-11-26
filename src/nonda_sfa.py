@@ -11,7 +11,7 @@ import numpy as np
 import scipy.io as sio 
 import scipy.sparse as sp
 # from sparsesvd import sparsesvd
-from scipy.sparse.linalg import svds as sparsesvd
+from scipy.linalg import svd as sparsesvd
 import subprocess
 
 import select_pivots as pi
@@ -212,11 +212,10 @@ def learnProjection(dataset):
         D2[i,i] = 1.0 / np.sqrt(np.sum(M[:,i].T.data[0]))
     B = (D1.tocsr().dot(M.tocsr())).dot(D2.tocsr())
     print "Done."
-    print B
     # Perform SVD on B
     print "Perform SVD on the weight matrix..."
     startTime = time.time()
-    ut, s, vt = sparsesvd(B.tocsc(), k=h)
+    ut, s, vt = sparsesvd(B.tocsc(), h)
     endTime = time.time()
     print "%ss" % str(round(endTime-startTime, 2))    
     sio.savemat("../work/%s/proj_sfa.mat" % (dataset), {'proj':ut.T})
