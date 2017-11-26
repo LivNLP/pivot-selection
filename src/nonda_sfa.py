@@ -217,7 +217,7 @@ def learnProjection(dataset):
     # ut, s, vt = sparsesvd(B.tocsc(), h)
     B = sp.csc_matrix(B, dtype=float)
     ut, s, vt = sp.linalg.svds(B, h)
-    print ut
+    print ut.shape
     endTime = time.time()
     print "%ss" % str(round(endTime-startTime, 2))    
     sio.savemat("../work/%s/proj_sfa.mat" % (dataset), {'proj':ut.T})
