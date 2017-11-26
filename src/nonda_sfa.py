@@ -219,7 +219,8 @@ def learnProjection(dataset):
     ut, s, vt = sp.linalg.svds(B, h)
     print ut.shape
     endTime = time.time()
-    print "%ss" % str(round(endTime-startTime, 2))    
+    print "%ss" % str(round(endTime-startTime, 2))
+    # sio.savemat("../work/%s/proj_sfa.mat" % (dataset), {'proj':ut.T}) 
     sio.savemat("../work/%s/proj_sfa.mat" % (dataset), {'proj':ut})
     print "Done."    
     pass
