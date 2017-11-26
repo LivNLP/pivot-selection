@@ -10,8 +10,8 @@ import math
 import numpy as np
 import scipy.io as sio 
 import scipy.sparse as sp
-from sparsesvd import sparsesvd
-# from scipy import linalg
+# from sparsesvd import sparsesvd
+from scipy.sparse.linalg import svds as sparsesvd
 import subprocess
 
 import select_pivots as pi
