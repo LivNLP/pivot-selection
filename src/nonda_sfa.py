@@ -211,6 +211,7 @@ def learnProjection(dataset):
         D2[i,i] = 1.0 / np.sqrt(np.sum(M[:,i].T.data[0]))
     B = (D1.tocsr().dot(M.tocsr())).dot(D2.tocsr())
     print "Done."
+    print "???"
     print "Computing SVD...",
     ut, s, vt = sparsesvd(B.tocsc(), h)
     sio.savemat("../work/%s/proj_sfa.mat" % (dataset), {'proj':ut.T})
