@@ -216,7 +216,7 @@ def learnProjection(dataset):
     # Perform SVD on B
     print "Perform SVD on the weight matrix..."
     startTime = time.time()
-    ut, s, vt = sparsesvd(B.tocsc(), h)
+    ut, s, vt = sparsesvd(B.tocsc(), k=h)
     endTime = time.time()
     print "%ss" % str(round(endTime-startTime, 2))    
     sio.savemat("../work/%s/proj_sfa.mat" % (dataset), {'proj':ut.T})
