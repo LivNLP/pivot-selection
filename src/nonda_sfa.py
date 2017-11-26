@@ -5,7 +5,7 @@ Used for evaluation of pivot selection methods
 ------------------------------------------
 changelog: add more datasets and for non-da datasets.
 """
-import sys
+import sys,time
 import math
 import numpy as np
 import scipy.io as sio 
@@ -211,7 +211,8 @@ def learnProjection(dataset):
         D2[i,i] = 1.0 / np.sqrt(np.sum(M[:,i].T.data[0]))
     B = (D1.tocsr().dot(M.tocsr())).dot(D2.tocsr())
     print "Done."
-    # Perform SVD on M
+    print B
+    # Perform SVD on B
     print "Perform SVD on the weight matrix...",
     startTime = time.time()
     ut, s, vt = sparsesvd(B.tocsc(), h)
