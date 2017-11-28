@@ -231,7 +231,7 @@ if __name__ == "__main__":
     # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
     # methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
     methods = ["un_freq","un_mi","un_pmi","un_ppmi"]
-    DAmethod = "SCL"
-    # DAmethod = "SFA"
+    # DAmethod = "SCL"
+    DAmethod = "SFA"
     construct_accuracy_table(methods,DAmethod,True,True)
     # construct_SCL_table(methods)
