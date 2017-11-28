@@ -23,7 +23,24 @@ def collect_accuracy(csv_file):
         new_list.append((pair,method,acc,interval))
 
     return new_list
-    pass
+
+# nonDA dataset collection
+def collect_accuracy_nonDA(csv_file):
+    new_list = []
+
+    input_file = open (csv_file,'r')
+    next(input_file)
+
+    for line in input_file:
+        p = line.strip('\n').split(',')
+        pair = p[0]
+        method = p[1].replace(" ", "")
+        acc = float(p[2])*100
+        interval = (float(p[4]) - float(p[3]))*100/2.0
+        # print p
+        new_list.append((pair,method,acc,interval))
+    return new_list
+
 
 def collect_params(da_method,pv_method):
     new_list = []
@@ -40,7 +57,6 @@ def collect_params(da_method,pv_method):
         param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
         new_list.append((domain_pair,method, acc,interval,param))
     return new_list
-    pass
 
 def collect_params_on_server(da_method,pv_method):
     new_list = []
@@ -57,7 +73,6 @@ def collect_params_on_server(da_method,pv_method):
         param = '%.1f' % float(p[6]) if (float(p[6])>0.1 or float(p[6])==0) else '%.1e'%Decimal(p[6])
         new_list.append((domain_pair,method, acc,interval,param))
     return new_list
-    pass
 
 
 # convert names
@@ -75,8 +90,6 @@ def convert(method):
         else:
             return "%s$_L$" % method.upper()
 
-
-
 def construct_best_landmark(param_list):
     new_list = []
     domain_pairs = list(set([p[0] for p in param_list]))
@@ -89,18 +102,23 @@ def construct_best_landmark(param_list):
 
     # print new_list
     return new_list
-    pass 
 
 
-def construct_accuracy_table(pv_methods,da_method):
+def construct_accuracy_table(pv_methods,da_method,nobolded=False,nonDA=False):
     table = []
     table_nobest = []
     i = 0
     # collect domain pairs
     for method in pv_methods:
         if i == 0:
-            m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
-            pairs = [x[0] for x in m_list]
+            if not nonDA:
+                m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
+                pairs = sorted([x[0] for x in m_list])
+            else:
+                n_list = collect_accuracy_nonDA("../work/nonDA-batch%s.%s.csv"% (da_method, method))
+                m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
+                pairs = [x[0] for x in n_list]+sorted([x[0] for x in m_list])
+            
         i+=1
 
     # use the pairs to collect the accuracies
@@ -108,11 +126,21 @@ def construct_accuracy_table(pv_methods,da_method):
         tmp = []
         tmp.append(pair)
         for method in pv_methods:
-            if "landmark" in method:
-                m_list = construct_best_landmark(collect_params(da_method,method))
-                tmp.append([x[2] for x in m_list if x[0]==pair][0])
+            if not nonDA:
+                if "landmark" in method:
+                    m_list = construct_best_landmark(collect_params(da_method,method))
+                    tmp.append([x[2] for x in m_list if x[0]==pair][0])
+                else:
+                    m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
+                    tmp.append([x[2] for x in m_list if x[0]==pair][0])
             else:
-                m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))
+                # if "landmark" in method:
+                #     m_list = construct_best_landmark(collect_params(da_method,method))
+                #     tmp.append([x[2] for x in m_list if x[0]==pair][0])
+                # else:
+                n_list = collect_accuracy_nonDA("../work/nonDA-batch%s.%s.csv"% (da_method, method))
+                m_list = collect_accuracy("../work/batch%s.%s.csv"% (da_method, method))+n_list
+                # print m_list,len(n_list), len(m_list)
                 tmp.append([x[2] for x in m_list if x[0]==pair][0])
             # print tmp
         best = max(tmp[1:])
@@ -120,7 +148,10 @@ def construct_accuracy_table(pv_methods,da_method):
         # second_best = heapq.nlargest(2,tmp[1:])[1]
         # new_tmp = ["%.2f*"%x if (x>second_best+5 and x==best) else x for x in tmp[1:]]
         # highlight the best result
-        new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
+        if not nobolded:
+            new_tmp = ["\\textbf{%.2f}"%x if x == best else x for x in tmp]
+        else:
+            new_tmp = ["[%.2f]"%x if x == best else x for x in tmp]
 
         print pair,[convert(pv_methods[i-1]) for i in best_idx],best
         table.append(new_tmp)
@@ -149,7 +180,7 @@ def construct_accuracy_table(pv_methods,da_method):
     print p
     if p < 0.01:
         print '*YES'
-    avg_list = ['avg']+avg_list 
+    avg_list = ['AVG']+['%.2f' % elem for elem in avg_list]
     table.append(avg_list)
 
     headers = [da_method]+[convert(x) for x in pv_methods]
@@ -168,7 +199,7 @@ def construct_SCL_table(pv_methods):
         i+=1
 
     # use pairs to collect accuracies
-    for pair in pairs:
+    for pair in sorted(pairs):
         tmp = []
         tmp.append(pair)
         for method in pv_methods:
@@ -197,9 +228,10 @@ def filter_num(tmp):
 
 
 if __name__ == "__main__":
-    methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
-    methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
-    # DAmethod = "SCL"
-    DAmethod = "SFA"
-    construct_accuracy_table(methods,DAmethod)
+    # methods = ["freq","un_freq","mi","un_mi","pmi","un_pmi","ppmi","un_ppmi"]
+    # methods += ["landmark_pretrained_word2vec","landmark_pretrained_glove","landmark_wiki_ppmi"]
+    methods = ["un_freq","un_mi","un_pmi","un_ppmi"]
+    DAmethod = "SCL"
+    # DAmethod = "SFA"
+    construct_accuracy_table(methods,DAmethod,True,True)
     # construct_SCL_table(methods)
